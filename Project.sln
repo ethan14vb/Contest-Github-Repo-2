@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project", "Project.vcxproj", "{4164AA65-1EF9-4E69-899B-D1BED776070B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EntryPoint", "EntryPoint", "{1A9A10CA-CB73-42A9-8530-5B9AC4C98180}"
+	ProjectSection(SolutionItems) = preProject
+		main.asm = main.asm
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{96660186-4B14-4BA1-91B2-22693D51ECA3}"
+	ProjectSection(SolutionItems) = preProject
+		classes_test.asm = classes_test.asm
+		component_ids_test.asm = component_ids_test.asm
+		game_object_test.asm = game_object_test.asm
+		heap_functions_test.asm = heap_functions_test.asm
+		include_everything_test.asm = include_everything_test.asm
+		rectangle_test_scene_test.asm = rectangle_test_scene_test.asm
+		renderer_test.asm = renderer_test.asm
+		scene_test.asm = scene_test.asm
+		transform_component_test.asm = transform_component_test.asm
+		unordered_vector_test.asm = unordered_vector_test.asm
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4164AA65-1EF9-4E69-899B-D1BED776070B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4164AA65-1EF9-4E69-899B-D1BED776070B}.Debug|Win32.Build.0 = Debug|Win32
+		{4164AA65-1EF9-4E69-899B-D1BED776070B}.Release|Win32.ActiveCfg = Release|Win32
+		{4164AA65-1EF9-4E69-899B-D1BED776070B}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

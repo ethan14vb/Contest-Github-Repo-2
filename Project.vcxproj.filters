@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="default_header.inc" />
+    <None Include="camera.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="engine_types.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="scene.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="renderer.inc">
+      <Filter>Include\Rendering</Filter>
+    </None>
+    <None Include="render_command.inc">
+      <Filter>Include\Rendering</Filter>
+    </None>
+    <None Include="transform_component.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="rect_component.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="sprite_component.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="game_object.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="heap_functions.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="rectangle_test_scene.inc">
+      <Filter>Resource\Scenes</Filter>
+    </None>
+    <None Include="component_ids.inc">
+      <Filter>Include\Resource</Filter>
+    </None>
+    <None Include="game_object_ids.inc">
+      <Filter>Include\Resource</Filter>
+    </None>
+    <None Include="component.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="unordered_vector.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="input_manager.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="camera_mover_game_object.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="renderable_component.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+    <None Include="music_player.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{73c18493-04f4-4a80-8897-6813e9238d5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{3224bbb7-1079-431e-9490-141390455819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{fa569797-693a-4505-99ef-a3e213442298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Engine">
+      <UniqueIdentifier>{0497e16b-d0b4-4853-8024-05a43d650370}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Rendering">
+      <UniqueIdentifier>{e8f30457-8992-412f-9833-31c4ad6d88cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine">
+      <UniqueIdentifier>{19203411-f9b2-415f-8031-ee3e1a6d1d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Rendering">
+      <UniqueIdentifier>{1a5080f9-bf19-4c04-a1ad-c215501bcfbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Scenes">
+      <UniqueIdentifier>{107099d3-5bbe-4f80-b2ee-4de45e966fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Resource">
+      <UniqueIdentifier>{c9047129-f14e-414e-b0b7-b5e9be8e34a0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="scene.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="renderer.asm">
+      <Filter>Source\Rendering</Filter>
+    </MASM>
+    <MASM Include="transform_component.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="heap_functions.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="rect_component.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="game_object.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="render_command.asm">
+      <Filter>Source\Rendering</Filter>
+    </MASM>
+    <MASM Include="rectangle_test_scene.asm">
+      <Filter>Resource\Scenes</Filter>
+    </MASM>
+    <MASM Include="component.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="unordered_vector.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="camera.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="input_manager.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="camera_mover_game_object.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="main.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="renderable_component.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="music_player.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+  </ItemGroup>
+</Project>

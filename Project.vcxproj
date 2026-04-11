@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="camera.asm" />
+    <MASM Include="camera_mover_game_object.asm" />
+    <MASM Include="component.asm" />
+    <MASM Include="game_object.asm" />
+    <MASM Include="heap_functions.asm" />
+    <MASM Include="input_manager.asm" />
+    <MASM Include="main.asm" />
+    <MASM Include="music_player.asm" />
+    <MASM Include="rectangle_test_scene.asm" />
+    <MASM Include="rect_component.asm" />
+    <MASM Include="renderable_component.asm" />
+    <MASM Include="render_command.asm" />
+    <MASM Include="transform_component.asm" />
+    <MASM Include="unordered_vector.asm" />
+    <None Include="camera_mover_game_object.inc" />
+    <None Include="component.inc" />
+    <None Include="component_ids.inc" />
+    <None Include="game_object.inc">
+      <FileType>Document</FileType>
+    </None>
+    <MASM Include="renderer.asm" />
+    <MASM Include="scene.asm" />
+    <None Include="game_object_ids.inc" />
+    <None Include="heap_functions.inc" />
+    <None Include="input_manager.inc" />
+    <None Include="music_player.inc" />
+    <None Include="rectangle_test_scene.inc" />
+    <None Include="renderable_component.inc" />
+    <None Include="sprite_component.inc">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="unordered_vector.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="camera.inc" />
+    <None Include="default_header.inc" />
+    <None Include="engine_types.inc" />
+    <None Include="rect_component.inc" />
+    <None Include="renderer.inc" />
+    <None Include="render_command.inc" />
+    <None Include="scene.inc" />
+    <None Include="transform_component.inc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4164AA65-1EF9-4E69-899B-D1BED776070B}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <MASM>
+      <AssembledCodeListingFile>$(ProjectName).lst</AssembledCodeListingFile>
+      <IncludePaths>c:\Irvine</IncludePaths>
+      <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+      <WarningLevel>3</WarningLevel>
+      <NoLogo>true</NoLogo>
+      <EnableAssemblyGeneratedCodeListing>true</EnableAssemblyGeneratedCodeListing>
+      <UseSafeExceptionHandlers>false</UseSafeExceptionHandlers>
+      <GeneratePreprocessedSourceListing>false</GeneratePreprocessedSourceListing>
+      <ListAllAvailableInformation>false</ListAllAvailableInformation>
+    </MASM>
+    <Link>
+      <AdditionalDependencies>user32.lib;irvine32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\Irvine;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+    <MASM>
+      <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    </MASM>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>
