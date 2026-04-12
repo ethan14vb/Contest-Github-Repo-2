@@ -20,8 +20,19 @@ LPCSTR		TYPEDEF PTR BYTE
 
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa
 WNDCLASSEXA STRUCT
-	cbSize DWORD ?
-	; // More members coming next commit
+	cbSize			UINT		?
+	style			UINT		?
+	lpfnWndProc		WNDPROC		?
+	cbClsExtra		DWORD		?
+	cbWndExtra		DWORD		?
+	hInstance		HINSTANCE	?
+	hIcon			HICON		?
+	hCursor			HCURSOR		?
+	hbrBackground	HBRUSH		?
+	lpszMenuName	LPCSTR		?	
+	lpszClassName	LPCSTR		?
+	hIconSm			HICON		?
 WNDCLASSEXA ENDS
+WNDCLASSEX TEXTEQU <WNDCLASSEXA>
 
 ENDIF
