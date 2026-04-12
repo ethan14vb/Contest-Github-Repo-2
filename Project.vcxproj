@@ -34,6 +34,7 @@
     <MASM Include="renderer.asm" />
     <MASM Include="scene.asm" />
     <None Include="game_object_ids.inc" />
+    <None Include="graph_wind.inc" />
     <None Include="heap_functions.inc" />
     <None Include="input_manager.inc" />
     <None Include="music_player.inc" />
