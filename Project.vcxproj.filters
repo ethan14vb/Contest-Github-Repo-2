@@ -28,9 +28,6 @@
     <None Include="game_object.inc">
       <Filter>Include\Engine</Filter>
     </None>
-    <None Include="heap_functions.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
     <None Include="rectangle_test_scene.inc">
       <Filter>Resource\Scenes</Filter>
     </None>
@@ -62,6 +59,9 @@
       <Filter>Include</Filter>
     </None>
     <None Include="graph_wind.inc">
+      <Filter>Include</Filter>
+    </None>
+    <None Include="heap_functions.inc">
       <Filter>Include</Filter>
     </None>
   </ItemGroup>

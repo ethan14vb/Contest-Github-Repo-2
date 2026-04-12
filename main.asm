@@ -10,7 +10,7 @@ INCLUDE default_header.inc
 INCLUDE heap_functions.inc
 INCLUDE rectangle_test_scene.inc
 INCLUDE scene.inc
-INCLUDE music_player.inc
+INCLUDE graph_wind.inc
 
 ; // Irvine32 protos
 Randomize PROTO
