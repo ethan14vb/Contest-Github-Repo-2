@@ -1,8 +1,7 @@
 ; // ==================================
 ; // graph_win.inc
 ; // ----------------------------------
-; // My version of GraphWin.inc from the Irvine library that
-; // doesn't rename windows function protos.
+; // My version of GraphWin.inc from the Irvine library
 ; // ==================================
 
 IFNDEF GRAPH_WIN_INC
