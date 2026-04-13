@@ -28,6 +28,14 @@ hWnd      HANDLE		?
 wc        WNDCLASSEX	<>
 
 .code
+WndProc PROC PUBLIC, hWin : DWORD, uMsg : DWORD, wParam : DWORD, lParam : DWORD
+	mov eax, hWin
+	mov eax, uMsg
+	mov eax, wParam
+	mov eax, lParam
+	ret
+WndProc ENDP
+
 WinMain PROC PUBLIC
 	local pScene
 
@@ -38,6 +46,8 @@ WinMain PROC PUBLIC
 	; // Window initialization
 	INVOKE GetModuleHandle, 0
     mov hInstance, eax
+
+	mov wc.lpfnWndProc, OFFSET WndProc
 
 	; // Scene initialization
 	INVOKE new_scene, 100
