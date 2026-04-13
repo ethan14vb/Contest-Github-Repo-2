@@ -33,10 +33,16 @@ msg       MSG           <>
 
 .code
 WndProc PROC PUBLIC, hWin : DWORD, uMsg : DWORD, wParam : DWORD, lParam : DWORD
-	mov eax, hWin
 	mov eax, uMsg
-	mov eax, wParam
-	mov eax, lParam
+	.IF eax == WM_DESTROY
+		INVOKE PostQuitMessage, 0
+		xor eax, eax
+		jmp WndProc_exit
+	.ELSE
+		INVOKE DefWindowProc, hWin, uMsg, wParam, lParam
+	.ENDIF
+
+WndProc_exit:
 	ret
 WndProc ENDP
 
@@ -60,7 +66,8 @@ WinMain PROC PUBLIC
 	mov eax, hInstance
     mov wc.hInstance, eax
 
-	mov wc.hbrBackground, COLOR_WINDOW + 1
+	INVOKE GetStockObject, BLACK_BRUSH
+	mov wc.hbrBackground, eax
     mov wc.lpszMenuName, 0
     mov wc.lpszClassName, OFFSET ClassName
     mov wc.hIcon, 0
@@ -104,7 +111,7 @@ read_msgs:
 	test eax, eax
 	jz update_scene ; // If PeakMessage returns 0, then there are no messages remaining in the queue
 
-	test msg.message, WM_QUIT
+	cmp msg.message, WM_QUIT
 	je loop_exit
 
 	INVOKE TranslateMessage, ADDR msg

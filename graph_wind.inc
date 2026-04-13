@@ -111,9 +111,14 @@ DefWindowProc TEXTEQU <DefWindowProcA>
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
 PostQuitMessage PROTO nExitCode:DWORD
 
+; // learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getstockobject
+GetStockObject PROTO i:DWORD
+
 ; // ********************************
 ; // Constants
 ; // ********************************
+BLACK_BRUSH			= 4
+
 COLOR_WINDOW        = 5				; std window color
 COLOR_BACKGROUND    = 2				; 2=blue F=gray
 IDI_APPLICATION     = 32512			; application icon
@@ -130,5 +135,7 @@ WS_POPUP			= 80000000h
 WS_VISIBLE			= 10000000h
 
 WM_QUIT				= 12h
+WM_DESTROY			= 0002h
+WM_ERASEBKGND		= 0014h
 
 ENDIF
