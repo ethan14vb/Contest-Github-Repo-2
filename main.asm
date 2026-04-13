@@ -65,6 +65,9 @@ WinMain PROC PUBLIC
     mov wc.lpszClassName, OFFSET ClassName
     mov wc.hIcon, 0
     mov wc.hIconSm, 0
+
+	INVOKE LoadCursor, 0, IDC_ARROW
+    mov wc.hCursor, eax
 	
 	INVOKE RegisterClassEx, ADDR wc
 

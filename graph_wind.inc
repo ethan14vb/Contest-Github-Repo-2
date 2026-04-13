@@ -68,6 +68,9 @@ GetModuleHandle TEXTEQU <GetModuleHandleA>
 RegisterClassExA PROTO, pWndClass :PTR WNDCLASSEX
 RegisterClassEx TEXTEQU <RegisterClassExA>
 
+LoadCursorA PROTO, hInstance:HINSTANCE, lpCursorName:LPCSTR
+LoadCursor TEXTEQU <LoadCursorA>
+
 ; // ********************************
 ; // Constants
 ; // ********************************
