@@ -48,6 +48,7 @@ WinMain PROC PUBLIC
     mov hInstance, eax
 
 	mov wc.lpfnWndProc, OFFSET WndProc
+	INVOKE RegisterClassEx, ADDR wc
 
 	; // Scene initialization
 	INVOKE new_scene, 100

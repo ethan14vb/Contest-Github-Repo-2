@@ -22,12 +22,6 @@ HBRUSH		TYPEDEF HANDLE
 LPCSTR		TYPEDEF PTR BYTE
 
 ; // ********************************
-; // Protos
-; // ********************************
-GetModuleHandleA PROTO, pString:PTR BYTE
-GetModuleHandle TEXTEQU <GetModuleHandleA>
-
-; // ********************************
 ; // Structs
 ; // ********************************
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa
@@ -46,5 +40,14 @@ WNDCLASSEXA STRUCT
 	hIconSm			HICON		?
 WNDCLASSEXA ENDS
 WNDCLASSEX TEXTEQU <WNDCLASSEXA>
+
+; // ********************************
+; // Protos
+; // ********************************
+GetModuleHandleA PROTO, pString:PTR BYTE
+GetModuleHandle TEXTEQU <GetModuleHandleA>
+
+RegisterClassExA PROTO, pWndClass :PTR WNDCLASSEX
+RegisterClassEx TEXTEQU <RegisterClassExA>
 
 ENDIF
