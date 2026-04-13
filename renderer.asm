@@ -136,7 +136,7 @@ displayBuffer ENDP
 ; // calculateAspectRatio
 ; // Calculates the offset that the game window should be drawn at
 ; // ----------------------------------
-calculateAspectRatio PROC
+calculateAspectRatio PROC USES ebx ecx edx esi
 	local SCREEN_WIDTH : DWORD, SCREEN_HEIGHT : DWORD
 	INVOKE GetSystemMetrics, SM_CXSCREEN
 	mov SCREEN_WIDTH, eax
@@ -161,13 +161,29 @@ calculateAspectRatio PROC
 	ja pillarboxing
 
 letterboxing:
-	; //	destW = 0
+	mov ecx, SCREEN_WIDTH
+	mov destW, ecx
 	; //	destH = (ScreenWidth * GameHeight) / GameWidth
-
+	mov eax, esi
+	xor edx, edx
+	mov ebx, GAME_WIDTH
+	div ebx
+	mov destH, eax
+	jmp calculateXYOffset
+		
 pillarboxing:
+	mov ecx, SCREEN_HEIGHT
+	mov destH, ecx
 	; //	destW = (ScreenHeight * GameWidth) / GameHeight
-	; //	destH = 0
+	mov eax, edx
+	mov ebx, GAME_WIDTH
+	mul ebx
+	xor edx, edx
+	mov ebx, GAME_HEIGHT
+	div ebx
+	mov destW, eax
 
+calculateXYOffset:
 	; // destX = (ScreenWidth - destW) / 2
 	; // destY = (ScreenHeight - destH) / 2
 	
