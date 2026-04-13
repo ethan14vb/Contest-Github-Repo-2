@@ -71,8 +71,19 @@ RegisterClassEx TEXTEQU <RegisterClassExA>
 LoadCursorA PROTO, hInstance:HINSTANCE, lpCursorName:LPCSTR
 LoadCursor TEXTEQU <LoadCursorA>
 
-CreateWindowExA PROTO, exWinStyle:DWORD,className:PTR BYTE,winName:PTR BYTE,winStyle:DWORD,X:DWORD,Y:DWORD,
-	rWidth:DWORD,rHeight:DWORD,hWndParent:DWORD,hMenu:DWORD,hInstance:DWORD,lpParam:DWORD
+CreateWindowExA PROTO, 
+	exWinStyle:DWORD,
+	className:PTR BYTE,
+	winName:PTR BYTE,
+	winStyle:DWORD,
+	X:DWORD,
+	Y:DWORD,
+	rWidth:DWORD,
+	rHeight:DWORD,
+	hWndParent:DWORD,
+	hMenu:DWORD,
+	hInstance:DWORD,
+	lpParam:DWORD
 CreateWindowEx TEXTEQU <CreateWindowExA>
 	
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
