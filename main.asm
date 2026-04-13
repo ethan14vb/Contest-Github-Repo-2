@@ -76,7 +76,19 @@ WinMain PROC PUBLIC
     INVOKE GetSystemMetrics, SM_CYSCREEN
     mov edx, eax
 		
-	INVOKE CreateWindowEx, 0, ADDR ClassName, ADDR WindowName, WS_POPUP OR WS_VISIBLE, 0, 0, ecx, edx, 0, 0, hInstance, 0
+	INVOKE CreateWindowEx, 
+		0, 
+		ADDR ClassName, 
+		ADDR WindowName, 
+		WS_POPUP OR WS_VISIBLE, 
+		0, 
+		0, 
+		ecx, 
+		edx, 
+		0, 
+		0, 
+		hInstance, 
+		0
     mov hWnd, eax
 
 	; // Scene initialization
