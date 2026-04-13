@@ -13,6 +13,7 @@ INCLUDE heap_functions.inc
 ; // Types
 ; // ********************************
 
+VOID		TYPEDEF DWORD
 UINT		TYPEDEF DWORD
 WNDPROC		TYPEDEF DWORD
 HINSTANCE	TYPEDEF HANDLE
@@ -21,7 +22,9 @@ HCURSOR		TYPEDEF HANDLE
 HBRUSH		TYPEDEF HANDLE
 LPCSTR		TYPEDEF PTR BYTE
 LPMSG		TYPEDEF PTR MSG
+LPVOID		TYPEDEF PTR VOID
 HWND		TYPEDEF HANDLE
+HMENU		TYPEDEF HANDLE
 WPARAM		TYPEDEF DWORD
 LPARAM		TYPEDEF DWORD
 
@@ -74,17 +77,17 @@ LoadCursor TEXTEQU <LoadCursorA>
 
 CreateWindowExA PROTO, 
 	exWinStyle:DWORD,
-	className:PTR BYTE,
-	winName:PTR BYTE,
+	lpClassName:LPCSTR,
+	lpWindowName:LPCSTR,
 	winStyle:DWORD,
 	X:DWORD,
 	Y:DWORD,
-	rWidth:DWORD,
-	rHeight:DWORD,
-	hWndParent:DWORD,
-	hMenu:DWORD,
-	hInstance:DWORD,
-	lpParam:DWORD
+	nWidth:DWORD,
+	nHeight:DWORD,
+	hWndParent:HWND,
+	hMenu:HMENU,
+	hInstance:HINSTANCE,
+	lpParam:LPVOID
 CreateWindowEx TEXTEQU <CreateWindowExA>
 	
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
@@ -94,6 +97,12 @@ GetSystemMetrics PROTO nIndex:DWORD
 PeakMessageA PROTO, lpMsg:LPMSG, hWnd:HWND, wMsgFilterMin:UINT, wMsgFilterMax:UINT, wRemoveMsg:UINT
 PeakMessage TEXTEQU <PeakMessageA>
 
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
+TranslateMessage PROTO, lpMsg:LPMSG
+
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dispatchmessage
+DispatchMessage PROTO, lpMsg:LPMSG
+
 ; // ********************************
 ; // Constants
 ; // ********************************
@@ -102,6 +111,8 @@ COLOR_BACKGROUND    = 2				; 2=blue F=gray
 IDI_APPLICATION     = 32512			; application icon
 IDC_ARROW           = 07f00h		; mouse cursor--arrow
 CW_USEDEFAULT       = 80000000h		; default window size & position
+
+PM_REMOVE			= 1
 
 SM_CXSCREEN			= 0
 SM_CYSCREEN			= 1
