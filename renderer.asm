@@ -111,7 +111,7 @@ writeByteInDecimal ENDP
 
 ; // ----------------------------------
 ; // displayBuffer
-; // Renders an RGBA buffer to the screen using ASCII characters.
+; // Renders an RGBA buffer to the screen using StretchDIBits
 ; // Intended to be used for frame by frame animation. 
 ; // 
 ; // Parameters: 
@@ -119,180 +119,25 @@ writeByteInDecimal ENDP
 ; //
 ; // ----------------------------------
 displayBuffer PROC PUBLIC USES esi edi ecx ebx, pBuffer:DWORD
-	mov edi, OFFSET outputTextBuffer ; // move destination text buffer to edi
-
-	INVOKE SetConsoleCursorPosition, hConsoleOutput, 0
-
-	xor ebx, ebx ; // y_index = 0
-
-y_loop:
-	cmp ebx, GAME_HEIGHT
-	jge done
-
-	xor ecx, ecx ; // x_index = 0
-x_loop:
-	cmp ecx, GAME_WIDTH
-	jge row_end
-
-	; // Get top pixel
-	; // ((y_index * SCREENWIDTH) + x_index) * 2
-	mov eax, ebx
-	imul eax, GAME_WIDTH
-	add eax, ecx 
-	shl eax, 2
-	mov edx, pBuffer
-	add edx, eax ; // edx is now the top pixel
-
-	push edx
-
-	; // Get bottom pixel
-	; // (((y_index + 1) * SCREENWIDTH) + x_index) * 2
-	mov eax, ebx
-	inc eax 
-	imul eax, GAME_WIDTH
-	add eax, ecx
-	shl eax, 2
-	mov edx, pBuffer
-	add edx, eax 
-
-	mov eax, edx ; // eax is now the bottom pixel
-
-	pop edx ; // restore the top pixel
-
-	; // Write foreground ANSI prefix (ESC[38;2;RRR;GGG;BBB;m)
-	mov BYTE PTR[edi], ESCP
-	inc edi
-	mov BYTE PTR[edi], '['
-	inc edi
-	mov BYTE PTR[edi], '3'
-	inc edi
-	mov BYTE PTR[edi], '8'
-	inc edi
-	mov BYTE PTR[edi], ';'
-	inc edi
-	mov BYTE PTR[edi], '2'
-	inc edi
-	mov BYTE PTR[edi], ';'
-	inc edi
-
-	push edx ; // push edx so we can use it
-	mov edx, eax
-
-	mov al, [edx]
-	call writeByteInDecimal ; // Bottom RRR
-	mov BYTE PTR[edi], ';'
-	inc edi
-	mov al, [edx + 1]
-	call writeByteInDecimal ; // Bottom GGG
-	mov BYTE PTR[edi], ';'
-	inc edi
-	mov al, [edx + 2]
-	call writeByteInDecimal ; // Bottom BBB
-	mov BYTE PTR[edi], 'm'
-	inc edi
-
-	pop edx ; // restore edx
-
-	; // Write background ANSI prefix (ESC[48;2;RRR;GGG;BBB;m)
-	mov BYTE PTR[edi], ESCP
-	inc edi
-	mov BYTE PTR[edi], '['
-	inc edi
-	mov BYTE PTR[edi], '4'
-	inc edi
-	mov BYTE PTR[edi], '8'
-	inc edi
-	mov BYTE PTR[edi], ';'
-	inc edi
-	mov BYTE PTR[edi], '2'
-	inc edi
-	mov BYTE PTR[edi], ';'
-	inc edi
-	mov al, [edx]
-	call writeByteInDecimal; // Top RRR
-	mov BYTE PTR[edi], ';'
-	inc edi
-	mov al, [edx + 1]
-	call writeByteInDecimal; // Top GGG
-	mov BYTE PTR[edi], ';'
-	inc edi
-	mov al, [edx + 2]
-	call writeByteInDecimal; // Top BBB
-	mov BYTE PTR[edi], 'm'
-	inc edi
-
-	; // Write half block
-	mov BYTE PTR[edi], 0E2h
-	inc edi
-	mov BYTE PTR[edi], 096h
-	inc edi
-	mov BYTE PTR[edi], 084h
-	inc edi
-
-	inc ecx
-	jmp x_loop
-
-row_end:
-	; // Add newline
-	mov BYTE PTR[edi], CR
-	inc edi
-	mov BYTE PTR[edi], LF
-	inc edi
-
-	add ebx, 2 ; // y += 2
-
-	jmp y_loop
-
-
-done: 
-	; // Clear RGB formatting
-	mov BYTE PTR[edi], ESCP
-	inc edi
-	mov BYTE PTR[edi], '['
-	inc edi
-	mov BYTE PTR[edi], '0'
-	inc edi
-	mov BYTE PTR[edi], 'm'
-	inc edi
-
-	; // Call WriteConsoleA to display the frame here
-	mov ebx, edi
-	sub ebx, OFFSET outputTextBuffer
-
-	INVOKE WriteConsoleA,
-		hConsoleOutput,
-		OFFSET outputTextBuffer,
-		ebx, ; // msgLen
-		OFFSET bytesWritten,
-		0
-
+	mov eax, pBuffer
 	ret
-
 displayBuffer ENDP
 
 ; // ----------------------------------
+; // calculateAspectRatio
+; // Calculates the offset that the game window should be drawn at
+; // ----------------------------------
+calculateAspectRatio PROC
+	
+	ret
+calculateAspectRatio ENDP
+
+; // ----------------------------------
 ; // initializeRenderer
-; // Initializes the console for rendering by switching to UTF-8 format and 
-; // enabling virtual terminal processing for full RGB support.
-; // 
+; // Initializes the window for rendering by getting the screen resolution 
 ; // ----------------------------------
 initializeRenderer PROC PUBLIC USES eax
-	; // Force output to be UTF-8
-	INVOKE SetConsoleOutputCP, 65001
-
-	; // Enable virutal terminal processing (Required for RGB functionality)
-	INVOKE GetStdHandle, STD_OUTPUT_HANDLE
-	mov hConsoleOutput, eax
-
-	; // Get the current terminal mode and OR it with ENABLE_VIRTUAL_TERMINAL_PROCESSING
-	INVOKE GetConsoleMode, hConsoleOutput, OFFSET ConsoleMode
-	or ConsoleMode, ENABLE_VIRTUAL_TERMINAL_PROCESSING
-	INVOKE SetConsoleMode, hConsoleOutput, ConsoleMode
-
-	; // Disable the blinking cursor
-	INVOKE GetConsoleCursorInfo, hConsoleOutput, OFFSET consoleCursorInfo
-	mov consoleCursorInfo.bVisible, 0
-	INVOKE SetConsoleCursorInfo, hConsoleOutput, OFFSET consoleCursorInfo
+	INVOKE calculateAspectRatio
 
 	ret
 initializeRenderer ENDP
