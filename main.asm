@@ -56,6 +56,15 @@ WinMain PROC PUBLIC
 	mov wc.lpfnWndProc, OFFSET WndProc
 	mov wc.cbClsExtra, 0
 	mov wc.cbWndExtra, 0
+
+	mov eax, hInstance
+    mov wc.hInstance, eax
+
+	mov wc.hbrBackground, COLOR_WINDOW + 1
+    mov wc.lpszMenuName, 0
+    mov wc.lpszClassName, OFFSET ClassName
+    mov wc.hIcon, 0
+    mov wc.hIconSm, 0
 	
 	INVOKE RegisterClassEx, ADDR wc
 
