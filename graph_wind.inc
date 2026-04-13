@@ -104,6 +104,13 @@ TranslateMessage PROTO, lpMsg:LPMSG
 DispatchMessageA PROTO, lpMsg:LPMSG
 DispatchMessage TEXTEQU <DispatchMessageA>
 
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-defwindowproca
+DefWindowProcA PROTO hWnd:HWND, Msg:UINT, wParam:WPARAM, lParam:LPARAM
+DefWindowProc TEXTEQU <DefWindowProcA>
+
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
+PostQuitMessage PROTO nExitCode:DWORD
+
 ; // ********************************
 ; // Constants
 ; // ********************************
