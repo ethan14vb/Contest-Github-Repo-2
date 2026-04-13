@@ -104,6 +104,7 @@ loop_start:
 	INVOKE Sleep, 16 ; // Sleep for 1/60 seconds
 	jmp loop_start
 
+loop_exit:
 	INVOKE free_scene
 
 	INVOKE ExitProcess, 0

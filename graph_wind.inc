@@ -20,6 +20,7 @@ HICON		TYPEDEF HANDLE
 HCURSOR		TYPEDEF HANDLE
 HBRUSH		TYPEDEF HANDLE
 LPCSTR		TYPEDEF PTR BYTE
+LPMSG		TYPEDEF PTR MSG
 HWND		TYPEDEF HANDLE
 WPARAM		TYPEDEF DWORD
 LPARAM		TYPEDEF DWORD
@@ -88,6 +89,10 @@ CreateWindowEx TEXTEQU <CreateWindowExA>
 	
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
 GetSystemMetrics PROTO nIndex:DWORD
+
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagea
+PeakMessageA PROTO, lpMsg:LPMSG, hWnd:HWND, wMsgFilterMin:UINT, wMsgFilterMax:UINT, wRemoveMsg:UINT
+PeakMessage TEXTEQU <PeakMessageA>
 
 ; // ********************************
 ; // Constants
