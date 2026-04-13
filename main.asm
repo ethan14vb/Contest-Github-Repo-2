@@ -71,6 +71,14 @@ WinMain PROC PUBLIC
 	
 	INVOKE RegisterClassEx, ADDR wc
 
+	INVOKE GetSystemMetrics, SM_CXSCREEN
+    mov ecx, eax
+    INVOKE GetSystemMetrics, SM_CYSCREEN
+    mov edx, eax
+		
+	INVOKE CreateWindowEx, 0, ADDR ClassName, ADDR WindowName, WS_POPUP OR WS_VISIBLE, 0, 0, ecx, edx, 0, 0, hInstance, 0
+    mov hWnd, eax
+
 	; // Scene initialization
 	INVOKE new_scene, 100
 	mov pScene, eax

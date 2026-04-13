@@ -71,6 +71,13 @@ RegisterClassEx TEXTEQU <RegisterClassExA>
 LoadCursorA PROTO, hInstance:HINSTANCE, lpCursorName:LPCSTR
 LoadCursor TEXTEQU <LoadCursorA>
 
+CreateWindowExA PROTO, exWinStyle:DWORD,className:PTR BYTE,winName:PTR BYTE,winStyle:DWORD,X:DWORD,Y:DWORD,
+	rWidth:DWORD,rHeight:DWORD,hWndParent:DWORD,hMenu:DWORD,hInstance:DWORD,lpParam:DWORD
+CreateWindowEx TEXTEQU <CreateWindowExA>
+	
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsystemmetrics
+GetSystemMetrics PROTO nIndex:DWORD
+
 ; // ********************************
 ; // Constants
 ; // ********************************
@@ -79,5 +86,12 @@ COLOR_BACKGROUND    = 2				; 2=blue F=gray
 IDI_APPLICATION     = 32512			; application icon
 IDC_ARROW           = 07f00h		; mouse cursor--arrow
 CW_USEDEFAULT       = 80000000h		; default window size & position
+
+SM_CXSCREEN			= 0
+SM_CYSCREEN			= 1
+
+; Window Style Constants
+WS_POPUP			= 80000000h
+WS_VISIBLE			= 10000000h
 
 ENDIF
