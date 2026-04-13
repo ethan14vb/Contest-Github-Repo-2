@@ -20,10 +20,28 @@ HICON		TYPEDEF HANDLE
 HCURSOR		TYPEDEF HANDLE
 HBRUSH		TYPEDEF HANDLE
 LPCSTR		TYPEDEF PTR BYTE
+HWND		TYPEDEF HANDLE
+WPARAM		TYPEDEF DWORD
+LPARAM		TYPEDEF DWORD
 
 ; // ********************************
 ; // Structs
 ; // ********************************
+POINT STRUCT
+  X   DWORD ?
+  Y   DWORD ?
+POINT ENDS
+
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-msg
+MSG STRUCT
+	hwnd		HWND	?
+	message		UINT	?
+	wParam		WPARAM	?
+	lparam		LPARAM	?
+	time		DWORD	?
+	pt			POINT	<>
+MSG ENDS
+
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa
 WNDCLASSEXA STRUCT
 	cbSize			UINT		?

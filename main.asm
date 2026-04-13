@@ -26,6 +26,7 @@ deltaTime REAL4 0.016667
 hInstance HINSTANCE		?
 hWnd      HANDLE		?
 wc        WNDCLASSEX	<>
+msg       MSG           <>
 
 .code
 WndProc PROC PUBLIC, hWin : DWORD, uMsg : DWORD, wParam : DWORD, lParam : DWORD
