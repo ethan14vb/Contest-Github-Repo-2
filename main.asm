@@ -98,6 +98,20 @@ WinMain PROC PUBLIC
 	INVOKE populate_rectangle_test_scene, pScene
 
 loop_start:
+	; // First, read the message queue and dispatch messages
+read_msgs:
+	INVOKE PeekMessage, ADDR msg, 0, 0, 0, PM_REMOVE
+	test eax, eax
+	jz update_scene ; // If PeakMessage returns 0, then there are no messages remaining in the queue
+
+	test msg.message, WM_QUIT
+	je loop_exit
+
+	INVOKE TranslateMessage, ADDR msg
+	INVOKE DispatchMessage, ADDR msg
+	jmp read_msgs
+
+update_scene:
 	mov ecx, pScene
 	INVOKE scene_update, deltaTime
 

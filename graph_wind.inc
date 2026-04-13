@@ -94,14 +94,15 @@ CreateWindowEx TEXTEQU <CreateWindowExA>
 GetSystemMetrics PROTO nIndex:DWORD
 
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagea
-PeakMessageA PROTO, lpMsg:LPMSG, hWnd:HWND, wMsgFilterMin:UINT, wMsgFilterMax:UINT, wRemoveMsg:UINT
-PeakMessage TEXTEQU <PeakMessageA>
+PeekMessageA PROTO, lpMsg:LPMSG, hWnd:HWND, wMsgFilterMin:UINT, wMsgFilterMax:UINT, wRemoveMsg:UINT
+PeekMessage TEXTEQU <PeekMessageA>
 
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-translatemessage
 TranslateMessage PROTO, lpMsg:LPMSG
 
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-dispatchmessage
-DispatchMessage PROTO, lpMsg:LPMSG
+DispatchMessageA PROTO, lpMsg:LPMSG
+DispatchMessage TEXTEQU <DispatchMessageA>
 
 ; // ********************************
 ; // Constants
@@ -120,5 +121,7 @@ SM_CYSCREEN			= 1
 ; Window Style Constants
 WS_POPUP			= 80000000h
 WS_VISIBLE			= 10000000h
+
+WM_QUIT				= 12h
 
 ENDIF
