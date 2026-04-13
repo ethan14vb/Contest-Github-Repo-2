@@ -111,7 +111,7 @@ DefWindowProc TEXTEQU <DefWindowProcA>
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postquitmessage
 PostQuitMessage PROTO nExitCode:DWORD
 
-; // learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getstockobject
+; // from learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getstockobject
 GetStockObject PROTO i:DWORD
 
 ; // ********************************

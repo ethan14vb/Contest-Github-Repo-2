@@ -57,7 +57,7 @@ LF = 10 ; // Line feed
 ESCP = 1Bh ; // ESC character
 
 ; // Renderer buffers
-screenBuffer Pixel SCREEN_WIDTH * SCREEN_HEIGHT DUP(<0, 0, 0, 255>)
+screenBuffer Pixel GAME_WIDTH * GAME_HEIGHT DUP(<0, 0, 0, 255>)
 outputTextBuffer DB 100000 DUP(0); // Used for the displayBuffer PROC
 
 .code
@@ -115,7 +115,7 @@ writeByteInDecimal ENDP
 ; // Intended to be used for frame by frame animation. 
 ; // 
 ; // Parameters: 
-; //	pBuffer DWORD - pointer to the new frame buffer to render. MUST BE SCREEN_WIDTH * SCREEN_HEIGHT!!!
+; //	pBuffer DWORD - pointer to the new frame buffer to render. MUST BE GAME_WIDTH * GAME_HEIGHT!!!
 ; //
 ; // ----------------------------------
 displayBuffer PROC PUBLIC USES esi edi ecx ebx, pBuffer:DWORD
@@ -126,18 +126,18 @@ displayBuffer PROC PUBLIC USES esi edi ecx ebx, pBuffer:DWORD
 	xor ebx, ebx ; // y_index = 0
 
 y_loop:
-	cmp ebx, SCREEN_HEIGHT
+	cmp ebx, GAME_HEIGHT
 	jge done
 
 	xor ecx, ecx ; // x_index = 0
 x_loop:
-	cmp ecx, SCREEN_WIDTH
+	cmp ecx, GAME_WIDTH
 	jge row_end
 
 	; // Get top pixel
 	; // ((y_index * SCREENWIDTH) + x_index) * 2
 	mov eax, ebx
-	imul eax, SCREEN_WIDTH
+	imul eax, GAME_WIDTH
 	add eax, ecx 
 	shl eax, 2
 	mov edx, pBuffer
@@ -149,7 +149,7 @@ x_loop:
 	; // (((y_index + 1) * SCREENWIDTH) + x_index) * 2
 	mov eax, ebx
 	inc eax 
-	imul eax, SCREEN_WIDTH
+	imul eax, GAME_WIDTH
 	add eax, ecx
 	shl eax, 2
 	mov edx, pBuffer
@@ -432,11 +432,11 @@ drawRect PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pRect:DWORD, pCame
 	mov eax, 0
 
 	; // check that right edge isn't past the right of the screen
-	; //	if it is, clamp it to SCREEN_WIDTH
+	; //	if it is, clamp it to GAME_WIDTH
 check_x_end:
-	cmp ecx, SCREEN_WIDTH
+	cmp ecx, GAME_WIDTH
 	jle set_x_bounds
-	mov ecx, SCREEN_WIDTH
+	mov ecx, GAME_WIDTH
 
 	; // Check if the left is offscreen
 	; //	if it is, don't draw the Rect
@@ -460,11 +460,11 @@ set_x_bounds:
 	mov esi, 0
 
 	; // check that bottom edge isn't past the bottom of the screen
-	; //	if it is, clamp it to SCREEN_HEIGHT
+	; //	if it is, clamp it to GAME_HEIGHT
 check_y_end:
-	cmp edx, SCREEN_HEIGHT
+	cmp edx, GAME_HEIGHT
 	jle set_y_bounds
-	mov edx, SCREEN_HEIGHT
+	mov edx, GAME_HEIGHT
 
 	; // Check if the top is offscreen
 	; //	if it is, don't draw the Rect
@@ -498,7 +498,7 @@ yloop_rect:
 	cmp esi, edx
 	jge drawRect_done
 	mov eax, esi
-	imul eax, SCREEN_WIDTH
+	imul eax, GAME_WIDTH
 	add eax, sx
 	shl eax, 2
 	add eax, pBuffer
@@ -571,7 +571,7 @@ yloop_sprite:
 	cmp esi, edx
 	jge drawSprite_done
 	mov eax, esi
-	imul eax, SCREEN_WIDTH
+	imul eax, GAME_WIDTH
 	add eax, sx
 	shl eax, 2
 	add eax, pBuffer
@@ -716,7 +716,7 @@ sort_done:
 	; // Fill the screen pixel buffer with solid black (r=0,g=0,b=0,a=255).
 	; // ----------------------------------------------------------------
 	mov pBuffer, OFFSET screenBuffer
-	mov ecx, SCREEN_WIDTH * SCREEN_HEIGHT
+	mov ecx, GAME_WIDTH * GAME_HEIGHT
 	mov edi, pBuffer
 	mov eax, 0FF000000h
 	rep stosd
