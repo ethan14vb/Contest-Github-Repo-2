@@ -68,4 +68,13 @@ GetModuleHandle TEXTEQU <GetModuleHandleA>
 RegisterClassExA PROTO, pWndClass :PTR WNDCLASSEX
 RegisterClassEx TEXTEQU <RegisterClassExA>
 
+; // ********************************
+; // Constants
+; // ********************************
+COLOR_WINDOW        = 5				; std window color
+COLOR_BACKGROUND    = 2				; 2=blue F=gray
+IDI_APPLICATION     = 32512			; application icon
+IDC_ARROW           = 07f00h		; mouse cursor--arrow
+CW_USEDEFAULT       = 80000000h		; default window size & position
+
 ENDIF

@@ -23,6 +23,9 @@ Sleep		PROTO : DWORD ; // This function was added because it is the Win32 method
 deltaTime REAL4 0.016667
 
 ; // Window data
+ClassName   BYTE "GameEngineClass", 0
+WindowName  BYTE "Demo Game", 0
+
 hInstance HINSTANCE		?
 hWnd      HANDLE		?
 wc        WNDCLASSEX	<>
@@ -48,7 +51,12 @@ WinMain PROC PUBLIC
 	INVOKE GetModuleHandle, 0
     mov hInstance, eax
 
+	mov wc.cbSize, SIZEOF WNDCLASSEX
+	mov wc.style, 0
 	mov wc.lpfnWndProc, OFFSET WndProc
+	mov wc.cbClsExtra, 0
+	mov wc.cbWndExtra, 0
+	
 	INVOKE RegisterClassEx, ADDR wc
 
 	; // Scene initialization
