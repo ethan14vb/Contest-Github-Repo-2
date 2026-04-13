@@ -9,6 +9,10 @@ GRAPH_WIN_INC EQU 1
 
 INCLUDE heap_functions.inc
 
+; // ********************************
+; // Types
+; // ********************************
+
 UINT		TYPEDEF DWORD
 WNDPROC		TYPEDEF DWORD
 HINSTANCE	TYPEDEF HANDLE
@@ -17,6 +21,15 @@ HCURSOR		TYPEDEF HANDLE
 HBRUSH		TYPEDEF HANDLE
 LPCSTR		TYPEDEF PTR BYTE
 
+; // ********************************
+; // Protos
+; // ********************************
+GetModuleHandleA PROTO, pString:PTR BYTE
+GetModuleHandle TEXTEQU <GetModuleHandleA>
+
+; // ********************************
+; // Structs
+; // ********************************
 ; // from learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa
 WNDCLASSEXA STRUCT
 	cbSize			UINT		?

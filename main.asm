@@ -23,7 +23,7 @@ Sleep		PROTO : DWORD ; // This function was added because it is the Win32 method
 deltaTime REAL4 0.016667
 
 .code
-main PROC PUBLIC
+WinMain PROC PUBLIC
 	local pScene
 
 	INVOKE Randomize
@@ -45,6 +45,6 @@ loop_start:
 
 	INVOKE ExitProcess, 0
 	ret
-main ENDP
+WinMain ENDP
 
-END main
+END WinMain
