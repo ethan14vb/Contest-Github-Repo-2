@@ -142,6 +142,21 @@ calculateAspectRatio PROC
 	mov SCREEN_WIDTH, eax
 	INVOKE GetSystemMetrics, SM_CYSCREEN
 	mov SCREEN_HEIGHT, eax
+
+	; // Calculate SCREEN_WIDTH * GAME_HEIGHT
+	; // Calculate SCREEN_HEIGHT * GAME_WIDTH
+
+	; // If the screen is too tall
+	; //	destW = 0
+	; //	destH = (ScreenWidth * GameHeight) / GameWidth
+
+	; // If the screen is too wide
+	; //	destW = (ScreenHeight * GameWidth) / GameHeight
+	; //	destH = 0
+
+	; // destX = (ScreenWidth - destW) / 2
+	; // destY = (ScreenHeight - destH) / 2
+	
 	ret
 calculateAspectRatio ENDP
 
