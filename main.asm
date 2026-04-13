@@ -7,7 +7,6 @@
 ; // ==================================
 
 INCLUDE default_header.inc
-INCLUDE heap_functions.inc
 INCLUDE rectangle_test_scene.inc
 INCLUDE scene.inc
 INCLUDE graph_wind.inc
@@ -20,15 +19,27 @@ ExitProcess PROTO : DWORD
 Sleep		PROTO : DWORD ; // This function was added because it is the Win32 method of waiting for a specified number of miliseconds
 
 .data
+; // Engine data
 deltaTime REAL4 0.016667
+
+; // Window data
+hInstance HINSTANCE		?
+hWnd      HANDLE		?
+wc        WNDCLASSEX	<>
 
 .code
 WinMain PROC PUBLIC
 	local pScene
 
+	; // Engine initialization
 	INVOKE Randomize
 	INVOKE initialize_heap
 
+	; // Window initialization
+	INVOKE GetModuleHandle, 0
+    mov hInstance, eax
+
+	; // Scene initialization
 	INVOKE new_scene, 100
 	mov pScene, eax
 	
