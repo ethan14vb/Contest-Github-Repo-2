@@ -144,13 +144,27 @@ calculateAspectRatio PROC
 	mov SCREEN_HEIGHT, eax
 
 	; // Calculate SCREEN_WIDTH * GAME_HEIGHT
-	; // Calculate SCREEN_HEIGHT * GAME_WIDTH
+	mov eax, SCREEN_WIDTH
+	mov ebx, GAME_HEIGHT
+	mul ebx
+	mov esi, eax
 
-	; // If the screen is too tall
+	; // Calculate SCREEN_HEIGHT * GAME_WIDTH
+	mov eax, SCREEN_HEIGHT
+	mov ebx, GAME_WIDTH
+	mul ebx
+
+	; // Determine if the screen should be displayed with letterboxing or pillarboxing.
+	; // Letterboxing is when there are black bars on the top and bottom of the screen,
+	; // and pillarboxing is when there are black bars on the right and left.
+	cmp esi, eax
+	ja pillarboxing
+
+letterboxing:
 	; //	destW = 0
 	; //	destH = (ScreenWidth * GameHeight) / GameWidth
 
-	; // If the screen is too wide
+pillarboxing:
 	; //	destW = (ScreenHeight * GameWidth) / GameHeight
 	; //	destH = 0
 
