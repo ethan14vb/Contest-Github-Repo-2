@@ -38,6 +38,11 @@ GetStdHandle       PROTO STDCALL : DWORD
 WriteConsoleA      PROTO STDCALL : DWORD, : DWORD, : DWORD, : DWORD, : DWORD
 SetConsoleCursorPosition PROTO STDCALL : DWORD, : DWORD
 
+; // Used for getting the screen resolution
+SM_CXSCREEN = 0
+SM_CYSCREEN = 1
+GetSystemMetrics PROTO nIndex : DWORD
+
 .data
 rendererInitialized DWORD 0; // True / False whether the renderer has been initialized where 0 = False
 
@@ -57,8 +62,12 @@ LF = 10 ; // Line feed
 ESCP = 1Bh ; // ESC character
 
 ; // Renderer buffers
+destX DWORD ?
+destY DWORD ?
+destW DWORD ?
+destH DWORD ?
+
 screenBuffer Pixel GAME_WIDTH * GAME_HEIGHT DUP(<0, 0, 0, 255>)
-outputTextBuffer DB 100000 DUP(0); // Used for the displayBuffer PROC
 
 .code
 ; // ----------------------------------
@@ -128,7 +137,11 @@ displayBuffer ENDP
 ; // Calculates the offset that the game window should be drawn at
 ; // ----------------------------------
 calculateAspectRatio PROC
-	
+	local SCREEN_WIDTH : DWORD, SCREEN_HEIGHT : DWORD
+	INVOKE GetSystemMetrics, SM_CXSCREEN
+	mov SCREEN_WIDTH, eax
+	INVOKE GetSystemMetrics, SM_CYSCREEN
+	mov SCREEN_HEIGHT, eax
 	ret
 calculateAspectRatio ENDP
 
