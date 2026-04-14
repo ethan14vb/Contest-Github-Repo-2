@@ -25,6 +25,7 @@ LPMSG		TYPEDEF PTR MSG
 LPVOID		TYPEDEF PTR VOID
 HWND		TYPEDEF HANDLE
 HMENU		TYPEDEF HANDLE
+HDC			TYPEDEF HANDLE
 WPARAM		TYPEDEF DWORD
 LPARAM		TYPEDEF DWORD
 
@@ -113,6 +114,23 @@ PostQuitMessage PROTO nExitCode:DWORD
 
 ; // from learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getstockobject
 GetStockObject PROTO i:DWORD
+
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdc
+GetDC PROTO hWnd:HWND
+
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasedc
+ReleaseDC PROTO hWnd:HWND, hDC:HDC
+
+; // from learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-stretchdibits
+StretchDIBits PROTO hdc:HDC, 
+	xDest:DWORD,		yDest:DWORD, 
+	DestWidth:DWORD,	DestHeight:DWORD, 
+	xSrc:DWORD,			ySrc:DWORD, 
+	SrcWidth:DWORD,		SrcHeight:DWORD, 
+	lpBits:DWORD, 
+	lpbmi:DWORD, 
+	iUsage:DWORD, 
+	rop:DWORD
 
 ; // ********************************
 ; // Constants
