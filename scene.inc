@@ -40,6 +40,6 @@ free_scene	PROTO
 get_first_game_object_which_is_a	PROTO gameObjectType: ENUM_GAME_OBJECT_ID
 instantiate_game_object				PROTO pGameObject	: DWORD
 queue_free_game_object				PROTO pGameObject	: DWORD
-scene_update						PROTO deltaTime		: REAL4
+scene_update						PROTO deltaTime		: REAL4,				hWnd : DWORD
 
 ENDIF

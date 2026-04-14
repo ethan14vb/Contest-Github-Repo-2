@@ -130,7 +130,13 @@ writeByteInDecimal ENDP
 ; //	pBuffer DWORD - pointer to the new frame buffer to render. MUST BE GAME_WIDTH * GAME_HEIGHT!!!
 ; //
 ; // ----------------------------------
-displayBuffer PROC PUBLIC USES esi edi ecx ebx, pBuffer:DWORD
+displayBuffer PROC PUBLIC USES esi edi ecx ebx, pBuffer:DWORD, hWnd:HWND
+	LOCAL hdc:DWORD
+	INVOKE GetDC, hWnd
+	mov hdc, eax
+
+	INVOKE ReleaseDC, hWnd, hdc
+
 	mov eax, pBuffer
 	ret
 displayBuffer ENDP
@@ -526,7 +532,7 @@ drawSprite ENDP
 ; //	numCommands     DWORD - number of entries in the array.
 ; //	pCamera         DWORD - pointer to the active Camera struct.
 ; // ----------------------------------
-renderCommands PROC PUBLIC USES esi ecx edi ebx, pRenderCommands:DWORD, numCommands:DWORD, pCamera:DWORD
+renderCommands PROC PUBLIC USES esi ecx edi ebx, pRenderCommands:DWORD, numCommands:DWORD, pCamera:DWORD, hWnd:DWORD
 	local pBuffer:DWORD     ; // pointer to the screen pixel buffer
 	local key_ptr:DWORD     ; // the RenderCommand pointer being placed during sort
 	local key_layer:DWORD   ; // the layer value of key_ptr
@@ -671,7 +677,7 @@ render_done:
 		mov rendererInitialized, 0FFFFFFFFh
 	.ENDIF
 
-	INVOKE displayBuffer, pBuffer
+	INVOKE displayBuffer, pBuffer, hWnd
 	ret
 renderCommands ENDP
 

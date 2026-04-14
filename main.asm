@@ -120,7 +120,7 @@ read_msgs:
 
 update_scene:
 	mov ecx, pScene
-	INVOKE scene_update, deltaTime
+	INVOKE scene_update, deltaTime, hWnd
 
 	INVOKE Sleep, 16 ; // Sleep for 1/60 seconds
 	jmp loop_start

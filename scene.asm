@@ -326,7 +326,7 @@ scene_free_game_objects ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-scene_render_frame PROC PRIVATE USES eax ebx edx esi edi
+scene_render_frame PROC PRIVATE USES eax ebx edx esi edi, hWnd:DWORD
 	local pThis
 	mov pThis, ecx
 
@@ -450,7 +450,7 @@ scene_render_frame PROC PRIVATE USES eax ebx edx esi edi
 	mov edx, 0 ; // int i = 0
 
 	; // Pass render list to renderer
-	INVOKE renderCommands, eax, ebx, esi
+	INVOKE renderCommands, eax, ebx, esi, hWnd
 	ret
 scene_render_frame ENDP
 
@@ -461,7 +461,7 @@ scene_render_frame ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-scene_update PROC PUBLIC USES eax ebx ecx edx esi edi, deltaTime: REAL4
+scene_update PROC PUBLIC USES eax ebx ecx edx esi edi, deltaTime: REAL4, hWnd: DWORD
 	; // Take Input
 	INVOKE updateInput
 
@@ -479,7 +479,7 @@ scene_update PROC PUBLIC USES eax ebx ecx edx esi edi, deltaTime: REAL4
 	INVOKE scene_free_game_objects
 
 	; // Render the scene
-	INVOKE scene_render_frame
+	INVOKE scene_render_frame, hWnd
 	
 	ret
 scene_update ENDP
