@@ -135,6 +135,17 @@ displayBuffer PROC PUBLIC USES esi edi ecx ebx, pBuffer:DWORD, hWnd:HWND
 	INVOKE GetDC, hWnd
 	mov hdc, eax
 
+	INVOKE StretchDIBits,
+		hdc,
+		destX, destY,
+		destW, destH,
+		0, 0,
+		GAME_WIDTH, GAME_HEIGHT,
+		pBuffer,
+		ADDR bmiHeader,
+		0,
+		SRCCOPY
+	
 	INVOKE ReleaseDC, hWnd, hdc
 
 	mov eax, pBuffer
