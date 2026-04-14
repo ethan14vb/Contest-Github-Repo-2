@@ -11,6 +11,7 @@ INCLUDE engine_types.inc
 INCLUDE renderer.inc
 INCLUDE camera.inc
 INCLUDE render_command.inc
+INCLUDE graph_wind.inc
 
 ; // ********************************************
 ; // Windows function prototypes
@@ -68,6 +69,8 @@ destW DWORD ?
 destH DWORD ?
 
 screenBuffer Pixel GAME_WIDTH * GAME_HEIGHT DUP(<0, 0, 0, 255>)
+
+bmiHeader BITMAPINFOHEADER <40, GAME_WIDTH, -GAME_HEIGHT, 1, 32, 0, 0, 0, 0, 0, 0>
 
 .code
 ; // ----------------------------------

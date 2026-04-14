@@ -64,6 +64,21 @@ WNDCLASSEXA STRUCT
 WNDCLASSEXA ENDS
 WNDCLASSEX TEXTEQU <WNDCLASSEXA>
 
+; // from learn.microsoft.com/en-us/previous-versions/dd183376(v=vs.85)
+BITMAPINFOHEADER STRUCT
+	biSize DWORD ?
+	biWidth SDWORD ?
+	biHeight SDWORD ?
+	biPlanes WORD ?
+	biBitCount WORD ?
+	biCompression DWORD ?
+	biSizeImage DWORD ?
+	biXPelsPerMeter SDWORD ?
+	biYPelsPerMeter SDWORD ?
+	biClrUsed DWORD ?
+	biClrImportant DWORD ?
+BITMAPINFOHEADER ENDS
+
 ; // ********************************
 ; // Protos
 ; // ********************************
