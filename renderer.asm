@@ -175,7 +175,7 @@ pillarboxing:
 	mov ecx, SCREEN_HEIGHT
 	mov destH, ecx
 	; //	destW = (ScreenHeight * GameWidth) / GameHeight
-	mov eax, edx
+	mov eax, SCREEN_HEIGHT
 	mov ebx, GAME_WIDTH
 	mul ebx
 	xor edx, edx
@@ -185,7 +185,16 @@ pillarboxing:
 
 calculateXYOffset:
 	; // destX = (ScreenWidth - destW) / 2
+	mov eax, SCREEN_WIDTH
+	sub eax, destW
+	shr eax, 1
+	mov destX, eax
+
 	; // destY = (ScreenHeight - destH) / 2
+	mov eax, SCREEN_HEIGHT
+	sub eax, destH
+	shr eax, 1
+	mov destY, eax
 	
 	ret
 calculateAspectRatio ENDP
