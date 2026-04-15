@@ -6,6 +6,7 @@
 ; // ==================================
 INCLUDE default_header.inc
 INCLUDE heap_functions.inc
+INCLUDE file_functions.inc
 
 .code
 ; // ----------------------------------
@@ -16,7 +17,9 @@ INCLUDE heap_functions.inc
 ; //	A pointer to the texture created
 ; // ----------------------------------
 load_texture PROC, pFilename:DWORD
-	mov eax, pFilename
+	; // Load the file into a temporary spot on the heap
+	INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
+
 	ret
 load_texture ENDP
 
