@@ -72,8 +72,16 @@ parse_num_loop:
 
 	; // It's a valid digit, add the multiplied value to edx
 	sub cl, '0'
+	mov eax, ecx
+	imul eax, ebx
+	add edx, eax
+
+	; // Increase the multiplier
+	imul ebx, 10
+	jmp parse_num_loop
 
 parse_EOL_number_exit:
+	mov eax, edx
 	ret
 parse_EOL_number ENDP
 
@@ -109,11 +117,14 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	lea edi, lineBuf
 
 	INVOKE read_line ; // Read the P7
+	lea edi, lineBuf
 	INVOKE read_line ; // Read the GIMP tag
+	lea edi, lineBuf
 
 	; // Get the width
 	INVOKE read_line
 	INVOKE parse_EOL_number 
+	lea edi, lineBuf
 
 	ret
 load_texture ENDP
