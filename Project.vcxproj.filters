@@ -64,6 +64,9 @@
     <None Include="heap_functions.inc">
       <Filter>Include</Filter>
     </None>
+    <None Include="texture.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
