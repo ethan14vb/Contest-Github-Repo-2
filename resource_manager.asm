@@ -56,10 +56,11 @@ read_line ENDP
 ; //	A pointer to the texture created
 ; // ----------------------------------
 load_texture PROC USES ebx ecx edx esi edi, pFilename:DWORD
-	local hFile		:DWORD
-	local fileSize	:DWORD
-	local pTempBuf	:DWORD
-	local bytesRead	:DWORD
+	local hFile			:DWORD
+	local fileSize		:DWORD
+	local pTempBuf		:DWORD
+	local bytesRead		:DWORD
+	local lineBuf[32]	:BYTE
 
 	; // Load the file into a temporary spot on the heap
 	INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
@@ -74,6 +75,11 @@ load_texture PROC USES ebx ecx edx esi edi, pFilename:DWORD
 
 	; // Next, parse the .PAM header
 	; // More info about .PAM files can be found at netpbm.sourceforge.net/doc/pam.html
+	mov esi, pTempBuf
+	lea edi, lineBuf
+	INVOKE read_line
+	INVOKE read_line
+	INVOKE read_line
 
 	ret
 load_texture ENDP
