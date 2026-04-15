@@ -17,7 +17,7 @@ LF = 10
 ; // read_line
 ; // Reads the next line in the input and fills a buffer
 ; // This function is dangerous, please make sure there will always
-; // be a guaranteed CR-LF newline after the start index pointed to
+; // be a guaranteed LF newline after the start index pointed to
 ; // by esi.
 ; //
 ; // Input:
