@@ -30,6 +30,7 @@
     <None Include="camera_mover_game_object.inc" />
     <None Include="component.inc" />
     <None Include="component_ids.inc" />
+    <None Include="file_functions.inc" />
     <None Include="game_object.inc">
       <FileType>Document</FileType>
     </None>

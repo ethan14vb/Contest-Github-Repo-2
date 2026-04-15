@@ -67,6 +67,9 @@
     <None Include="texture.inc">
       <Filter>Include\Engine</Filter>
     </None>
+    <None Include="file_functions.inc">
+      <Filter>Include</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
