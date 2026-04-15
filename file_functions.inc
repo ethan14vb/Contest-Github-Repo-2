@@ -20,6 +20,9 @@ ReadFile PROTO hFile:DWORD, lpBuffer:DWORD, nNumberOfBytesToRead:DWORD, lpNumber
 ; // from learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 CloseHandle PROTO hObject:DWORD
 
+; // from learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesize
+GetFileSize PROTO hFile:DWORD, lpFileSizeHigh:DWORD
+
 ; // ********************************
 ; // Constants
 ; // ********************************

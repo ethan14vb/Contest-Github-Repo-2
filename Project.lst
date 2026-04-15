@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 12:20:46
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 12:24:56
 resource_manager.asm					     Page 1 - 1
 
 
@@ -76,6 +76,9 @@ resource_manager.asm					     Page 1 - 1
 			      C ; // from learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 			      C CloseHandle PROTO hObject:DWORD
 			      C 
+			      C ; // from learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesize
+			      C GetFileSize PROTO hFile:DWORD, lpFileSizeHigh:DWORD
+			      C 
 			      C ; // ********************************
 			      C ; // Constants
 			      C ; // ********************************
@@ -95,39 +98,52 @@ resource_manager.asm					     Page 1 - 1
 				; //	A pointer to the texture created
 				; // ----------------------------------
  00000000			load_texture PROC, pFilename:DWORD
+					local hFile:DWORD
 					; // Load the file into a temporary spot on the heap
  00000000  55		   *	    push   ebp
  00000001  8B EC	   *	    mov    ebp, esp
+ 00000003  83 C4 FC	   *	    add    esp, 0FFFFFFFCh
 					INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
- 00000003  6A 00	   *	    push   +000000000h
- 00000005  68 00000080	   *	    push   +000000080h
- 0000000A  6A 03	   *	    push   +000000003h
- 0000000C  6A 00	   *	    push   +000000000h
- 0000000E  6A 01	   *	    push   +000000001h
- 00000010  68 80000000	   *	    push   +080000000h
- 00000015  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
- 00000018  E8 00000000 E   *	    call   CreateFileA
+ 00000006  6A 00	   *	    push   +000000000h
+ 00000008  68 00000080	   *	    push   +000000080h
+ 0000000D  6A 03	   *	    push   +000000003h
+ 0000000F  6A 00	   *	    push   +000000000h
+ 00000011  6A 01	   *	    push   +000000001h
+ 00000013  68 80000000	   *	    push   +080000000h
+ 00000018  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 0000001B  E8 00000000 E   *	    call   CreateFileA
+ 00000020  89 45 FC			mov hFile, eax
+
+					INVOKE GetFileSize, hFile, 0
+ 00000023  6A 00	   *	    push   +000000000h
+ 00000025  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
+ 00000028  E8 00000000 E   *	    call   GetFileSize
+					INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, eax
+ 0000002D  50		   *	    push   eax
+ 0000002E  6A 04	   *	    push   +000000004h
+ 00000030  FF 35 00000000 E *	    push   hHeap
+ 00000036  E8 00000000 E   *	    call   HeapAlloc
 
 					ret
- 0000001D  C9		   *	    leave  
- 0000001E  C2 0004	   *	    ret    00004h
- 00000021			load_texture ENDP
+ 0000003B  C9		   *	    leave  
+ 0000003C  C2 0004	   *	    ret    00004h
+ 0000003F			load_texture ENDP
 
 				; // ----------------------------------
 				; // unload_texture
 				; // Takes a pointer to the texture to unload and destorys it.
 				; // ----------------------------------
- 00000021			unload_texture PROC, pTexture:DWORD
- 00000021  55		   *	    push   ebp
- 00000022  8B EC	   *	    mov    ebp, esp
- 00000024  8B 45 08			mov eax, pTexture
+ 0000003F			unload_texture PROC, pTexture:DWORD
+ 0000003F  55		   *	    push   ebp
+ 00000040  8B EC	   *	    mov    ebp, esp
+ 00000042  8B 45 08			mov eax, pTexture
 					ret
- 00000027  C9		   *	    leave  
- 00000028  C2 0004	   *	    ret    00004h
- 0000002B			unload_texture ENDP
+ 00000045  C9		   *	    leave  
+ 00000046  C2 0004	   *	    ret    00004h
+ 00000049			unload_texture ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 12:20:46
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 12:24:56
 resource_manager.asm					     Symbols 2 - 1
 
 
@@ -147,7 +163,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000002B DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000049 DWord	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -156,6 +172,7 @@ Procedures, parameters, and locals:
 
 CloseHandle  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 CreateFileA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetFileSize  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 GetProcessHeap . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 HeapAlloc  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -164,9 +181,10 @@ ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 VirtualAlloc . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 VirtualFree  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-load_texture . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000021 Private STDCALL
+load_texture . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000003F Private STDCALL
   pFilename  . . . . . . . . . .	DWord	 bp + 00000008
-unload_texture . . . . . . . . .	P Near	 00000021 _TEXT	Length= 0000000A Private STDCALL
+  hFile  . . . . . . . . . . . .	DWord	 bp - 00000004
+unload_texture . . . . . . . . .	P Near	 0000003F _TEXT	Length= 0000000A Private STDCALL
   pTexture . . . . . . . . . . .	DWord	 bp + 00000008
 
 

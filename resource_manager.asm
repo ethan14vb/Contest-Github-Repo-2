@@ -17,8 +17,13 @@ INCLUDE file_functions.inc
 ; //	A pointer to the texture created
 ; // ----------------------------------
 load_texture PROC, pFilename:DWORD
+	local hFile:DWORD
 	; // Load the file into a temporary spot on the heap
 	INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
+	mov hFile, eax
+
+	INVOKE GetFileSize, hFile, 0
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, eax
 
 	ret
 load_texture ENDP
