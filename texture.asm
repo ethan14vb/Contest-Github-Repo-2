@@ -25,6 +25,8 @@ init_texture PROC PUBLIC USES ecx esi, h:DWORD, w:DWORD, pPixels:DWORD
 	mov (Texture PTR [ecx]).pPixels, esi
 
 	mov eax, ecx
+
+	ret
 init_texture ENDP
 
 ; // ----------------------------------

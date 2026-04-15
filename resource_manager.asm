@@ -98,10 +98,11 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	local fileSize		:DWORD
 	local pTempBuf		:DWORD
 	local bytesRead		:DWORD
-	local lineBuf[32]	:BYTE
+	local lineBuf[256]	:BYTE
 	local texWidth		:DWORD
 	local texHeight		:DWORD
 	local pTex			:DWORD
+	local pPixelsTemp	:DWORD
 
 	; // Load the file into a temporary spot on the heap
 	INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
@@ -145,6 +146,7 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	lea edi, lineBuf
 	INVOKE read_line ; // Pass over the ENDHDR
 	lea edi, lineBuf
+	mov pPixelsTemp, esi
 
 	INVOKE new_texture, texWidth, texHeight, 0
 	mov pTex, eax
@@ -158,6 +160,17 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	INVOKE VirtualAlloc, 0, eax, MEM_COMMIT OR MEM_RESERVE, PAGE_READWRITE
 	mov ecx, pTex
 	mov (Texture PTR [ecx]).pPixels, eax ; // Store the address of the new pixel buffer into the texture header
+
+	; // Copy the pixel data into the final buffer
+	mov edi, eax
+    mov esi, pPixelsTemp
+    mov ecx, texWidth
+    imul ecx, texHeight
+    rep movsd
+
+	; // Free the temp buffer
+	INVOKE HeapFree, hHeap, 0, pTempBuf
+    mov eax, pTex
 
 	ret
 load_texture ENDP
