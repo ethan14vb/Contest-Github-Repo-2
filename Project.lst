@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 11:45:46
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 11:47:15
 texture.asm						     Page 1 - 1
 
 
@@ -88,19 +88,39 @@ texture.asm						     Page 1 - 1
  00000018			init_texture ENDP
 texture.asm(21) : warning A6001:no return from procedure
 				
- 00000018			new_texture PROC PUBLIC USES ecx
- 00000018  51		   *	    push   ecx
+ 00000018			new_texture PROC PUBLIC USES ecx, h:DWORD, w:DWORD, pPixels:DWORD
+ 00000018  55		   *	    push   ebp
+ 00000019  8B EC	   *	    mov    ebp, esp
+ 0000001B  51		   *	    push   ecx
+					INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF Texture
+ 0000001C  6A 0C	   *	    push   +00000000Ch
+ 0000001E  6A 04	   *	    push   +000000004h
+ 00000020  FF 35 00000000 E *	    push   hHeap
+ 00000026  E8 00000000 E   *	    call   HeapAlloc
+ 0000002B  8B C8			mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
+					INVOKE init_texture, h, w, pPixels
+ 0000002D  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
+ 00000030  FF 75 0C	   *	    push   dword  ptr ss:[ebp]+00000000Ch
+ 00000033  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000036  E8 FFFFFFC5	   *	    call   init_texture
+
 					ret ; // Return with the address of the memory block in HeapAlloc
- 00000019  59		   *	    pop    ecx
- 0000001A  C3		   *	    ret    00000h
- 0000001B			new_texture ENDP
+ 0000003B  59		   *	    pop    ecx
+ 0000003C  C9		   *	    leave  
+ 0000003D  C2 000C	   *	    ret    0000Ch
+ 00000040			new_texture ENDP
 				
- 0000001B			free_texture PROC PUBLIC 
- 0000001B  C3				ret
- 0000001C			free_texture ENDP
+ 00000040			free_texture PROC PUBLIC 
+					INVOKE HeapFree, hHeap, 0, ecx
+ 00000040  51		   *	    push   ecx
+ 00000041  6A 00	   *	    push   +000000000h
+ 00000043  FF 35 00000000 E *	    push   hHeap
+ 00000049  E8 00000000 E   *	    call   HeapFree
+ 0000004E  C3				ret
+ 0000004F			free_texture ENDP
 				
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 11:45:46
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 11:47:15
 texture.asm						     Symbols 2 - 1
 
 
@@ -131,7 +151,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000001C DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000004F DWord	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -142,13 +162,16 @@ GetProcessHeap . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 HeapAlloc  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 HeapReAlloc  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-free_texture . . . . . . . . . .	P Near	 0000001B _TEXT	Length= 00000001 Public STDCALL
+free_texture . . . . . . . . . .	P Near	 00000040 _TEXT	Length= 0000000F Public STDCALL
 init_texture . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000018 Public STDCALL
   h  . . . . . . . . . . . . . .	DWord	 bp + 00000008
   w  . . . . . . . . . . . . . .	DWord	 bp + 0000000C
   pPixels  . . . . . . . . . . .	DWord	 bp + 00000010
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-new_texture  . . . . . . . . . .	P Near	 00000018 _TEXT	Length= 00000003 Public STDCALL
+new_texture  . . . . . . . . . .	P Near	 00000018 _TEXT	Length= 00000028 Public STDCALL
+  h  . . . . . . . . . . . . . .	DWord	 bp + 00000008
+  w  . . . . . . . . . . . . . .	DWord	 bp + 0000000C
+  pPixels  . . . . . . . . . . .	DWord	 bp + 00000010
 
 
 Symbols:
