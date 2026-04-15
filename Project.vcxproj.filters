@@ -149,5 +149,8 @@
     <MASM Include="resource_manager.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
+    <MASM Include="texture.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
