@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 18:22:35
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 18:30:47
 resource_manager.asm					     Page 1 - 1
 
 
@@ -29,9 +29,13 @@ resource_manager.asm					     Page 1 - 1
  = 00000001		      C HEAP_FUNCTIONS_INC EQU 1
 			      C 
 			      C ; // Constants
- = 00000008		      C HEAP_ZERO_MEMORY          equ 00000008h
- = 00000004		      C HEAP_GENERATE_EXCEPTIONS  equ 00000004h
- = 00000001		      C HEAP_NO_SERIALIZE         equ 00000001h
+ = 00000008		      C HEAP_ZERO_MEMORY			equ 00000008h
+ = 00000004		      C HEAP_GENERATE_EXCEPTIONS	equ 00000004h
+ = 00000001		      C HEAP_NO_SERIALIZE			equ 00000001h
+			      C 
+ = 00001000		      C MEM_COMMIT					equ 00001000h
+ = 00002000		      C MEM_RESERVE					equ 00002000h
+ = 00000004		      C PAGE_READWRITE				equ 4
 			      C 
  = 00000000		      C NULL   EQU 0
 			      C 
@@ -309,38 +313,53 @@ resource_manager.asm					     Page 1 - 1
  000000F9  E8 FFFFFF02	   *	    call   read_line
  000000FE  8D 7D D0			lea edi, lineBuf
 
-					INVOKE new_texture, texWidth, texHeight, esi
- 00000101  56		   *	    push   esi
- 00000102  FF 75 C8	   *	    push   dword  ptr ss:[ebp]+0FFFFFFC8h
- 00000105  FF 75 CC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFCCh
- 00000108  E8 00000000 E   *	    call   new_texture
- 0000010D  89 45 C4			mov pTex, eax
+					INVOKE new_texture, texWidth, texHeight, 0
+ 00000101  6A 00	   *	    push   +000000000h
+ 00000103  FF 75 C8	   *	    push   dword  ptr ss:[ebp]+0FFFFFFC8h
+ 00000106  FF 75 CC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFCCh
+ 00000109  E8 00000000 E   *	    call   new_texture
+ 0000010E  89 45 C4			mov pTex, eax
+
+					; // Allocate the permanent home for the texture in memory
+ 00000111  8B 45 CC			mov eax, texWidth ; // Get the total size (width * height * 4)
+ 00000114  8B 5D C8		    mov ebx, texHeight
+ 00000117  F7 E3		    mul ebx
+ 00000119  C1 E0 02		    shl eax, 2
+
+					INVOKE VirtualAlloc, 0, eax, MEM_COMMIT OR MEM_RESERVE, PAGE_READWRITE
+ 0000011C  6A 04	   *	    push   +000000004h
+ 0000011E  68 00003000	   *	    push   +000003000h
+ 00000123  50		   *	    push   eax
+ 00000124  6A 00	   *	    push   +000000000h
+ 00000126  E8 00000000 E   *	    call   VirtualAlloc
+ 0000012B  8B 4D C4			mov ecx, pTex
+ 0000012E  89 41 08			mov (Texture PTR [ecx]).pPixels, eax ; // Store the address of the new pixel buffer into the texture header
 
 					ret
- 00000110  5F		   *	    pop    edi
- 00000111  5E		   *	    pop    esi
- 00000112  5A		   *	    pop    edx
- 00000113  59		   *	    pop    ecx
- 00000114  5B		   *	    pop    ebx
- 00000115  C9		   *	    leave  
- 00000116  C2 0004	   *	    ret    00004h
- 00000119			load_texture ENDP
+ 00000131  5F		   *	    pop    edi
+ 00000132  5E		   *	    pop    esi
+ 00000133  5A		   *	    pop    edx
+ 00000134  59		   *	    pop    ecx
+ 00000135  5B		   *	    pop    ebx
+ 00000136  C9		   *	    leave  
+ 00000137  C2 0004	   *	    ret    00004h
+ 0000013A			load_texture ENDP
 
 				; // ----------------------------------
 				; // unload_texture
 				; // Takes a pointer to the texture to unload and destorys it.
 				; // ----------------------------------
- 00000119unload_texture PROC PUBLIC, pTexture:DWORD
- 00000119  55		   *	    push   ebp
- 0000011A  8B EC	   *	    mov    ebp, esp
- 0000011C  8B 45 08			mov eax, pTexture
+ 0000013A			unload_texture PROC PUBLIC, pTexture:DWORD
+ 0000013A  55		   *	    push   ebp
+ 0000013B  8B EC	   *	    mov    ebp, esp
+ 0000013D  8B 45 08			mov eax, pTexture
 					ret
- 0000011F  C9		   *	    leave  
- 00000120  C2 0004	   *	    ret    00004h
- 00000123			unload_texture ENDP
+ 00000140  C9		   *	    leave  
+ 00000141  C2 0004	   *	    ret    00004h
+ 00000144			unload_texture ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 18:22:35
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 18:30:47
 resource_manager.asm					     Symbols 2 - 1
 
 
@@ -371,7 +390,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000123 DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000144 DWord	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -391,7 +410,7 @@ VirtualFree  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 free_texture . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_texture . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-load_texture . . . . . . . . . .	P Near	 00000047 _TEXT	Length= 000000D2 Public STDCALL
+load_texture . . . . . . . . . .	P Near	 00000047 _TEXT	Length= 000000F3 Public STDCALL
   pFilename  . . . . . . . . . .	DWord	 bp + 00000008
   hFile  . . . . . . . . . . . .	DWord	 bp - 00000004
   fileSize . . . . . . . . . . .	DWord	 bp - 00000008
@@ -408,7 +427,7 @@ parse_EOL_number . . . . . . . .	P Near	 00000016 _TEXT	Length= 00000031 Private
 read_line  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000016 Private STDCALL
   read_line_loop . . . . . . . .	L Near	 00000003 _TEXT	
   read_line_exit . . . . . . . .	L Near	 0000000F _TEXT	
-unload_texture . . . . . . . . .	P Near	 00000119 _TEXT	Length= 0000000A Public STDCALL
+unload_texture . . . . . . . . .	P Near	 0000013A _TEXT	Length= 0000000A Public STDCALL
   pTexture . . . . . . . . . . .	DWord	 bp + 00000008
 
 
@@ -434,8 +453,11 @@ HEAP_GENERATE_EXCEPTIONS . . . .	Number	 00000004h
 HEAP_NO_SERIALIZE  . . . . . . .	Number	 00000001h   
 HEAP_ZERO_MEMORY . . . . . . . .	Number	 00000008h   
 LF . . . . . . . . . . . . . . .	Number	 0000000Ah   
+MEM_COMMIT . . . . . . . . . . .	Number	 00001000h   
+MEM_RESERVE  . . . . . . . . . .	Number	 00002000h   
 NULL . . . . . . . . . . . . . .	Number	 00000000h   
 OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+PAGE_READWRITE . . . . . . . . .	Number	 00000004h   
 TEXTURE_INC  . . . . . . . . . .	Number	 00000001h   
 hHeap  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
 

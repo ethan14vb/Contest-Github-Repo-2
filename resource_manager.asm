@@ -146,8 +146,18 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	INVOKE read_line ; // Pass over the ENDHDR
 	lea edi, lineBuf
 
-	INVOKE new_texture, texWidth, texHeight, esi
+	INVOKE new_texture, texWidth, texHeight, 0
 	mov pTex, eax
+
+	; // Allocate the permanent home for the texture in memory
+	mov eax, texWidth ; // Get the total size (width * height * 4)
+    mov ebx, texHeight
+    mul ebx
+    shl eax, 2
+
+	INVOKE VirtualAlloc, 0, eax, MEM_COMMIT OR MEM_RESERVE, PAGE_READWRITE
+	mov ecx, pTex
+	mov (Texture PTR [ecx]).pPixels, eax ; // Store the address of the new pixel buffer into the texture header
 
 	ret
 load_texture ENDP
