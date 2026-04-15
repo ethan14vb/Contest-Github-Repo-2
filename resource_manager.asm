@@ -10,13 +10,27 @@ INCLUDE file_functions.inc
 
 .code
 ; // ----------------------------------
+; // read_line
+; // Reads the next line in the input and fills a buffer
+; //
+; // Input:
+; //	esi - Pointer to the start of the string
+; //	edi - Pointer to the start of the buffer
+; // Registered changed:
+; //	esi - Points at the next line
+; // ----------------------------------
+read_line PROC USES ebx ecx edx edi
+	ret
+read_line ENDP
+
+; // ----------------------------------
 ; // load_texture
 ; // Takes in the name of a file and then loads that file into memory.
 ; //
 ; // Returns:
 ; //	A pointer to the texture created
 ; // ----------------------------------
-load_texture PROC, pFilename:DWORD
+load_texture PROC USES ebx ecx edx esi edi, pFilename:DWORD
 	local hFile		:DWORD
 	local fileSize	:DWORD
 	local pTempBuf	:DWORD
@@ -34,6 +48,7 @@ load_texture PROC, pFilename:DWORD
     INVOKE CloseHandle, hFile
 
 	; // Next, parse the .PAM header
+	; // More info about .PAM files can be found at netpbm.sourceforge.net/doc/pam.html
 
 	ret
 load_texture ENDP
