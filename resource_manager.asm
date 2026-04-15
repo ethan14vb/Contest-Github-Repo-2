@@ -52,11 +52,28 @@ read_line ENDP
 ; // Returns the number at the end of a string.
 ; //
 ; // Input:
-; //	esi - Pointer to the null terminator of the string
+; //	edi - Pointer to the null terminator of the string
 ; // Returns:
 ; //	The number value of the string at the end of the line
 ; // ----------------------------------
-parse_EOL_number PROC USES esi
+parse_EOL_number PROC USES esi ecx ebx edx edi
+	xor edx, edx ; // edx = total
+	mov ebx, 1 ; // ebx = multiplier
+parse_num_loop:
+	; // Get the next character
+	dec edi
+	movzx ecx, BYTE PTR [edi]
+
+	; // Check if the character is a valid number
+	cmp cl, '0'
+	jl parse_EOL_number_exit
+	cmp cl, '9'
+	jg parse_EOL_number_exit
+
+	; // It's a valid digit, add the multiplied value to edx
+	sub cl, '0'
+
+parse_EOL_number_exit:
 	ret
 parse_EOL_number ENDP
 
