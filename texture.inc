@@ -14,4 +14,8 @@ Texture STRUCT
 	pPixels DWORD ?		; // The pointer to the pixel data in RGBA (.PAM file format)
 Texture ENDS
 
+init_texture PROTO h:DWORD, w:DWORD, pPixels:DWORD
+new_texture PROTO h:DWORD, w:DWORD, pPixels:DWORD
+free_texture PROTO 
+
 ENDIF
