@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 18:08:52
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 18:22:35
 resource_manager.asm					     Page 1 - 1
 
 
@@ -85,6 +85,29 @@ resource_manager.asm					     Page 1 - 1
  = 80000000		      C GENERIC_READ			= 80000000h
  = 00000003		      C OPEN_EXISTING			= 3
  = 00000080		      C FILE_ATTRIBUTE_NORMAL	= 80h
+			      C 
+			      C ENDIF
+			      C 
+				INCLUDE texture.inc
+			      C ; // ==================================
+			      C ; // texture.inc
+			      C ; // ----------------------------------
+			      C ; // A texture is used to store images into
+			      C ; // memory.
+			      C ; // ==================================
+			      C 
+			      C IFNDEF TEXTURE_INC
+ = 00000001		      C TEXTURE_INC EQU 1
+			      C 
+ 0000000C		      C Texture STRUCT
+ 00000000  00000000	      C 	h DWORD ?			; // The height of the texture
+ 00000004  00000000	      C 	w DWORD ?			; // The width of the texture
+ 00000008  00000000	      C 	pPixels DWORD ?		; // The pointer to the pixel data in RGBA (.PAM file format)
+			      C Texture ENDS
+			      C 
+			      C init_texture PROTO h:DWORD, w:DWORD, pPixels:DWORD
+			      C new_texture PROTO h:DWORD, w:DWORD, pPixels:DWORD
+			      C free_texture PROTO 
 			      C 
 			      C ENDIF
 			      C 
@@ -197,11 +220,14 @@ resource_manager.asm					     Page 1 - 1
 					local pTempBuf		:DWORD
 					local bytesRead		:DWORD
 					local lineBuf[32]	:BYTE
+					local texWidth		:DWORD
+					local texHeight		:DWORD
+					local pTex			:DWORD
 
 					; // Load the file into a temporary spot on the heap
  00000047  55		   *	    push   ebp
  00000048  8B EC	   *	    mov    ebp, esp
- 0000004A  83 C4 D0	   *	    add    esp, 0FFFFFFD0h
+ 0000004A  83 C4 C4	   *	    add    esp, 0FFFFFFC4h
  0000004D  53		   *	    push   ebx
  0000004E  51		   *	    push   ecx
  0000004F  52		   *	    push   edx
@@ -247,10 +273,10 @@ resource_manager.asm					     Page 1 - 1
  000000AB  8B 75 F4			mov esi, pTempBuf
  000000AE  8D 7D D0			lea edi, lineBuf
 
-					INVOKE read_line ; // Read the P7
+					INVOKE read_line ; // Pass over the P7
  000000B1  E8 FFFFFF4A	   *	    call   read_line
  000000B6  8D 7D D0			lea edi, lineBuf
-					INVOKE read_line ; // Read the GIMP tag
+					INVOKE read_line ; // Pass over the GIMP tag
  000000B9  E8 FFFFFF42	   *	    call   read_line
  000000BE  8D 7D D0			lea edi, lineBuf
 
@@ -259,36 +285,76 @@ resource_manager.asm					     Page 1 - 1
  000000C1  E8 FFFFFF3A	   *	    call   read_line
 					INVOKE parse_EOL_number 
  000000C6  E8 FFFFFF4B	   *	    call   parse_EOL_number
- 000000CB  8D 7D D0			lea edi, lineBuf
+ 000000CB  89 45 CC			mov texWidth, eax
+ 000000CE  8D 7D D0			lea edi, lineBuf
+
+					; // Get the height
+					INVOKE read_line
+ 000000D1  E8 FFFFFF2A	   *	    call   read_line
+					INVOKE parse_EOL_number 
+ 000000D6  E8 FFFFFF3B	   *	    call   parse_EOL_number
+ 000000DB  89 45 C8			mov texHeight, eax
+ 000000DE  8D 7D D0			lea edi, lineBuf
+
+					INVOKE read_line ; // Pass over the depth
+ 000000E1  E8 FFFFFF1A	   *	    call   read_line
+ 000000E6  8D 7D D0			lea edi, lineBuf
+					INVOKE read_line ; // Pass over the MAXVAL
+ 000000E9  E8 FFFFFF12	   *	    call   read_line
+ 000000EE  8D 7D D0			lea edi, lineBuf
+					INVOKE read_line ; // Pass over the TUPLTYPE
+ 000000F1  E8 FFFFFF0A	   *	    call   read_line
+ 000000F6  8D 7D D0			lea edi, lineBuf
+					INVOKE read_line ; // Pass over the ENDHDR
+ 000000F9  E8 FFFFFF02	   *	    call   read_line
+ 000000FE  8D 7D D0			lea edi, lineBuf
+
+					INVOKE new_texture, texWidth, texHeight, esi
+ 00000101  56		   *	    push   esi
+ 00000102  FF 75 C8	   *	    push   dword  ptr ss:[ebp]+0FFFFFFC8h
+ 00000105  FF 75 CC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFCCh
+ 00000108  E8 00000000 E   *	    call   new_texture
+ 0000010D  89 45 C4			mov pTex, eax
 
 					ret
- 000000CE  5F		   *	    pop    edi
- 000000CF  5E		   *	    pop    esi
- 000000D0  5A		   *	    pop    edx
- 000000D1  59		   *	    pop    ecx
- 000000D2  5B		   *	    pop    ebx
- 000000D3  C9		   *	    leave  
- 000000D4  C2 0004	   *	    ret    00004h
- 000000D7			load_texture ENDP
+ 00000110  5F		   *	    pop    edi
+ 00000111  5E		   *	    pop    esi
+ 00000112  5A		   *	    pop    edx
+ 00000113  59		   *	    pop    ecx
+ 00000114  5B		   *	    pop    ebx
+ 00000115  C9		   *	    leave  
+ 00000116  C2 0004	   *	    ret    00004h
+ 00000119			load_texture ENDP
 
 				; // ----------------------------------
 				; // unload_texture
 				; // Takes a pointer to the texture to unload and destorys it.
 				; // ----------------------------------
- 000000D7			unload_texture PROC PUBLIC, pTexture:DWORD
- 000000D7  55		   *	    push   ebp
- 000000D8  8B EC	   *	    mov    ebp, esp
- 000000DA  8B 45 08			mov eax, pTexture
+ 00000119unload_texture PROC PUBLIC, pTexture:DWORD
+ 00000119  55		   *	    push   ebp
+ 0000011A  8B EC	   *	    mov    ebp, esp
+ 0000011C  8B 45 08			mov eax, pTexture
 					ret
- 000000DD  C9		   *	    leave  
- 000000DE  C2 0004	   *	    ret    00004h
- 000000E1			unload_texture ENDP
+ 0000011F  C9		   *	    leave  
+ 00000120  C2 0004	   *	    ret    00004h
+ 00000123			unload_texture ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 18:08:52
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 18:22:35
 resource_manager.asm					     Symbols 2 - 1
 
 
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+Texture  . . . . . . . . . . . .	 0000000C
+  h  . . . . . . . . . . . . . .	 00000000	 DWord
+  w  . . . . . . . . . . . . . .	 00000004	 DWord
+  pPixels  . . . . . . . . . . .	 00000008	 DWord
 
 
 Types:
@@ -305,7 +371,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 000000E1 DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000123 DWord	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -322,21 +388,27 @@ HeapReAlloc  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 VirtualAlloc . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 VirtualFree  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+free_texture . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+init_texture . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-load_texture . . . . . . . . . .	P Near	 00000047 _TEXT	Length= 00000090 Public STDCALL
+load_texture . . . . . . . . . .	P Near	 00000047 _TEXT	Length= 000000D2 Public STDCALL
   pFilename  . . . . . . . . . .	DWord	 bp + 00000008
   hFile  . . . . . . . . . . . .	DWord	 bp - 00000004
   fileSize . . . . . . . . . . .	DWord	 bp - 00000008
   pTempBuf . . . . . . . . . . .	DWord	 bp - 0000000C
   bytesRead  . . . . . . . . . .	DWord	 bp - 00000010
   lineBuf  . . . . . . . . . . .	Byte	 bp - 00000030
+  texWidth . . . . . . . . . . .	DWord	 bp - 00000034
+  texHeight  . . . . . . . . . .	DWord	 bp - 00000038
+  pTex . . . . . . . . . . . . .	DWord	 bp - 0000003C
+new_texture  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 parse_EOL_number . . . . . . . .	P Near	 00000016 _TEXT	Length= 00000031 Private STDCALL
   parse_num_loop . . . . . . . .	L Near	 00000022 _TEXT	
   parse_EOL_number_exit  . . . .	L Near	 0000003F _TEXT	
 read_line  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000016 Private STDCALL
   read_line_loop . . . . . . . .	L Near	 00000003 _TEXT	
   read_line_exit . . . . . . . .	L Near	 0000000F _TEXT	
-unload_texture . . . . . . . . .	P Near	 000000D7 _TEXT	Length= 0000000A Public STDCALL
+unload_texture . . . . . . . . .	P Near	 00000119 _TEXT	Length= 0000000A Public STDCALL
   pTexture . . . . . . . . . . .	DWord	 bp + 00000008
 
 
@@ -364,6 +436,7 @@ HEAP_ZERO_MEMORY . . . . . . . .	Number	 00000008h
 LF . . . . . . . . . . . . . . .	Number	 0000000Ah   
 NULL . . . . . . . . . . . . . .	Number	 00000000h   
 OPEN_EXISTING  . . . . . . . . .	Number	 00000003h   
+TEXTURE_INC  . . . . . . . . . .	Number	 00000001h   
 hHeap  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
 
 	   0 Warnings

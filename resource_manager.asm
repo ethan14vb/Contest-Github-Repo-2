@@ -7,6 +7,7 @@
 INCLUDE default_header.inc
 INCLUDE heap_functions.inc
 INCLUDE file_functions.inc
+INCLUDE texture.inc
 
 ; // Line feed
 LF = 10
@@ -98,6 +99,9 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	local pTempBuf		:DWORD
 	local bytesRead		:DWORD
 	local lineBuf[32]	:BYTE
+	local texWidth		:DWORD
+	local texHeight		:DWORD
+	local pTex			:DWORD
 
 	; // Load the file into a temporary spot on the heap
 	INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
@@ -116,15 +120,34 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	mov esi, pTempBuf
 	lea edi, lineBuf
 
-	INVOKE read_line ; // Read the P7
+	INVOKE read_line ; // Pass over the P7
 	lea edi, lineBuf
-	INVOKE read_line ; // Read the GIMP tag
+	INVOKE read_line ; // Pass over the GIMP tag
 	lea edi, lineBuf
 
 	; // Get the width
 	INVOKE read_line
 	INVOKE parse_EOL_number 
+	mov texWidth, eax
 	lea edi, lineBuf
+
+	; // Get the height
+	INVOKE read_line
+	INVOKE parse_EOL_number 
+	mov texHeight, eax
+	lea edi, lineBuf
+
+	INVOKE read_line ; // Pass over the depth
+	lea edi, lineBuf
+	INVOKE read_line ; // Pass over the MAXVAL
+	lea edi, lineBuf
+	INVOKE read_line ; // Pass over the TUPLTYPE
+	lea edi, lineBuf
+	INVOKE read_line ; // Pass over the ENDHDR
+	lea edi, lineBuf
+
+	INVOKE new_texture, texWidth, texHeight, esi
+	mov pTex, eax
 
 	ret
 load_texture ENDP
