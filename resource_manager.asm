@@ -17,13 +17,23 @@ INCLUDE file_functions.inc
 ; //	A pointer to the texture created
 ; // ----------------------------------
 load_texture PROC, pFilename:DWORD
-	local hFile:DWORD
+	local hFile		:DWORD
+	local fileSize	:DWORD
+	local pTempBuf	:DWORD
+	local bytesRead	:DWORD
+
 	; // Load the file into a temporary spot on the heap
 	INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
 	mov hFile, eax
 
 	INVOKE GetFileSize, hFile, 0
+	mov fileSize, eax
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, eax
+
+	INVOKE ReadFile, hFile, pTempBuf, fileSize, ADDR bytesRead, 0
+    INVOKE CloseHandle, hFile
+
+	; // Next, parse the .PAM header
 
 	ret
 load_texture ENDP
