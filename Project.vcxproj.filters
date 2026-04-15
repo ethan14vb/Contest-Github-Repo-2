@@ -143,5 +143,8 @@
     <MASM Include="music_player.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
+    <MASM Include="resource_manager.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
