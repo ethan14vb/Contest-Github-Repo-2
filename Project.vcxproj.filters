@@ -140,9 +140,6 @@
     <MASM Include="camera_mover_game_object.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
-    <MASM Include="main.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
     <MASM Include="renderable_component.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
@@ -153,6 +150,9 @@
       <Filter>Source\Engine</Filter>
     </MASM>
     <MASM Include="texture.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="resource_manager_test.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
   </ItemGroup>
