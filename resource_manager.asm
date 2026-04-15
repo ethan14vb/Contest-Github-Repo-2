@@ -5,6 +5,7 @@
 ; // assets such as textures.
 ; // ==================================
 INCLUDE default_header.inc
+INCLUDE heap_functions.inc
 
 .code
 ; // ----------------------------------

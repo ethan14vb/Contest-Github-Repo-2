@@ -25,6 +25,8 @@ GetProcessHeap	PROTO
 HeapAlloc		PROTO,	hHeap:DWORD, dwFlags:DWORD, dwBytes:DWORD
 HeapFree		PROTO,	hHeap:DWORD, dwFlags:DWORD, lpMem:DWORD
 HeapReAlloc		PROTO,	hHeap:DWORD, dwFlags:DWORD, lpMem:DWORD,	dwBytes:DWORD
+VirtualAlloc	PROTO,	lpAddress:DWORD, dwSize:DWORD, flAllocationType:DWORD, flProtect:DWORD
+VirtualFree		PROTO,  lpAddress:DWORD, dwSize:DWORD, dwFreeType:DWORD
 
 initialize_heap PROTO ; // This function is from heap_functions.asm. It gets the handle to the process heap and stores in hHeap
 
