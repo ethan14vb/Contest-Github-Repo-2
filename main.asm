@@ -80,9 +80,11 @@ WinMain PROC PUBLIC
 
 	INVOKE GetSystemMetrics, SM_CXSCREEN
     mov ecx, eax
+	push ecx
     INVOKE GetSystemMetrics, SM_CYSCREEN
     mov edx, eax
-		
+	pop ecx
+
 	INVOKE CreateWindowEx, 
 		0, 
 		ADDR ClassName, 

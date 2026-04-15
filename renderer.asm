@@ -410,11 +410,11 @@ set_y_bounds:
 	mov rh, edx
 
 	; // build pixel dword (r g b a)
-	movzx eax, (RectComponent PTR [edi]).r
+	movzx eax, (RectComponent PTR [edi]).b
 	movzx ebx, (RectComponent PTR [edi]).g
 	shl ebx, 8
 	or eax, ebx
-	movzx ebx, (RectComponent PTR [edi]).b
+	movzx ebx, (RectComponent PTR [edi]).r
 	shl ebx, 16
 	or eax, ebx
 	movzx ebx, (RectComponent PTR [edi]).a
