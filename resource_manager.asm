@@ -8,10 +8,16 @@ INCLUDE default_header.inc
 INCLUDE heap_functions.inc
 INCLUDE file_functions.inc
 
+; // Carriage return
+CR = 13
+
 .code
 ; // ----------------------------------
 ; // read_line
 ; // Reads the next line in the input and fills a buffer
+; // This function is dangerous, please make sure there will always
+; // be a guaranteed CR-LF newline after the start index pointed to
+; // by esi.
 ; //
 ; // Input:
 ; //	esi - Pointer to the start of the string
@@ -20,6 +26,25 @@ INCLUDE file_functions.inc
 ; //	esi - Points at the next line
 ; // ----------------------------------
 read_line PROC USES ebx ecx edx edi
+read_line_loop:
+	; // Get the current character
+	mov al, BYTE PTR [esi]
+	inc esi
+	
+	; // Check if we hit the CR in CRLF
+	cmp al, CR
+	je read_line_exit
+
+	; // Store the current character into the destination buffer
+	mov BYTE PTR [edi], al
+	inc edi
+	jmp read_line_loop
+
+read_line_exit:
+	; // Move past the LF and null terminate the string
+	inc esi
+	mov BYTE PTR [edi], 0
+		
 	ret
 read_line ENDP
 

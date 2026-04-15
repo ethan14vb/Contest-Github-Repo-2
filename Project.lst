@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 15:43:37
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 15:58:47
 resource_manager.asm					     Page 1 - 1
 
 
@@ -89,10 +89,16 @@ resource_manager.asm					     Page 1 - 1
 			      C ENDIF
 			      C 
 
+				; // Carriage return
+ = 0000000D			CR = 13
+
  00000000			.code
 				; // ----------------------------------
 				; // read_line
 				; // Reads the next line in the input and fills a buffer
+				; // This function is dangerous, please make sure there will always
+				; // be a guaranteed CR-LF newline after the start index pointed to
+				; // by esi.
 				; //
 				; // Input:
 				; //	esi - Pointer to the start of the string
@@ -105,13 +111,32 @@ resource_manager.asm					     Page 1 - 1
  00000001  51		   *	    push   ecx
  00000002  52		   *	    push   edx
  00000003  57		   *	    push   edi
+ 00000004			read_line_loop:
+					; // Get the current character
+ 00000004  8A 06			mov al, BYTE PTR [esi]
+ 00000006  46				inc esi
+					
+					; // Check if we hit the CR in CRLF
+ 00000007  3C 0D			cmp al, CR
+ 00000009  74 05			je read_line_exit
+
+					; // Store the current character into the destination buffer
+ 0000000B  88 07			mov BYTE PTR [edi], al
+ 0000000D  47				inc edi
+ 0000000E  EB F4			jmp read_line_loop
+
+ 00000010			read_line_exit:
+					; // Move past the LF and null terminate the string
+ 00000010  46				inc esi
+ 00000011  C6 07 00			mov BYTE PTR [edi], 0
+						
 					ret
- 00000004  5F		   *	    pop    edi
- 00000005  5A		   *	    pop    edx
- 00000006  59		   *	    pop    ecx
- 00000007  5B		   *	    pop    ebx
- 00000008  C3		   *	    ret    00000h
- 00000009			read_line ENDP
+ 00000014  5F		   *	    pop    edi
+ 00000015  5A		   *	    pop    edx
+ 00000016  59		   *	    pop    ecx
+ 00000017  5B		   *	    pop    ebx
+ 00000018  C3		   *	    ret    00000h
+ 00000019			read_line ENDP
 
 				; // ----------------------------------
 				; // load_texture
@@ -120,83 +145,83 @@ resource_manager.asm					     Page 1 - 1
 				; // Returns:
 				; //	A pointer to the texture created
 				; // ----------------------------------
- 00000009			load_texture PROC USES ebx ecx edx esi edi, pFilename:DWORD
+ 00000019			load_texture PROC USES ebx ecx edx esi edi, pFilename:DWORD
 					local hFile		:DWORD
 					local fileSize	:DWORD
 					local pTempBuf	:DWORD
 					local bytesRead	:DWORD
 
 					; // Load the file into a temporary spot on the heap
- 00000009  55		   *	    push   ebp
- 0000000A  8B EC	   *	    mov    ebp, esp
- 0000000C  83 C4 F0	   *	    add    esp, 0FFFFFFF0h
- 0000000F  53		   *	    push   ebx
- 00000010  51		   *	    push   ecx
- 00000011  52		   *	    push   edx
- 00000012  56		   *	    push   esi
- 00000013  57		   *	    push   edi
+ 00000019  55		   *	    push   ebp
+ 0000001A  8B EC	   *	    mov    ebp, esp
+ 0000001C  83 C4 F0	   *	    add    esp, 0FFFFFFF0h
+ 0000001F  53		   *	    push   ebx
+ 00000020  51		   *	    push   ecx
+ 00000021  52		   *	    push   edx
+ 00000022  56		   *	    push   esi
+ 00000023  57		   *	    push   edi
 					INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
- 00000014  6A 00	   *	    push   +000000000h
- 00000016  68 00000080	   *	    push   +000000080h
- 0000001B  6A 03	   *	    push   +000000003h
- 0000001D  6A 00	   *	    push   +000000000h
- 0000001F  6A 01	   *	    push   +000000001h
- 00000021  68 80000000	   *	    push   +080000000h
- 00000026  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
- 00000029  E8 00000000 E   *	    call   CreateFileA
- 0000002E  89 45 FC			mov hFile, eax
+ 00000024  6A 00	   *	    push   +000000000h
+ 00000026  68 00000080	   *	    push   +000000080h
+ 0000002B  6A 03	   *	    push   +000000003h
+ 0000002D  6A 00	   *	    push   +000000000h
+ 0000002F  6A 01	   *	    push   +000000001h
+ 00000031  68 80000000	   *	    push   +080000000h
+ 00000036  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000039  E8 00000000 E   *	    call   CreateFileA
+ 0000003E  89 45 FC			mov hFile, eax
 
 					INVOKE GetFileSize, hFile, 0
- 00000031  6A 00	   *	    push   +000000000h
- 00000033  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
- 00000036  E8 00000000 E   *	    call   GetFileSize
- 0000003B  89 45 F8			mov fileSize, eax
+ 00000041  6A 00	   *	    push   +000000000h
+ 00000043  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
+ 00000046  E8 00000000 E   *	    call   GetFileSize
+ 0000004B  89 45 F8			mov fileSize, eax
 					INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, eax
- 0000003E  50		   *	    push   eax
- 0000003F  6A 04	   *	    push   +000000004h
- 00000041  FF 35 00000000 E *	    push   hHeap
- 00000047  E8 00000000 E   *	    call   HeapAlloc
+ 0000004E  50		   *	    push   eax
+ 0000004F  6A 04	   *	    push   +000000004h
+ 00000051  FF 35 00000000 E *	    push   hHeap
+ 00000057  E8 00000000 E   *	    call   HeapAlloc
 
 					INVOKE ReadFile, hFile, pTempBuf, fileSize, ADDR bytesRead, 0
- 0000004C  6A 00	   *	    push   +000000000h
- 0000004E  8D 45 F0	   *	    lea    eax, dword  ptr ss:[ebp]+0FFFFFFF0h
- 00000051  50		   *	    push   eax
- 00000052  FF 75 F8	   *	    push   dword  ptr ss:[ebp]+0FFFFFFF8h
- 00000055  FF 75 F4	   *	    push   dword  ptr ss:[ebp]+0FFFFFFF4h
- 00000058  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
- 0000005B  E8 00000000 E   *	    call   ReadFile
+ 0000005C  6A 00	   *	    push   +000000000h
+ 0000005E  8D 45 F0	   *	    lea    eax, dword  ptr ss:[ebp]+0FFFFFFF0h
+ 00000061  50		   *	    push   eax
+ 00000062  FF 75 F8	   *	    push   dword  ptr ss:[ebp]+0FFFFFFF8h
+ 00000065  FF 75 F4	   *	    push   dword  ptr ss:[ebp]+0FFFFFFF4h
+ 00000068  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
+ 0000006B  E8 00000000 E   *	    call   ReadFile
 				    INVOKE CloseHandle, hFile
- 00000060  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
- 00000063  E8 00000000 E   *	    call   CloseHandle
+ 00000070  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
+ 00000073  E8 00000000 E   *	    call   CloseHandle
 
 					; // Next, parse the .PAM header
 					; // More info about .PAM files can be found at netpbm.sourceforge.net/doc/pam.html
 
 					ret
- 00000068  5F		   *	    pop    edi
- 00000069  5E		   *	    pop    esi
- 0000006A  5A		   *	    pop    edx
- 0000006B  59		   *	    pop    ecx
- 0000006C  5B		   *	    pop    ebx
- 0000006D  C9		   *	    leave  
- 0000006E  C2 0004	   *	    ret    00004h
- 00000071			load_texture ENDP
+ 00000078  5F		   *	    pop    edi
+ 00000079  5E		   *	    pop    esi
+ 0000007A  5A		   *	    pop    edx
+ 0000007B  59		   *	    pop    ecx
+ 0000007C  5B		   *	    pop    ebx
+ 0000007D  C9		   *	    leave  
+ 0000007E  C2 0004	   *	    ret    00004h
+ 00000081			load_texture ENDP
 
 				; // ----------------------------------
 				; // unload_texture
 				; // Takes a pointer to the texture to unload and destorys it.
 				; // ----------------------------------
- 00000071			unload_texture PROC, pTexture:DWORD
- 00000071  55		   *	    push   ebp
- 00000072  8B EC	   *	    mov    ebp, esp
- 00000074  8B 45 08			mov eax, pTexture
+ 00000081			unload_texture PROC, pTexture:DWORD
+ 00000081  55		   *	    push   ebp
+ 00000082  8B EC	   *	    mov    ebp, esp
+ 00000084  8B 45 08			mov eax, pTexture
 					ret
- 00000077  C9		   *	    leave  
- 00000078  C2 0004	   *	    ret    00004h
- 0000007B			unload_texture ENDP
+ 00000087  C9		   *	    leave  
+ 00000088  C2 0004	   *	    ret    00004h
+ 0000008B			unload_texture ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 15:43:37
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/15/26 15:58:47
 resource_manager.asm					     Symbols 2 - 1
 
 
@@ -216,7 +241,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000007B DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000008B DWord	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -234,14 +259,16 @@ ReadFile . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 VirtualAlloc . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 VirtualFree  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-load_texture . . . . . . . . . .	P Near	 00000009 _TEXT	Length= 00000068 Private STDCALL
+load_texture . . . . . . . . . .	P Near	 00000019 _TEXT	Length= 00000068 Private STDCALL
   pFilename  . . . . . . . . . .	DWord	 bp + 00000008
   hFile  . . . . . . . . . . . .	DWord	 bp - 00000004
   fileSize . . . . . . . . . . .	DWord	 bp - 00000008
   pTempBuf . . . . . . . . . . .	DWord	 bp - 0000000C
   bytesRead  . . . . . . . . . .	DWord	 bp - 00000010
-read_line  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000009 Private STDCALL
-unload_texture . . . . . . . . .	P Near	 00000071 _TEXT	Length= 0000000A Private STDCALL
+read_line  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000019 Private STDCALL
+  read_line_loop . . . . . . . .	L Near	 00000004 _TEXT	
+  read_line_exit . . . . . . . .	L Near	 00000010 _TEXT	
+unload_texture . . . . . . . . .	P Near	 00000081 _TEXT	Length= 0000000A Private STDCALL
   pTexture . . . . . . . . . . .	DWord	 bp + 00000008
 
 
@@ -258,6 +285,7 @@ Symbols:
 @fardata?  . . . . . . . . . . .	Text   	 FLAT
 @fardata . . . . . . . . . . . .	Text   	 FLAT
 @stack . . . . . . . . . . . . .	Text   	 FLAT
+CR . . . . . . . . . . . . . . .	Number	 0000000Dh   
 CreateFile . . . . . . . . . . .	Text   	 CreateFileA
 FILE_ATTRIBUTE_NORMAL  . . . . .	Number	 00000080h   
 FILE_FUNCTIONS_INC . . . . . . .	Number	 00000001h   
