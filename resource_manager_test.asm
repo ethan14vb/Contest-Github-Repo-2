@@ -14,8 +14,14 @@ INCLUDE resource_manager.inc
 
 ExitProcess PROTO STDCALL : DWORD
 
+.data
+testFile BYTE "test_drawing.pam", 0
+
 .code
 main PROC PUBLIC
+	INVOKE initialize_heap
+	INVOKE load_texture, OFFSET testFile
+
 	INVOKE ExitProcess, 0
 	ret
 main ENDP

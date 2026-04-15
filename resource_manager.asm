@@ -8,8 +8,8 @@ INCLUDE default_header.inc
 INCLUDE heap_functions.inc
 INCLUDE file_functions.inc
 
-; // Carriage return
-CR = 13
+; // Line feed
+LF = 10
 
 .code
 ; // ----------------------------------
@@ -31,8 +31,8 @@ read_line_loop:
 	mov al, BYTE PTR [esi]
 	inc esi
 	
-	; // Check if we hit the CR in CRLF
-	cmp al, CR
+	; // Check if we hit the LF
+	cmp al, LF
 	je read_line_exit
 
 	; // Store the current character into the destination buffer
@@ -41,8 +41,6 @@ read_line_loop:
 	jmp read_line_loop
 
 read_line_exit:
-	; // Move past the LF and null terminate the string
-	inc esi
 	mov BYTE PTR [edi], 0
 		
 	ret
@@ -68,7 +66,8 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 
 	INVOKE GetFileSize, hFile, 0
 	mov fileSize, eax
-	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, eax
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, fileSize
+	mov pTempBuf, eax
 
 	INVOKE ReadFile, hFile, pTempBuf, fileSize, ADDR bytesRead, 0
     INVOKE CloseHandle, hFile
@@ -78,7 +77,7 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	mov esi, pTempBuf
 	lea edi, lineBuf
 	INVOKE read_line
-	INVOKE read_line
+	INVOKE read_line ; // WIP Debug code
 	INVOKE read_line
 
 	ret
