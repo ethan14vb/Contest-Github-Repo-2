@@ -24,8 +24,9 @@ LF = 10
 ; //	edi - Pointer to the start of the buffer
 ; // Registered changed:
 ; //	esi - Points at the next line
+; //	edi - the end of the target buffer
 ; // ----------------------------------
-read_line PROC USES ebx ecx edx edi
+read_line PROC USES ebx ecx edx
 read_line_loop:
 	; // Get the current character
 	mov al, BYTE PTR [esi]
@@ -45,6 +46,19 @@ read_line_exit:
 		
 	ret
 read_line ENDP
+
+; // ----------------------------------
+; // parse_EOL_number
+; // Returns the number at the end of a string.
+; //
+; // Input:
+; //	esi - Pointer to the null terminator of the string
+; // Returns:
+; //	The number value of the string at the end of the line
+; // ----------------------------------
+parse_EOL_number PROC USES esi
+	ret
+parse_EOL_number ENDP
 
 ; // ----------------------------------
 ; // load_texture
@@ -76,9 +90,13 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	; // More info about .PAM files can be found at netpbm.sourceforge.net/doc/pam.html
 	mov esi, pTempBuf
 	lea edi, lineBuf
+
+	INVOKE read_line ; // Read the P7
+	INVOKE read_line ; // Read the GIMP tag
+
+	; // Get the width
 	INVOKE read_line
-	INVOKE read_line ; // WIP Debug code
-	INVOKE read_line
+	INVOKE parse_EOL_number 
 
 	ret
 load_texture ENDP
