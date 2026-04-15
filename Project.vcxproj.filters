@@ -70,6 +70,9 @@
     <None Include="file_functions.inc">
       <Filter>Include</Filter>
     </None>
+    <None Include="resource_manager.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

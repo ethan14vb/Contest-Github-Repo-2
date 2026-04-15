@@ -10,6 +10,7 @@
 
 INCLUDE default_header.inc
 INCLUDE heap_functions.inc
+INCLUDE resource_manager.inc
 
 ExitProcess PROTO STDCALL : DWORD
 

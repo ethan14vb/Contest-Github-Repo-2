@@ -55,7 +55,7 @@ read_line ENDP
 ; // Returns:
 ; //	A pointer to the texture created
 ; // ----------------------------------
-load_texture PROC USES ebx ecx edx esi edi, pFilename:DWORD
+load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	local hFile			:DWORD
 	local fileSize		:DWORD
 	local pTempBuf		:DWORD
@@ -88,7 +88,7 @@ load_texture ENDP
 ; // unload_texture
 ; // Takes a pointer to the texture to unload and destorys it.
 ; // ----------------------------------
-unload_texture PROC, pTexture:DWORD
+unload_texture PROC PUBLIC, pTexture:DWORD
 	mov eax, pTexture
 	ret
 unload_texture ENDP
