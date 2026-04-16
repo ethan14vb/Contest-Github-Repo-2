@@ -64,6 +64,9 @@
     <None Include="heap_functions.inc">
       <Filter>Include</Filter>
     </None>
+    <None Include="knight_game_object.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -141,6 +144,9 @@
       <Filter>Source\Engine</Filter>
     </MASM>
     <MASM Include="music_player.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
+    <MASM Include="knight_game_object.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
   </ItemGroup>
