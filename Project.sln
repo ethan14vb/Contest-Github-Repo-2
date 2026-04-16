@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{96660186
 		include_everything_test.asm = include_everything_test.asm
 		rectangle_test_scene_test.asm = rectangle_test_scene_test.asm
 		renderer_test.asm = renderer_test.asm
+		resource_manager_test.asm = resource_manager_test.asm
 		scene_test.asm = scene_test.asm
 		transform_component_test.asm = transform_component_test.asm
 		unordered_vector_test.asm = unordered_vector_test.asm

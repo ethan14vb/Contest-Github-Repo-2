@@ -17,13 +17,14 @@
     <MASM Include="game_object.asm" />
     <MASM Include="heap_functions.asm" />
     <MASM Include="input_manager.asm" />
+    <MASM Include="knight_game_object.asm" />
+    <MASM Include="main.asm" />
     <MASM Include="music_player.asm" />
     <MASM Include="rectangle_test_scene.asm" />
     <MASM Include="rect_component.asm" />
     <MASM Include="renderable_component.asm" />
     <MASM Include="render_command.asm" />
     <MASM Include="resource_manager.asm" />
-    <MASM Include="resource_manager_test.asm" />
     <MASM Include="texture.asm" />
     <MASM Include="transform_component.asm" />
     <MASM Include="unordered_vector.asm" />
@@ -40,6 +41,7 @@
     <None Include="graph_wind.inc" />
     <None Include="heap_functions.inc" />
     <None Include="input_manager.inc" />
+    <None Include="knight_game_object.inc" />
     <None Include="music_player.inc" />
     <None Include="rectangle_test_scene.inc" />
     <None Include="renderable_component.inc" />
