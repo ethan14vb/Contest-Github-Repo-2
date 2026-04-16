@@ -94,31 +94,30 @@ parse_EOL_number ENDP
 ; //	A pointer to the texture created
 ; // ----------------------------------
 load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
-	local hFile			:DWORD
-	local fileSize		:DWORD
-	local pTempBuf		:DWORD
-	local bytesRead		:DWORD
-	local lineBuf[256]	:BYTE
-	local texWidth		:DWORD
-	local texHeight		:DWORD
-	local pTex			:DWORD
-	local pPixelsTemp	:DWORD
+	local hFile				:DWORD
+	local bytesRead			:DWORD
+	local lineBuf[256]		:BYTE
+	local headerBuf[512]	:BYTE
+	local pHeaderBuf		:DWORD
+	local headerSize		:DWORD
+	local texWidth			:DWORD
+	local texHeight			:DWORD
+	local pTex				:DWORD
+	local pPixels			:DWORD
+	local remainingSize		:DWORD
 
 	; // Load the file into a temporary spot on the heap
 	INVOKE CreateFile, pFilename, GENERIC_READ, 1, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
 	mov hFile, eax
 
-	INVOKE GetFileSize, hFile, 0
-	mov fileSize, eax
-	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, fileSize
-	mov pTempBuf, eax
-
-	INVOKE ReadFile, hFile, pTempBuf, fileSize, ADDR bytesRead, 0
-    INVOKE CloseHandle, hFile
+	; // Read only enough to get the header, 512 bytes is arbitrary but should be enough
+	lea eax, headerBuf
+	mov pHeaderBuf, eax
+	INVOKE ReadFile, hFile, pHeaderBuf, 512, ADDR bytesRead, 0
 
 	; // Next, parse the .PAM header
 	; // More info about .PAM files can be found at netpbm.sourceforge.net/doc/pam.html
-	mov esi, pTempBuf
+	lea esi, headerBuf
 	lea edi, lineBuf
 
 	INVOKE read_line ; // Pass over the P7
@@ -145,8 +144,11 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	INVOKE read_line ; // Pass over the TUPLTYPE
 	lea edi, lineBuf
 	INVOKE read_line ; // Pass over the ENDHDR
-	lea edi, lineBuf
-	mov pPixelsTemp, esi
+
+	; // Store the size of the header
+	lea eax, headerBuf
+	sub esi, eax
+	mov headerSize, esi
 
 	INVOKE new_texture, texWidth, texHeight, 0
 	mov pTex, eax
@@ -157,20 +159,23 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
     mul ebx
     shl eax, 2
 
+	push eax ; // Store the file size
+
 	INVOKE VirtualAlloc, 0, eax, MEM_COMMIT OR MEM_RESERVE, PAGE_READWRITE
+	mov pPixels, eax
 	mov ecx, pTex
 	mov (Texture PTR [ecx]).pPixels, eax ; // Store the address of the new pixel buffer into the texture header
 
-	; // Copy the pixel data into the final buffer
-	mov edi, eax
-    mov esi, pPixelsTemp
-    mov ecx, texWidth
-    imul ecx, texHeight
-    rep movsd
+	; // Read the rest of the file data into the pPixels buffer
+	INVOKE SetFilePointer, hFile, headerSize, 0, 0
 
-	; // Free the temp buffer
-	INVOKE HeapFree, hHeap, 0, pTempBuf
-    mov eax, pTex
+	pop eax
+	mov remainingSize, eax
+	INVOKE ReadFile, hFile, pPixels, remainingSize, ADDR bytesRead, 0
+
+	; // Cleanup
+	INVOKE CloseHandle, hFile
+	mov eax, pTex
 
 	ret
 load_texture ENDP

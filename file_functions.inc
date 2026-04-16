@@ -23,6 +23,9 @@ CloseHandle PROTO hObject:DWORD
 ; // from learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesize
 GetFileSize PROTO hFile:DWORD, lpFileSizeHigh:DWORD
 
+; // from learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointer
+SetFilePointer PROTO hFile:DWORD, lDistanceToMove:SDWORD, lpDistanceToMoveHigh:DWORD, dwMoveMethod:DWORD
+
 ; // ********************************
 ; // Constants
 ; // ********************************
