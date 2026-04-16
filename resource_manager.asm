@@ -185,7 +185,13 @@ load_texture ENDP
 ; // Takes a pointer to the texture to unload and destorys it.
 ; // ----------------------------------
 unload_texture PROC PUBLIC, pTexture:DWORD
-	mov eax, pTexture
+	mov ecx, pTexture
+	mov eax, (Texture PTR [ecx]).pPixels
+	INVOKE VirtualFree, eax, 0, MEM_RELEASE
+		
+	mov ecx, pTexture
+	INVOKE free_texture
+
 	ret
 unload_texture ENDP
 
