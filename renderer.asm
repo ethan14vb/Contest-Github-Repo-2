@@ -465,8 +465,10 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 	local sx : DWORD, sy : DWORD					; // buffer coords adjusted for clipping
 	local rw : DWORD, rh : DWORD					; // size after clipping
 
-	local srcX : DWORD, srcY : DWORD		; // base position in the texture
+	local srcX : DWORD, srcY : DWORD				; // base position in the texture
 	local srcW : DWORD, srcH : DWORD				; // original size of the texture
+	
+	local clipLeft:DWORD, clipTop:DWORD
 
 	; // Skip if not visible
 	mov edi, pSprite
@@ -542,6 +544,25 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 	; // Put screen position
 	mov sx, eax
 	mov sy, edx
+
+	; // clipping logic (set bounds)
+	mov clipLeft, 0
+	mov clipTop, 0
+
+	; // Check X clipping
+	mov eax, sx
+	mov ecx, eax
+	add ecx, rw
+
+	cmp eax, 0
+	jge check_x_end
+	neg eax
+	mov clipLeft, eax
+	mov sx, 0
+	mov eax, 0
+
+check_x_end:
+	 ; // Check rightmost bounds here (TODO)
 
 drawSprite_done:
 	ret
