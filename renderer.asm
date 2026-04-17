@@ -644,6 +644,16 @@ set_y_bounds:
 	mov curSrcY, eax
 
 yloop_sprite:
+	cmp esi, endY
+	jge drawSprite_done
+
+	; // Calculate screen buffer pointer
+	mov eax, esi
+	imul eax, GAME_WIDTH
+	add eax, sx
+	shl eax, 2
+	add eax, pBuffer
+	mov edi, eax
 
 xloop_sprite:
 

@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 21:54:42
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 21:56:47
 renderer.asm						     Page 1 - 1
 
 
@@ -1171,12 +1171,12 @@ renderer.asm(313) : warning A6004:procedure argument or local not referenced : f
  000002FE  8B 7D 0C			mov edi, pSprite
  00000301  8B 47 08			mov eax, (RenderableComponent PTR [edi]).visible
  00000304  85 C0			test eax, eax
- 00000306  0F 84 00000177		jz drawSprite_done
+ 00000306  0F 84 00000190		jz drawSprite_done
 
 					; // Skip the rendering in case of a null pointer
  0000030C  8B 5F 18			mov ebx, (SpriteComponent PTR [edi]).pTexture
  0000030F  85 DB			test ebx, ebx
- 00000311  0F 84 0000016C		jz drawSprite_done
+ 00000311  0F 84 00000185		jz drawSprite_done
 
  00000317  8B 43 04			mov eax, (Texture PTR [ebx]).w
  0000031A  89 45 FC			mov texW, eax
@@ -1226,9 +1226,9 @@ renderer.asm(313) : warning A6004:procedure argument or local not referenced : f
 
 					; // Check if the sprite is of zero height or width
  0000036E  83 7D E8 00			cmp rw, 0
- 00000372  0F 8E 0000010B		jle drawSprite_done
+ 00000372  0F 8E 00000124		jle drawSprite_done
  00000378  83 7D E4 00			cmp rh, 0
- 0000037C  0F 8E 00000101		jle drawSprite_done
+ 0000037C  0F 8E 0000011A		jle drawSprite_done
 
 					; // Adjust transform for origin pos
  00000382  8B 5D 08			mov ebx, pTrans
@@ -1279,7 +1279,7 @@ renderer.asm(313) : warning A6004:procedure argument or local not referenced : f
 				
  000003DE			set_x_bounds:
  000003DE  3B C1			cmp eax, ecx ; // Fail case for if the right and left of the sprite are flipped
- 000003E0  0F 8D 0000009D		jge drawSprite_done
+ 000003E0  0F 8D 000000B6		jge drawSprite_done
 				
  000003E6  2B C8			sub ecx, eax
  000003E8  89 4D E8			mov rw, ecx
@@ -1305,82 +1305,91 @@ renderer.asm(313) : warning A6004:procedure argument or local not referenced : f
 
  00000414			set_y_bounds:
  00000414  3B F2			cmp esi, edx ; // Fail case for if the top and bottom of the sprite are flipped
- 00000416  7D 6B			jge drawSprite_done
+ 00000416  0F 8D 00000080		jge drawSprite_done
 				
- 00000418  2B D6			sub edx, esi
- 0000041A  89 55 E4			mov rh, edx
+ 0000041C  2B D6			sub edx, esi
+ 0000041E  89 55 E4			mov rh, edx
 
 					; // calculate the actual start x position based on flipping
- 0000041D  8B 45 E0			mov eax, srcX
- 00000420  8B 77 2C			mov esi, (SpriteComponent PTR [edi]).flipX
+ 00000421  8B 45 E0			mov eax, srcX
+ 00000424  8B 77 2C			mov esi, (SpriteComponent PTR [edi]).flipX
 					.IF esi == 0
- 00000423  0B F6	   *	    or	esi, esi
- 00000425  75 0F	   *	    jne    @C000C
- 00000427  C7 45 C0				mov dirX, 1
+ 00000427  0B F6	   *	    or	esi, esi
+ 00000429  75 0F	   *	    jne    @C000C
+ 0000042B  C7 45 C0				mov dirX, 1
 	   00000001
- 0000042E  03 45 AC				add eax, clipLeft
- 00000431  89 45 D0				mov startSrcX, eax
+ 00000432  03 45 AC				add eax, clipLeft
+ 00000435  89 45 D0				mov startSrcX, eax
 					.ELSE
- 00000434  EB 11	   *	    jmp    @C000E
- 00000436		   *@C000C:
- 00000436  C7 45 C0				mov dirX, -1
+ 00000438  EB 11	   *	    jmp    @C000E
+ 0000043A		   *@C000C:
+ 0000043A  C7 45 C0				mov dirX, -1
 	   FFFFFFFF
- 0000043D  03 45 D8				add eax, srcW
- 00000440  48					dec eax
- 00000441  2B 45 AC				sub eax, clipLeft
- 00000444  89 45 D0				mov startSrcX, eax
+ 00000441  03 45 D8				add eax, srcW
+ 00000444  48					dec eax
+ 00000445  2B 45 AC				sub eax, clipLeft
+ 00000448  89 45 D0				mov startSrcX, eax
 					.ENDIF
- 00000447		   *@C000E:
+ 0000044B		   *@C000E:
 
 					; // calculate the actual start y position based on flipping
- 00000447  8B 5D DC			mov ebx, srcY
- 0000044A  8B 77 30			mov esi, (SpriteComponent PTR [edi]).flipY
+ 0000044B  8B 5D DC			mov ebx, srcY
+ 0000044E  8B 77 30			mov esi, (SpriteComponent PTR [edi]).flipY
 					.IF esi == 0
- 0000044D  0B F6	   *	    or	esi, esi
- 0000044F  75 0F	   *	    jne    @C000F
- 00000451  C7 45 BC				mov dirY, 1
+ 00000451  0B F6	   *	    or	esi, esi
+ 00000453  75 0F	   *	    jne    @C000F
+ 00000455  C7 45 BC				mov dirY, 1
 	   00000001
- 00000458  03 5D A8				add ebx, clipTop
- 0000045B  89 5D CC				mov startSrcY, ebx
+ 0000045C  03 5D A8				add ebx, clipTop
+ 0000045F  89 5D CC				mov startSrcY, ebx
 					.ELSE
- 0000045E  EB 11	   *	    jmp    @C0011
- 00000460		   *@C000F:
- 00000460  C7 45 BC				mov dirY, -1
+ 00000462  EB 11	   *	    jmp    @C0011
+ 00000464		   *@C000F:
+ 00000464  C7 45 BC				mov dirY, -1
 	   FFFFFFFF
- 00000467  03 5D D4				add ebx, srcH
- 0000046A  4B					dec ebx
- 0000046B  2B 5D A8				sub ebx, clipTop
- 0000046E  89 5D CC				mov startSrcY, ebx
+ 0000046B  03 5D D4				add ebx, srcH
+ 0000046E  4B					dec ebx
+ 0000046F  2B 5D A8				sub ebx, clipTop
+ 00000472  89 5D CC				mov startSrcY, ebx
 					.ENDIF
- 00000471		   *@C0011:
+ 00000475		   *@C0011:
 
 					; // Now draw the sprite
- 00000471  8B 75 EC			mov esi, sy
- 00000474  8B 45 EC			mov eax, sy
- 00000477  03 45 E4			add eax, rh
- 0000047A  89 45 B4			mov endY, eax
+ 00000475  8B 75 EC			mov esi, sy
+ 00000478  8B 45 EC			mov eax, sy
+ 0000047B  03 45 E4			add eax, rh
+ 0000047E  89 45 B4			mov endY, eax
 				
- 0000047D  8B 45 CC			mov eax, startSrcY
- 00000480  89 45 C4			mov curSrcY, eax
+ 00000481  8B 45 CC			mov eax, startSrcY
+ 00000484  89 45 C4			mov curSrcY, eax
 				
- 00000483			yloop_sprite:
+ 00000487			yloop_sprite:
+ 00000487  3B 75 B4			cmp esi, endY
+ 0000048A  7D 10			jge drawSprite_done
 
- 00000483			xloop_sprite:
+					; // Calculate screen buffer pointer
+ 0000048C  8B C6			mov eax, esi
+ 0000048E  6B C0 50			imul eax, GAME_WIDTH
+ 00000491  03 45 F0			add eax, sx
+ 00000494  C1 E0 02			shl eax, 2
+ 00000497  03 45 14			add eax, pBuffer
+ 0000049A  8B F8			mov edi, eax
 
- 00000483			drawSprite_done:
+ 0000049C			xloop_sprite:
+
+ 0000049C			drawSprite_done:
 					ret
- 00000483  5A		   *	    pop    edx
- 00000484  59		   *	    pop    ecx
- 00000485  5B		   *	    pop    ebx
- 00000486  5F		   *	    pop    edi
- 00000487  5E		   *	    pop    esi
- 00000488  C9		   *	    leave  
- 00000489  C2 0010	   *	    ret    00010h
- 0000048C			drawSprite ENDP
-renderer.asm(652) : warning A6004:procedure argument or local not referenced : pBuffer
-renderer.asm(652) : warning A6004:procedure argument or local not referenced : curSrcX
-renderer.asm(652) : warning A6004:procedure argument or local not referenced : xCounter
-renderer.asm(652) : warning A6004:procedure argument or local not referenced : srcRowBase
+ 0000049C  5A		   *	    pop    edx
+ 0000049D  59		   *	    pop    ecx
+ 0000049E  5B		   *	    pop    ebx
+ 0000049F  5F		   *	    pop    edi
+ 000004A0  5E		   *	    pop    esi
+ 000004A1  C9		   *	    leave  
+ 000004A2  C2 0010	   *	    ret    00010h
+ 000004A5			drawSprite ENDP
+renderer.asm(662) : warning A6004:procedure argument or local not referenced : curSrcX
+renderer.asm(662) : warning A6004:procedure argument or local not referenced : xCounter
+renderer.asm(662) : warning A6004:procedure argument or local not referenced : srcRowBase
 
 				; // ----------------------------------
 				; // renderCommands
@@ -1395,7 +1404,7 @@ renderer.asm(652) : warning A6004:procedure argument or local not referenced : s
 				; //	numCommands     DWORD - number of entries in the array.
 				; //	pCamera         DWORD - pointer to the active Camera struct.
 				; // ----------------------------------
- 0000048C			renderCommands PROC PUBLIC USES esi ecx edi ebx, pRenderCommands:DWORD, numCommands:DWORD, pCamera:DWORD, hWnd:DWORD
+ 000004A5			renderCommands PROC PUBLIC USES esi ecx edi ebx, pRenderCommands:DWORD, numCommands:DWORD, pCamera:DWORD, hWnd:DWORD
 					local pBuffer:DWORD     ; // pointer to the screen pixel buffer
 					local key_ptr:DWORD     ; // the RenderCommand pointer being placed during sort
 					local key_layer:DWORD   ; // the layer value of key_ptr
@@ -1411,108 +1420,108 @@ renderer.asm(652) : warning A6004:procedure argument or local not referenced : s
 					; // ----------------------------------------------------------------
 
 					; // Nothing to sort when there are fewer than 2 commands
- 0000048C  55		   *	    push   ebp
- 0000048D  8B EC	   *	    mov    ebp, esp
- 0000048F  83 C4 EC	   *	    add    esp, 0FFFFFFECh
- 00000492  56		   *	    push   esi
- 00000493  51		   *	    push   ecx
- 00000494  57		   *	    push   edi
- 00000495  53		   *	    push   ebx
- 00000496  8B 45 0C			mov eax, numCommands
- 00000499  83 F8 02			cmp eax, 2
- 0000049C  7C 73			jl sort_done
+ 000004A5  55		   *	    push   ebp
+ 000004A6  8B EC	   *	    mov    ebp, esp
+ 000004A8  83 C4 EC	   *	    add    esp, 0FFFFFFECh
+ 000004AB  56		   *	    push   esi
+ 000004AC  51		   *	    push   ecx
+ 000004AD  57		   *	    push   edi
+ 000004AE  53		   *	    push   ebx
+ 000004AF  8B 45 0C			mov eax, numCommands
+ 000004B2  83 F8 02			cmp eax, 2
+ 000004B5  7C 73			jl sort_done
 
- 0000049E  C7 45 F0			mov sort_i, 1           ; // outer index starts at element 1
+ 000004B7  C7 45 F0			mov sort_i, 1           ; // outer index starts at element 1
 	   00000001
 
- 000004A5			sort_outer_loop:
+ 000004BE			sort_outer_loop:
 					; // Loop condition: while sort_i < numCommands
- 000004A5  8B 45 F0			mov eax, sort_i
- 000004A8  3B 45 0C			cmp eax, numCommands
- 000004AB  7D 64			jge sort_done
+ 000004BE  8B 45 F0			mov eax, sort_i
+ 000004C1  3B 45 0C			cmp eax, numCommands
+ 000004C4  7D 64			jge sort_done
 
 					; // key_ptr = pRenderCommands[sort_i]
 					; //   esi = address of pRenderCommands[sort_i]
 					; //   eax = the RenderCommand pointer stored there
- 000004AD  8B 75 08			mov esi, pRenderCommands
- 000004B0  8B 45 F0			mov eax, sort_i
- 000004B3  C1 E0 02			shl eax, 2              ; // byte offset = sort_i * sizeof(DWORD)
- 000004B6  03 F0			add esi, eax            ; // esi = &pRenderCommands[sort_i]
- 000004B8  8B 06			mov eax, [esi]          ; // eax = RenderCommand pointer at index sort_i
- 000004BA  89 45 F8			mov key_ptr, eax
+ 000004C6  8B 75 08			mov esi, pRenderCommands
+ 000004C9  8B 45 F0			mov eax, sort_i
+ 000004CC  C1 E0 02			shl eax, 2              ; // byte offset = sort_i * sizeof(DWORD)
+ 000004CF  03 F0			add esi, eax            ; // esi = &pRenderCommands[sort_i]
+ 000004D1  8B 06			mov eax, [esi]          ; // eax = RenderCommand pointer at index sort_i
+ 000004D3  89 45 F8			mov key_ptr, eax
 
 					; // key_layer = key_ptr->pRenderable->layer
- 000004BD  8B 48 04			mov ecx, (RenderCommand PTR [eax]).pRenderable
- 000004C0  8B 41 0C			mov eax, (RenderableComponent PTR [ecx]).layer
- 000004C3  89 45 F4			mov key_layer, eax
+ 000004D6  8B 48 04			mov ecx, (RenderCommand PTR [eax]).pRenderable
+ 000004D9  8B 41 0C			mov eax, (RenderableComponent PTR [ecx]).layer
+ 000004DC  89 45 F4			mov key_layer, eax
 
 					; // sort_j = sort_i - 1  (start scanning leftward from the element before key)
- 000004C6  8B 45 F0			mov eax, sort_i
- 000004C9  48				dec eax
- 000004CA  89 45 EC			mov sort_j, eax
+ 000004DF  8B 45 F0			mov eax, sort_i
+ 000004E2  48				dec eax
+ 000004E3  89 45 EC			mov sort_j, eax
 
- 000004CD			sort_inner_loop:
+ 000004E6			sort_inner_loop:
 					; // Loop condition: while sort_j >= 0
 					; // Note: sort_j is a DWORD local. When it wraps below 0 it becomes
 					; //       0FFFFFFFFh, which is negative when interpreted as a signed
 					; //       value, so the signed "jl" correctly detects the underflow.
- 000004CD  8B 45 EC			mov eax, sort_j
- 000004D0  83 F8 00			cmp eax, 0
- 000004D3  7C 26			jl sort_insert          ; // j < 0: we've reached the front of the array
+ 000004E6  8B 45 EC			mov eax, sort_j
+ 000004E9  83 F8 00			cmp eax, 0
+ 000004EC  7C 26			jl sort_insert          ; // j < 0: we've reached the front of the array
 
 					; // Load pRenderCommands[sort_j] and read its layer
 					; //   esi = address of pRenderCommands[sort_j]
 					; //   ecx = the RenderCommand pointer stored there
 					; //   edx = layer value of that command
- 000004D5  8B 75 08			mov esi, pRenderCommands
- 000004D8  8B 45 EC			mov eax, sort_j
- 000004DB  C1 E0 02			shl eax, 2
- 000004DE  03 F0			add esi, eax            ; // esi = &pRenderCommands[sort_j]
- 000004E0  8B 0E			mov ecx, [esi]          ; // ecx = RenderCommand pointer at [sort_j]
- 000004E2  8B 51 04			mov edx, (RenderCommand PTR [ecx]).pRenderable
- 000004E5  8B 52 0C			mov edx, (RenderableComponent PTR [edx]).layer
+ 000004EE  8B 75 08			mov esi, pRenderCommands
+ 000004F1  8B 45 EC			mov eax, sort_j
+ 000004F4  C1 E0 02			shl eax, 2
+ 000004F7  03 F0			add esi, eax            ; // esi = &pRenderCommands[sort_j]
+ 000004F9  8B 0E			mov ecx, [esi]          ; // ecx = RenderCommand pointer at [sort_j]
+ 000004FB  8B 51 04			mov edx, (RenderCommand PTR [ecx]).pRenderable
+ 000004FE  8B 52 0C			mov edx, (RenderableComponent PTR [edx]).layer
 
 					; // If [sort_j].layer <= key_layer: the key belongs here, stop shifting
- 000004E8  3B 55 F4			cmp edx, key_layer
- 000004EB  7E 0E			jle sort_insert
+ 00000501  3B 55 F4			cmp edx, key_layer
+ 00000504  7E 0E			jle sort_insert
 
 					; // [sort_j].layer > key_layer: shift [sort_j] one slot to the right
 					; //   pRenderCommands[sort_j + 1] = pRenderCommands[sort_j]
 					; //   esi is still &pRenderCommands[sort_j], so esi+4 is [sort_j+1]
- 000004ED  8B 06			mov eax, [esi]          ; // value at [sort_j]
- 000004EF  8B FE			mov edi, esi
- 000004F1  83 C7 04			add edi, 4              ; // edi = &pRenderCommands[sort_j + 1]
- 000004F4  89 07			mov [edi], eax          ; // write shifted value one slot right
+ 00000506  8B 06			mov eax, [esi]          ; // value at [sort_j]
+ 00000508  8B FE			mov edi, esi
+ 0000050A  83 C7 04			add edi, 4              ; // edi = &pRenderCommands[sort_j + 1]
+ 0000050D  89 07			mov [edi], eax          ; // write shifted value one slot right
 
- 000004F6  FF 4D EC			dec sort_j
- 000004F9  EB D2			jmp sort_inner_loop
+ 0000050F  FF 4D EC			dec sort_j
+ 00000512  EB D2			jmp sort_inner_loop
 
- 000004FB			sort_insert:
+ 00000514			sort_insert:
 					; // Write key_ptr into pRenderCommands[sort_j + 1]
 					; // When sort_j wrapped below 0 (i.e., 0FFFFFFFFh), inc brings it to 0,
 					; // which correctly targets index 0 (the very front of the array).
- 000004FB  8B 75 08			mov esi, pRenderCommands
- 000004FE  8B 45 EC			mov eax, sort_j
- 00000501  40				inc eax                 ; // sort_j + 1
- 00000502  C1 E0 02			shl eax, 2              ; // byte offset
- 00000505  03 F0			add esi, eax            ; // esi = &pRenderCommands[sort_j + 1]
- 00000507  8B 45 F8			mov eax, key_ptr
- 0000050A  89 06			mov [esi], eax          ; // insert key at its sorted position
+ 00000514  8B 75 08			mov esi, pRenderCommands
+ 00000517  8B 45 EC			mov eax, sort_j
+ 0000051A  40				inc eax                 ; // sort_j + 1
+ 0000051B  C1 E0 02			shl eax, 2              ; // byte offset
+ 0000051E  03 F0			add esi, eax            ; // esi = &pRenderCommands[sort_j + 1]
+ 00000520  8B 45 F8			mov eax, key_ptr
+ 00000523  89 06			mov [esi], eax          ; // insert key at its sorted position
 
- 0000050C  FF 45 F0			inc sort_i
- 0000050F  EB 94			jmp sort_outer_loop
+ 00000525  FF 45 F0			inc sort_i
+ 00000528  EB 94			jmp sort_outer_loop
 
- 00000511			sort_done:
+ 0000052A			sort_done:
 					; // ----------------------------------------------------------------
 					; // CLEAR BUFFER
 					; // Fill the screen pixel buffer with solid black (r=0,g=0,b=0,a=255).
 					; // ----------------------------------------------------------------
- 00000511  C7 45 FC			mov pBuffer, OFFSET screenBuffer
+ 0000052A  C7 45 FC			mov pBuffer, OFFSET screenBuffer
 	   00000028 R
- 00000518  B9 00000FA0			mov ecx, GAME_WIDTH * GAME_HEIGHT
- 0000051D  8B 7D FC			mov edi, pBuffer
- 00000520  B8 FF000000			mov eax, 0FF000000h
- 00000525  F3/ AB			rep stosd
+ 00000531  B9 00000FA0			mov ecx, GAME_WIDTH * GAME_HEIGHT
+ 00000536  8B 7D FC			mov edi, pBuffer
+ 00000539  B8 FF000000			mov eax, 0FF000000h
+ 0000053E  F3/ AB			rep stosd
 
 					; // ----------------------------------------------------------------
 					; // RENDER LOOP
@@ -1522,72 +1531,72 @@ renderer.asm(652) : warning A6004:procedure argument or local not referenced : s
 					; // therefore drawn first (background). Higher-layer objects are drawn
 					; // last (foreground), painting over earlier layers as expected.
 					; // ----------------------------------------------------------------
- 00000527  8B 75 08			mov esi, pRenderCommands
- 0000052A  8B 5D 0C			mov ebx, numCommands
+ 00000540  8B 75 08			mov esi, pRenderCommands
+ 00000543  8B 5D 0C			mov ebx, numCommands
 
- 0000052D			cmd_loop:
- 0000052D  83 FB 00			cmp ebx, 0
- 00000530  74 39			je render_done
- 00000532  4B				dec ebx
+ 00000546			cmd_loop:
+ 00000546  83 FB 00			cmp ebx, 0
+ 00000549  74 39			je render_done
+ 0000054B  4B				dec ebx
 
- 00000533  8B 06			mov eax, [esi]
- 00000535  8B 50 04			mov edx, (RenderCommand PTR [eax]).pRenderable
- 00000538  8B 12			mov edx, (Component PTR [edx]).componentType
+ 0000054C  8B 06			mov eax, [esi]
+ 0000054E  8B 50 04			mov edx, (RenderCommand PTR [eax]).pRenderable
+ 00000551  8B 12			mov edx, (Component PTR [edx]).componentType
 
 					.IF edx == RECT_COMPONENT_ID
- 0000053A  83 FA 01	   *	    cmp    edx, RECT_COMPONENT_ID
- 0000053D  75 12	   *	    jne    @C0012
+ 00000553  83 FA 01	   *	    cmp    edx, RECT_COMPONENT_ID
+ 00000556  75 12	   *	    jne    @C0012
 						INVOKE drawRect, (RenderCommand PTR [eax]).pTransform, (RenderCommand PTR [eax]).pRenderable, pCamera, pBuffer
- 0000053F  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
- 00000542  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
- 00000545  FF 70 04	   *	    push   dword  ptr [eax]+000000004h
- 00000548  FF 30	   *	    push   dword  ptr [eax]
- 0000054A  E8 FFFFFC95	   *	    call   drawRect
+ 00000558  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
+ 0000055B  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
+ 0000055E  FF 70 04	   *	    push   dword  ptr [eax]+000000004h
+ 00000561  FF 30	   *	    push   dword  ptr [eax]
+ 00000563  E8 FFFFFC7C	   *	    call   drawRect
 					.ELSEIF edx == SPRITE_COMPONENT_ID
- 0000054F  EB 15	   *	    jmp    @C0014
- 00000551		   *@C0012:
- 00000551  83 FA 02	   *	    cmp    edx, SPRITE_COMPONENT_ID
- 00000554  75 10	   *	    jne    @C0015
+ 00000568  EB 15	   *	    jmp    @C0014
+ 0000056A		   *@C0012:
+ 0000056A  83 FA 02	   *	    cmp    edx, SPRITE_COMPONENT_ID
+ 0000056D  75 10	   *	    jne    @C0015
 						INVOKE drawSprite, (RenderCommand PTR [eax]).pTransform, (RenderCommand PTR [eax]).pRenderable, pCamera, pBuffer
- 00000556  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
- 00000559  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
- 0000055C  FF 70 04	   *	    push   dword  ptr [eax]+000000004h
- 0000055F  FF 30	   *	    push   dword  ptr [eax]
- 00000561  E8 FFFFFD8D	   *	    call   drawSprite
+ 0000056F  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
+ 00000572  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
+ 00000575  FF 70 04	   *	    push   dword  ptr [eax]+000000004h
+ 00000578  FF 30	   *	    push   dword  ptr [eax]
+ 0000057A  E8 FFFFFD74	   *	    call   drawSprite
 					.ENDIF
- 00000566		   *@C0015:
- 00000566		   *@C0014:
+ 0000057F		   *@C0015:
+ 0000057F		   *@C0014:
 
- 00000566  83 C6 04			add esi, TYPE DWORD
- 00000569  EB C2			jmp cmd_loop
+ 0000057F  83 C6 04			add esi, TYPE DWORD
+ 00000582  EB C2			jmp cmd_loop
 
- 0000056B			render_done:
+ 00000584			render_done:
 					.IF rendererInitialized == 0 
- 0000056B  83 3D 00000000 R
+ 00000584  83 3D 00000000 R
 	   00		   *	    cmp    rendererInitialized, 000h
- 00000572  75 0F	   *	    jne    @C0017
+ 0000058B  75 0F	   *	    jne    @C0017
 						INVOKE initializeRenderer
- 00000574  E8 FFFFFBAC	   *	    call   initializeRenderer
- 00000579  C7 05 00000000 R			mov rendererInitialized, 0FFFFFFFFh
+ 0000058D  E8 FFFFFB93	   *	    call   initializeRenderer
+ 00000592  C7 05 00000000 R			mov rendererInitialized, 0FFFFFFFFh
 	   FFFFFFFF
 					.ENDIF
- 00000583		   *@C0017:
+ 0000059C		   *@C0017:
 
 					INVOKE displayBuffer, pBuffer, hWnd
- 00000583  FF 75 14	   *	    push   dword  ptr ss:[ebp]+000000014h
- 00000586  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
- 00000589  E8 FFFFFA9B	   *	    call   displayBuffer
+ 0000059C  FF 75 14	   *	    push   dword  ptr ss:[ebp]+000000014h
+ 0000059F  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
+ 000005A2  E8 FFFFFA82	   *	    call   displayBuffer
 					ret
- 0000058E  5B		   *	    pop    ebx
- 0000058F  5F		   *	    pop    edi
- 00000590  59		   *	    pop    ecx
- 00000591  5E		   *	    pop    esi
- 00000592  C9		   *	    leave  
- 00000593  C2 0010	   *	    ret    00010h
- 00000596			renderCommands ENDP
+ 000005A7  5B		   *	    pop    ebx
+ 000005A8  5F		   *	    pop    edi
+ 000005A9  59		   *	    pop    ecx
+ 000005AA  5E		   *	    pop    esi
+ 000005AB  C9		   *	    leave  
+ 000005AC  C2 0010	   *	    ret    00010h
+ 000005AF			renderCommands ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 21:54:42
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 21:56:47
 renderer.asm						     Symbols 2 - 1
 
 
@@ -1726,7 +1735,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00003ED0 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000596 DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000005AF DWord	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -1794,7 +1803,7 @@ drawRect . . . . . . . . . . . .	P Near	 000001E4 _TEXT	Length= 0000010F Private
   yloop_rect . . . . . . . . . .	L Near	 000002BC _TEXT	
   xloop_rect . . . . . . . . . .	L Near	 000002D3 _TEXT	
   drawRect_done  . . . . . . . .	L Near	 000002EA _TEXT	
-drawSprite . . . . . . . . . . .	P Near	 000002F3 _TEXT	Length= 00000199 Private STDCALL
+drawSprite . . . . . . . . . . .	P Near	 000002F3 _TEXT	Length= 000001B2 Private STDCALL
   pTrans . . . . . . . . . . . .	DWord	 bp + 00000008
   pSprite  . . . . . . . . . . .	DWord	 bp + 0000000C
   pCamera  . . . . . . . . . . .	DWord	 bp + 00000010
@@ -1825,9 +1834,9 @@ drawSprite . . . . . . . . . . .	P Near	 000002F3 _TEXT	Length= 00000199 Private
   set_x_bounds . . . . . . . . .	L Near	 000003DE _TEXT	
   check_y_end  . . . . . . . . .	L Near	 0000040A _TEXT	
   set_y_bounds . . . . . . . . .	L Near	 00000414 _TEXT	
-  yloop_sprite . . . . . . . . .	L Near	 00000483 _TEXT	
-  xloop_sprite . . . . . . . . .	L Near	 00000483 _TEXT	
-  drawSprite_done  . . . . . . .	L Near	 00000483 _TEXT	
+  yloop_sprite . . . . . . . . .	L Near	 00000487 _TEXT	
+  xloop_sprite . . . . . . . . .	L Near	 0000049C _TEXT	
+  drawSprite_done  . . . . . . .	L Near	 0000049C _TEXT	
 free_camera  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 free_component_virtual . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 free_component . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -1850,7 +1859,7 @@ new_rect_component . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 new_render_command . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 new_texture  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 new_transform_component  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-renderCommands . . . . . . . . .	P Near	 0000048C _TEXT	Length= 0000010A Public STDCALL
+renderCommands . . . . . . . . .	P Near	 000004A5 _TEXT	Length= 0000010A Public STDCALL
   pRenderCommands  . . . . . . .	DWord	 bp + 00000008
   numCommands  . . . . . . . . .	DWord	 bp + 0000000C
   pCamera  . . . . . . . . . . .	DWord	 bp + 00000010
@@ -1860,12 +1869,12 @@ renderCommands . . . . . . . . .	P Near	 0000048C _TEXT	Length= 0000010A Public 
   key_layer  . . . . . . . . . .	DWord	 bp - 0000000C
   sort_i . . . . . . . . . . . .	DWord	 bp - 00000010
   sort_j . . . . . . . . . . . .	DWord	 bp - 00000014
-  sort_outer_loop  . . . . . . .	L Near	 000004A5 _TEXT	
-  sort_inner_loop  . . . . . . .	L Near	 000004CD _TEXT	
-  sort_insert  . . . . . . . . .	L Near	 000004FB _TEXT	
-  sort_done  . . . . . . . . . .	L Near	 00000511 _TEXT	
-  cmd_loop . . . . . . . . . . .	L Near	 0000052D _TEXT	
-  render_done  . . . . . . . . .	L Near	 0000056B _TEXT	
+  sort_outer_loop  . . . . . . .	L Near	 000004BE _TEXT	
+  sort_inner_loop  . . . . . . .	L Near	 000004E6 _TEXT	
+  sort_insert  . . . . . . . . .	L Near	 00000514 _TEXT	
+  sort_done  . . . . . . . . . .	L Near	 0000052A _TEXT	
+  cmd_loop . . . . . . . . . . .	L Near	 00000546 _TEXT	
+  render_done  . . . . . . . . .	L Near	 00000584 _TEXT	
 writeByteInDecimal . . . . . . .	P Near	 00000000 _TEXT	Length= 00000029 Private STDCALL
   print_tens . . . . . . . . . .	L Near	 00000010 _TEXT	
   print_ones . . . . . . . . . .	L Near	 00000021 _TEXT	
@@ -1954,5 +1963,5 @@ hHeap  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
 rendererInitialized  . . . . . .	DWord	 00000000 _DATA	
 screenBuffer . . . . . . . . . .	Pixel	 00000028 _DATA	
 
-	   5 Warnings
+	   4 Warnings
 	   0 Errors
