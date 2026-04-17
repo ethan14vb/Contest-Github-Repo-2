@@ -15,6 +15,9 @@ INCLUDE sprite_component.inc
 .data
 testFile BYTE "test_drawing.pam", 0
 
+PUBLIC pTex
+pTex DWORD ?
+
 .code
 ; // ----------------------------------
 ; // populate_sprite_test_scene
@@ -22,7 +25,6 @@ testFile BYTE "test_drawing.pam", 0
 ; // with the sprite test scene contents.
 ; // ----------------------------------
 populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
-	local pTex : DWORD
 	INVOKE load_texture, OFFSET testFile
 	mov pTex, eax
 

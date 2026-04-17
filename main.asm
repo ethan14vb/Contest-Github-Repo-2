@@ -7,7 +7,8 @@
 ; // ==================================
 
 INCLUDE default_header.inc
-INCLUDE rectangle_test_scene.inc
+INCLUDE sprite_test_scene.inc
+INCLUDE resource_manager.inc
 INCLUDE scene.inc
 INCLUDE graph_wind.inc
 
@@ -19,6 +20,8 @@ ExitProcess PROTO : DWORD
 Sleep		PROTO : DWORD ; // This function was added because it is the Win32 method of waiting for a specified number of miliseconds
 
 .data
+EXTERNDEF pTex : DWORD
+
 ; // Engine data
 deltaTime REAL4 0.016667
 
@@ -104,7 +107,7 @@ WinMain PROC PUBLIC
 	INVOKE new_scene, 100
 	mov pScene, eax
 	
-	INVOKE populate_rectangle_test_scene, pScene
+	INVOKE populate_sprite_test_scene, pScene
 
 loop_start:
 	; // First, read the message queue and dispatch messages
@@ -129,6 +132,7 @@ update_scene:
 
 loop_exit:
 	INVOKE free_scene
+	INVOKE unload_texture, pTex
 
 	INVOKE ExitProcess, 0
 	ret
