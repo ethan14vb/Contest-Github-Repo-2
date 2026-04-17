@@ -21,9 +21,11 @@ INCLUDE heap_functions.inc
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-event_connect PROC pInstance : DWORD, pFunction : DWORD
+event_connect PROC PUBLIC USES ebx ecx edx esi edi, pInstance : DWORD, pFunction : DWORD
 	; // Create the connection
+	push ecx
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF Connection
+	pop ecx
 
     mov ebx, pInstance
     mov (Connection PTR [eax]).pInstance, ebx
@@ -45,7 +47,7 @@ event_connect ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-event_disconnect PROC pConnection : DWORD
+event_disconnect PROC PUBLIC USES ebx ecx edx esi edi, pConnection : DWORD
 	; // The UnorderedVector is at the same offset as the event, so
 	; // ecx contains the UnorderedVector pointer
 	INVOKE remove_element, pConnection
@@ -63,7 +65,10 @@ event_disconnect ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-event_fire PROC pArgs : DWORD
+event_fire PROC PUBLIC USES ebx ecx edx esi edi, pArgs : DWORD
+	local pEvent:DWORD
+	mov pEvent, ecx
+
 	; // Get the vector data and count
     mov esi, (UnorderedVector PTR [ecx]).pData
     mov edi, (UnorderedVector PTR [ecx]).count
@@ -75,8 +80,27 @@ event_fire PROC pArgs : DWORD
 fire_loop:
     dec edi
 
-	; // Loop body goes here TODO
+	mov ecx, pEvent
+    mov esi, (UnorderedVector PTR [ecx]).pData
 
+	; // Get the next element
+	mov ebx, [esi + edi * 4]
+
+	; // Push the arguments
+	mov eax, pArgs
+    push eax
+
+	; // If the listener is an instance, move the "This" pointer into ecx
+	mov eax, (Connection PTR [ebx]).pInstance
+	.IF eax != 0
+		mov ecx, eax
+	.ENDIF
+
+	; // Call the function
+	mov eax, (Connection PTR [ebx]).pFunction
+	call eax
+
+	; // Advanced the loop
 	test edi, edi
     jg fire_loop
 

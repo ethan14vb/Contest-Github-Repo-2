@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:24:15
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:37:07
 event.asm						     Page 1 - 1
 
 
@@ -143,32 +143,44 @@ event.asm						     Page 1 - 1
 				; // Register Parameters: 
 				; //	ecx - THIS pointer
 				; // ----------------------------------
- 00000000			event_connect PROC pInstance : DWORD, pFunction : DWORD
+ 00000000			event_connect PROC PUBLIC USES ebx ecx edx esi edi, pInstance : DWORD, pFunction : DWORD
 					; // Create the connection
  00000000  55		   *	    push   ebp
  00000001  8B EC	   *	    mov    ebp, esp
+ 00000003  53		   *	    push   ebx
+ 00000004  51		   *	    push   ecx
+ 00000005  52		   *	    push   edx
+ 00000006  56		   *	    push   esi
+ 00000007  57		   *	    push   edi
+ 00000008  51				push ecx
 					INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF Connection
- 00000003  6A 08	   *	    push   +000000008h
- 00000005  6A 04	   *	    push   +000000004h
- 00000007  FF 35 00000000 E *	    push   hHeap
- 0000000D  E8 00000000 E   *	    call   HeapAlloc
+ 00000009  6A 08	   *	    push   +000000008h
+ 0000000B  6A 04	   *	    push   +000000004h
+ 0000000D  FF 35 00000000 E *	    push   hHeap
+ 00000013  E8 00000000 E   *	    call   HeapAlloc
+ 00000018  59				pop ecx
 				
- 00000012  8B 5D 08		    mov ebx, pInstance
- 00000015  89 18		    mov (Connection PTR [eax]).pInstance, ebx
- 00000017  8B 5D 0C		    mov ebx, pFunction
- 0000001A  89 58 04		    mov (Connection PTR [eax]).pFunction, ebx
+ 00000019  8B 5D 08		    mov ebx, pInstance
+ 0000001C  89 18		    mov (Connection PTR [eax]).pInstance, ebx
+ 0000001E  8B 5D 0C		    mov ebx, pFunction
+ 00000021  89 58 04		    mov (Connection PTR [eax]).pFunction, ebx
 				
 					; // Add the connection to the vector (ecx points to the connections UnorderedVector)
- 0000001D  50			    push eax
+ 00000024  50			    push eax
 				    INVOKE push_back, eax 
- 0000001E  50		   *	    push   eax
- 0000001F  E8 00000000 E   *	    call   push_back
- 00000024  58				pop eax
+ 00000025  50		   *	    push   eax
+ 00000026  E8 00000000 E   *	    call   push_back
+ 0000002B  58				pop eax
 				
 				    ret
- 00000025  C9		   *	    leave  
- 00000026  C2 0008	   *	    ret    00008h
- 00000029			event_connect ENDP
+ 0000002C  5F		   *	    pop    edi
+ 0000002D  5E		   *	    pop    esi
+ 0000002E  5A		   *	    pop    edx
+ 0000002F  59		   *	    pop    ecx
+ 00000030  5B		   *	    pop    ebx
+ 00000031  C9		   *	    leave  
+ 00000032  C2 0008	   *	    ret    00008h
+ 00000035			event_connect ENDP
 
 				; // ----------------------------------
 				; // event_disconnect
@@ -177,26 +189,36 @@ event.asm						     Page 1 - 1
 				; // Register Parameters: 
 				; //	ecx - THIS pointer
 				; // ----------------------------------
- 00000029			event_disconnect PROC pConnection : DWORD
+ 00000035			event_disconnect PROC PUBLIC USES ebx ecx edx esi edi, pConnection : DWORD
 					; // The UnorderedVector is at the same offset as the event, so
 					; // ecx contains the UnorderedVector pointer
- 00000029  55		   *	    push   ebp
- 0000002A  8B EC	   *	    mov    ebp, esp
+ 00000035  55		   *	    push   ebp
+ 00000036  8B EC	   *	    mov    ebp, esp
+ 00000038  53		   *	    push   ebx
+ 00000039  51		   *	    push   ecx
+ 0000003A  52		   *	    push   edx
+ 0000003B  56		   *	    push   esi
+ 0000003C  57		   *	    push   edi
 					INVOKE remove_element, pConnection
- 0000002C  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
- 0000002F  E8 00000000 E   *	    call   remove_element
+ 0000003D  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000040  E8 00000000 E   *	    call   remove_element
 
 					; // Free the connection
 					INVOKE HeapFree, hHeap, 0, pConnection
- 00000034  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
- 00000037  6A 00	   *	    push   +000000000h
- 00000039  FF 35 00000000 E *	    push   hHeap
- 0000003F  E8 00000000 E   *	    call   HeapFree
+ 00000045  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000048  6A 00	   *	    push   +000000000h
+ 0000004A  FF 35 00000000 E *	    push   hHeap
+ 00000050  E8 00000000 E   *	    call   HeapFree
 
 					ret
- 00000044  C9		   *	    leave  
- 00000045  C2 0004	   *	    ret    00004h
- 00000048			event_disconnect ENDP
+ 00000055  5F		   *	    pop    edi
+ 00000056  5E		   *	    pop    esi
+ 00000057  5A		   *	    pop    edx
+ 00000058  59		   *	    pop    ecx
+ 00000059  5B		   *	    pop    ebx
+ 0000005A  C9		   *	    leave  
+ 0000005B  C2 0004	   *	    ret    00004h
+ 0000005E			event_disconnect ENDP
 
 				; // ----------------------------------
 				; // event_fire
@@ -205,34 +227,69 @@ event.asm						     Page 1 - 1
 				; // Register Parameters: 
 				; //	ecx - THIS pointer
 				; // ----------------------------------
- 00000048			event_fire PROC pArgs : DWORD
-					; // Get the vector data and count
- 00000048  55		   *	    push   ebp
- 00000049  8B EC	   *	    mov    ebp, esp
- 0000004B  8B 31		    mov esi, (UnorderedVector PTR [ecx]).pData
- 0000004D  8B 79 04		    mov edi, (UnorderedVector PTR [ecx]).count
+ 0000005E			event_fire PROC PUBLIC USES ebx ecx edx esi edi, pArgs : DWORD
+					local pEvent:DWORD
+ 0000005E  55		   *	    push   ebp
+ 0000005F  8B EC	   *	    mov    ebp, esp
+ 00000061  83 C4 FC	   *	    add    esp, 0FFFFFFFCh
+ 00000064  53		   *	    push   ebx
+ 00000065  51		   *	    push   ecx
+ 00000066  52		   *	    push   edx
+ 00000067  56		   *	    push   esi
+ 00000068  57		   *	    push   edi
+ 00000069  89 4D FC			mov pEvent, ecx
 
- 00000050  85 FF			test edi, edi
- 00000052  74 05			jz event_fire_exit
+					; // Get the vector data and count
+ 0000006C  8B 31		    mov esi, (UnorderedVector PTR [ecx]).pData
+ 0000006E  8B 79 04		    mov edi, (UnorderedVector PTR [ecx]).count
+
+ 00000071  85 FF			test edi, edi
+ 00000073  74 1E			jz event_fire_exit
 
 					; // Iterate backwards through the vector
- 00000054			fire_loop:
- 00000054  4F			    dec edi
+ 00000075			fire_loop:
+ 00000075  4F			    dec edi
 
-					; // Loop body goes here TODO
+ 00000076  8B 4D FC			mov ecx, pEvent
+ 00000079  8B 31		    mov esi, (UnorderedVector PTR [ecx]).pData
 
- 00000055  85 FF			test edi, edi
- 00000057  7F FB		    jg fire_loop
+					; // Get the next element
+ 0000007B  8B 1C BE			mov ebx, [esi + edi * 4]
 
- 00000059			event_fire_exit:
+					; // Push the arguments
+ 0000007E  8B 45 08			mov eax, pArgs
+ 00000081  50			    push eax
+
+					; // If the listener is an instance, move the "This" pointer into ecx
+ 00000082  8B 03			mov eax, (Connection PTR [ebx]).pInstance
+					.IF eax != 0
+ 00000084  0B C0	   *	    or	eax, eax
+ 00000086  74 02	   *	    je	@C0001
+ 00000088  8B C8				mov ecx, eax
+					.ENDIF
+ 0000008A		   *@C0001:
+
+					; // Call the function
+ 0000008A  8B 43 04			mov eax, (Connection PTR [ebx]).pFunction
+ 0000008D  FF D0			call eax
+
+					; // Advanced the loop
+ 0000008F  85 FF			test edi, edi
+ 00000091  7F E2		    jg fire_loop
+
+ 00000093			event_fire_exit:
 					ret
- 00000059  C9		   *	    leave  
- 0000005A  C2 0004	   *	    ret    00004h
- 0000005D			event_fire ENDP
-event.asm(85) : warning A6004:procedure argument or local not referenced : pArgs
+ 00000093  5F		   *	    pop    edi
+ 00000094  5E		   *	    pop    esi
+ 00000095  5A		   *	    pop    edx
+ 00000096  59		   *	    pop    ecx
+ 00000097  5B		   *	    pop    ebx
+ 00000098  C9		   *	    leave  
+ 00000099  C2 0004	   *	    ret    00004h
+ 0000009C			event_fire ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:24:15
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:37:07
 event.asm						     Symbols 2 - 1
 
 
@@ -268,7 +325,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000005D Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000009C Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -281,15 +338,16 @@ HeapFree . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 HeapReAlloc  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 VirtualAlloc . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 VirtualFree  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-event_connect  . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000029 Public STDCALL
+event_connect  . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000035 Public STDCALL
   pInstance  . . . . . . . . . .	DWord	 bp + 00000008
   pFunction  . . . . . . . . . .	DWord	 bp + 0000000C
-event_disconnect . . . . . . . .	P Near	 00000029 _TEXT	Length= 0000001F Public STDCALL
+event_disconnect . . . . . . . .	P Near	 00000035 _TEXT	Length= 00000029 Public STDCALL
   pConnection  . . . . . . . . .	DWord	 bp + 00000008
-event_fire . . . . . . . . . . .	P Near	 00000048 _TEXT	Length= 00000015 Public STDCALL
+event_fire . . . . . . . . . . .	P Near	 0000005E _TEXT	Length= 0000003E Public STDCALL
   pArgs  . . . . . . . . . . . .	DWord	 bp + 00000008
-  fire_loop  . . . . . . . . . .	L Near	 00000054 _TEXT	
-  event_fire_exit  . . . . . . .	L Near	 00000059 _TEXT	
+  pEvent . . . . . . . . . . . .	DWord	 bp - 00000004
+  fire_loop  . . . . . . . . . .	L Near	 00000075 _TEXT	
+  event_fire_exit  . . . . . . .	L Near	 00000093 _TEXT	
 free_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -324,5 +382,5 @@ PAGE_READWRITE . . . . . . . . .	Number	 00000004h
 UNORDERED_VECTOR_INC . . . . . .	Number	 00000001h   
 hHeap  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
 
-	   1 Warnings
+	   0 Warnings
 	   0 Errors
