@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 20:21:25
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 20:24:08
 sprite_test_scene.asm					     Page 1 - 1
 
 
@@ -476,6 +476,7 @@ sprite_test_scene.asm					     Page 1 - 1
 				; // with the sprite test scene contents.
 				; // ----------------------------------
  00000000			populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
+					; // Sprite
  00000000  55		   *	    push   ebp
  00000001  8B EC	   *	    mov    ebp, esp
  00000003  50		   *	    push   eax
@@ -483,19 +484,44 @@ sprite_test_scene.asm					     Page 1 - 1
  00000005  52		   *	    push   edx
  00000006  56		   *	    push   esi
  00000007  57		   *	    push   edi
- 00000008  8B 45 08			mov eax, pScene
+					INVOKE new_game_object, 2
+ 00000008  6A 02	   *	    push   +000000002h
+ 0000000A  E8 00000000 E   *	    call   new_game_object
+ 0000000F  8B C8			mov ecx, eax
+
+					INVOKE new_transform_component, 0, 0, 0
+ 00000011  6A 00	   *	    push   +000000000h
+ 00000013  6A 00	   *	    push   +000000000h
+ 00000015  6A 00	   *	    push   +000000000h
+ 00000017  E8 00000000 E   *	    call   new_transform_component
+					INVOKE add_component, ecx, eax
+ 0000001C  50		   *	    push   eax
+ 0000001D  51		   *	    push   ecx
+ 0000001E  E8 00000000 E   *	    call   add_component
+
+					; //INVOKE new_sprite_component
+					INVOKE add_component, ecx, eax
+ 00000023  50		   *	    push   eax
+ 00000024  51		   *	    push   ecx
+ 00000025  E8 00000000 E   *	    call   add_component
+
+ 0000002A  8B F1			mov esi, ecx
+ 0000002C  8B 4D 08			mov ecx, pScene
+					INVOKE instantiate_game_object, esi
+ 0000002F  56		   *	    push   esi
+ 00000030  E8 00000000 E   *	    call   instantiate_game_object
 					ret
- 0000000B  5F		   *	    pop    edi
- 0000000C  5E		   *	    pop    esi
- 0000000D  5A		   *	    pop    edx
- 0000000E  5B		   *	    pop    ebx
- 0000000F  58		   *	    pop    eax
- 00000010  C9		   *	    leave  
- 00000011  C2 0004	   *	    ret    00004h
- 00000014			populate_sprite_test_scene ENDP
+ 00000035  5F		   *	    pop    edi
+ 00000036  5E		   *	    pop    esi
+ 00000037  5A		   *	    pop    edx
+ 00000038  5B		   *	    pop    ebx
+ 00000039  58		   *	    pop    eax
+ 0000003A  C9		   *	    leave  
+ 0000003B  C2 0004	   *	    ret    00004h
+ 0000003E			populate_sprite_test_scene ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 20:21:25
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 20:24:08
 sprite_test_scene.asm					     Symbols 2 - 1
 
 
@@ -581,7 +607,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000014 DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000003E DWord	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -619,7 +645,7 @@ new_game_object  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 new_scene  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 new_transform_component  . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 new_unordered_vector . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-populate_sprite_test_scene . . .	P Near	 00000000 _TEXT	Length= 00000014 Public STDCALL
+populate_sprite_test_scene . . .	P Near	 00000000 _TEXT	Length= 0000003E Public STDCALL
   pScene . . . . . . . . . . . .	DWord	 bp + 00000008
 push_back  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 queue_free_game_object . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL

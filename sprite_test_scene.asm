@@ -18,7 +18,19 @@ INCLUDE sprite_component.inc
 ; // with the sprite test scene contents.
 ; // ----------------------------------
 populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
-	mov eax, pScene
+	; // Sprite
+	INVOKE new_game_object, 2
+	mov ecx, eax
+
+	INVOKE new_transform_component, 0, 0, 0
+	INVOKE add_component, ecx, eax
+
+	; //INVOKE new_sprite_component
+	INVOKE add_component, ecx, eax
+
+	mov esi, ecx
+	mov ecx, pScene
+	INVOKE instantiate_game_object, esi
 	ret
 populate_sprite_test_scene ENDP
 
