@@ -602,7 +602,7 @@ set_y_bounds:
 	sub edx, esi
 	mov rh, edx
 
-	; // calculate the actual start position based on flipping
+	; // calculate the actual start x position based on flipping
 	mov eax, srcX
 	mov esi, (SpriteComponent PTR [edi]).flipX
 	.IF esi == 0
@@ -615,6 +615,21 @@ set_y_bounds:
 		dec eax
 		sub eax, clipLeft
 		mov startSrcX, eax
+	.ENDIF
+
+	; // calculate the actual start y position based on flipping
+	mov ebx, srcY
+	mov esi, (SpriteComponent PTR [edi]).flipY
+	.IF esi == 0
+		mov dirY, 1
+		add ebx, clipTop
+		mov startSrcY, ebx
+	.ELSE
+		mov dirY, -1
+		add ebx, srcH
+		dec ebx
+		sub ebx, clipTop
+		mov startSrcY, ebx
 	.ENDIF
 
 drawSprite_done:
