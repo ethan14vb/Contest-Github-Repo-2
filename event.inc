@@ -27,5 +27,6 @@ event_fire			PROTO 		pArgs : DWORD
 ; // Constructors
 new_event PROTO
 init_event PROTO
+free_event PROTO
 
 ENDIF

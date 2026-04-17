@@ -14,15 +14,23 @@ INCLUDE heap_functions.inc
 ; // ********************************************
 ; // Constructor Methods
 ; // ********************************************
-init_event PROC
+init_event PROC PUBLIC USES ebx ecx edx esi edi
 	ret
 init_event ENDP
 
-new_event PROC
+; // ----------------------------------
+; // new_event
+; // Reserves heap space for the Object with parameters calls the initializer method
+; // ----------------------------------
+new_event PROC PUBLIC USES ebx ecx edx esi edi
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF Event
+	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
+	INVOKE init_event
+
 	ret
 new_event ENDP
 
-free_event PROC
+free_event PROC PUBLIC USES ebx ecx edx esi edi
 	ret
 free_event ENDP
 
