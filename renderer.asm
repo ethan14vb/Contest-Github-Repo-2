@@ -670,6 +670,28 @@ xloop_sprite:
 	cmp xCounter, 0
 	je end_xloop
 
+	; // Get source pixel
+	mov eax, srcRowBase
+	add eax, curSrcX
+	shl eax, 2
+	add eax, texPixels
+	mov eax, [eax]
+	
+	mov ebx, [edi]
+
+	; // Blend the alpha value
+	INVOKE blendColor, eax, ebx
+
+	mov [edi], eax
+	add edi, 4
+
+	; // Advance source X
+	mov eax, dirX
+	add curSrcX, eax
+
+	dec xCounter
+	jmp xloop_sprite
+
 end_xloop:
 	; // Advance source Y
 	mov eax, dirY
