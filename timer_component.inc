@@ -11,6 +11,7 @@ IFNDEF TIMER_COMPONENT_INC
 TIMER_COMPONENT_INC EQU 1
 
 INCLUDE component.inc
+INCLUDE event.inc
 
 TimerComponent STRUCT
 	baseComponent Component <>

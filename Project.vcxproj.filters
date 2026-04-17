@@ -182,5 +182,8 @@
     <MASM Include="event.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
+    <MASM Include="timer_component.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

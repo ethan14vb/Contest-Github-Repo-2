@@ -29,6 +29,7 @@
     <MASM Include="sprite_component.asm" />
     <MASM Include="sprite_test_scene.asm" />
     <MASM Include="texture.asm" />
+    <MASM Include="timer_component.asm" />
     <MASM Include="transform_component.asm" />
     <MASM Include="unordered_vector.asm" />
     <None Include="camera_mover_game_object.inc" />
