@@ -13,6 +13,7 @@ INCLUDE camera.inc
 INCLUDE render_command.inc
 INCLUDE graph_wind.inc
 INCLUDE texture.inc
+INCLUDE heap_functions.inc
 
 ; // ********************************************
 ; // Windows function prototypes
@@ -69,7 +70,7 @@ destY DWORD ?
 destW DWORD ?
 destH DWORD ?
 
-screenBuffer Pixel GAME_WIDTH * GAME_HEIGHT DUP(<0, 0, 0, 255>)
+pScreenBuffer DWORD ?
 
 bmiHeader BITMAPINFOHEADER <40, GAME_WIDTH, -GAME_HEIGHT, 1, 32, 0, 0, 0, 0, 0, 0>
 
@@ -223,9 +224,18 @@ calculateAspectRatio ENDP
 ; // ----------------------------------
 ; // initializeRenderer
 ; // Initializes the window for rendering by getting the screen resolution 
+; // and allocates space for the screen buffer
 ; // ----------------------------------
 initializeRenderer PROC PUBLIC USES eax
 	INVOKE calculateAspectRatio
+
+	; // Now initialize the screen buffer
+	mov eax, GAME_WIDTH
+    imul eax, GAME_HEIGHT
+    shl eax, 2
+
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS OR HEAP_ZERO_MEMORY, eax
+    mov pScreenBuffer, eax
 
 	ret
 initializeRenderer ENDP
@@ -680,6 +690,9 @@ xloop_sprite:
 	mov ebx, [edi]
 
 	; // Blend the alpha value
+	bswap eax ; // The bswap instruction was not learned in class. It is used here as an easy way of flipping the DWORD around.
+	ror eax, 8
+
 	INVOKE blendColor, eax, ebx
 
 	mov [edi], eax
@@ -723,6 +736,11 @@ renderCommands PROC PUBLIC USES esi ecx edi ebx, pRenderCommands:DWORD, numComma
 	local key_layer:DWORD   ; // the layer value of key_ptr
 	local sort_i:DWORD      ; // outer loop index  (insertion sort)
 	local sort_j:DWORD      ; // inner loop index  (insertion sort)
+
+	.IF rendererInitialized == 0 
+		INVOKE initializeRenderer
+		mov rendererInitialized, 0FFFFFFFFh
+	.ENDIF
 
 	; // ----------------------------------------------------------------
 	; // INSERTION SORT
@@ -821,9 +839,9 @@ sort_done:
 	; // CLEAR BUFFER
 	; // Fill the screen pixel buffer with solid black (r=0,g=0,b=0,a=255).
 	; // ----------------------------------------------------------------
-	mov pBuffer, OFFSET screenBuffer
+	mov edi, pScreenBuffer
+	mov pBuffer, edi
 	mov ecx, GAME_WIDTH * GAME_HEIGHT
-	mov edi, pBuffer
 	mov eax, 0FF000000h
 	rep stosd
 
@@ -857,11 +875,6 @@ cmd_loop:
 	jmp cmd_loop
 
 render_done:
-	.IF rendererInitialized == 0 
-		INVOKE initializeRenderer
-		mov rendererInitialized, 0FFFFFFFFh
-	.ENDIF
-
 	INVOKE displayBuffer, pBuffer, hWnd
 	ret
 renderCommands ENDP

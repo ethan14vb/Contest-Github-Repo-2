@@ -1,4 +1,4 @@
-.386
+.686
 .model flat, stdcall
 option casemap : none
 .stack 4096

@@ -9,11 +9,12 @@ INCLUDE game_object.inc
 INCLUDE scene.inc
 INCLUDE game_object.inc
 INCLUDE transform_component.inc
+INCLUDE camera_mover_game_object.inc
 INCLUDE resource_manager.inc
 INCLUDE sprite_component.inc
 
 .data
-testFile BYTE "test_drawing.pam", 0
+testFile BYTE "Concept 2.pam", 0
 
 PUBLIC pTex
 pTex DWORD ?
@@ -41,6 +42,14 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov esi, ecx
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
+
+	; // Camera mover game object
+	INVOKE new_camera_mover_game_object
+	mov esi, eax
+
+	mov ecx, pScene
+	INVOKE instantiate_game_object, esi
+
 	ret
 populate_sprite_test_scene ENDP
 

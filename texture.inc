@@ -9,13 +9,13 @@ IFNDEF TEXTURE_INC
 TEXTURE_INC EQU 1
 
 Texture STRUCT
-	h DWORD ?			; // The height of the texture
-	w DWORD ?			; // The width of the texture
+	w DWORD ?			; // The height of the texture
+	h DWORD ?			; // The width of the texture
 	pPixels DWORD ?		; // The pointer to the pixel data in RGBA (.PAM file format)
 Texture ENDS
 
-init_texture PROTO h:DWORD, w:DWORD, pPixels:DWORD
-new_texture PROTO h:DWORD, w:DWORD, pPixels:DWORD
+init_texture PROTO w:DWORD, h:DWORD, pPixels:DWORD
+new_texture PROTO w:DWORD, h:DWORD, pPixels:DWORD
 free_texture PROTO 
 
 ENDIF

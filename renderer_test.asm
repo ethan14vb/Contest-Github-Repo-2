@@ -16,7 +16,7 @@ INCLUDE engine_types.inc
 ExitProcess PROTO STDCALL : DWORD
 
 .data
-screenBuffer Pixel GAME_WIDTH * GAME_HEIGHT DUP(<0, 128, 128, 255>)
+screenBuffer BYTE (GAME_WIDTH * GAME_HEIGHT * 4) DUP(?)
 
 .code
 main PROC PUBLIC

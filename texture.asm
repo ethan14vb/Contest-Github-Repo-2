@@ -16,11 +16,11 @@ INCLUDE texture.inc
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-init_texture PROC PUBLIC USES ecx esi, h:DWORD, w:DWORD, pPixels:DWORD
-	mov esi, h
-	mov (Texture PTR [ecx]).h, esi
+init_texture PROC PUBLIC USES ecx esi, w:DWORD, h:DWORD, pPixels:DWORD
 	mov esi, w
 	mov (Texture PTR [ecx]).w, esi
+	mov esi, h
+	mov (Texture PTR [ecx]).h, esi
 	mov esi, pPixels
 	mov (Texture PTR [ecx]).pPixels, esi
 
@@ -33,10 +33,10 @@ init_texture ENDP
 ; // new_texture
 ; // Reserves heap space for the Object with parameters calls the initializer method
 ; // ----------------------------------
-new_texture PROC PUBLIC USES ecx, h:DWORD, w:DWORD, pPixels:DWORD
+new_texture PROC PUBLIC USES ecx, w:DWORD, h:DWORD, pPixels:DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF Texture
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_texture, h, w, pPixels
+	INVOKE init_texture, w, h, pPixels
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_texture ENDP
