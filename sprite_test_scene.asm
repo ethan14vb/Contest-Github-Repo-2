@@ -7,6 +7,10 @@
 INCLUDE default_header.inc
 INCLUDE game_object.inc
 INCLUDE scene.inc
+INCLUDE game_object.inc
+INCLUDE transform_component.inc
+INCLUDE sprite_component.inc
+
 .code
 ; // ----------------------------------
 ; // populate_sprite_test_scene
@@ -17,4 +21,5 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov eax, pScene
 	ret
 populate_sprite_test_scene ENDP
+
 END
