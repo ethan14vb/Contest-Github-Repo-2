@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:07:30
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:11:44
 event.asm						     Page 1 - 1
 
 
@@ -153,6 +153,13 @@ event.asm						     Page 1 - 1
  0000000A  C2 0008	   *	    ret    00008h
  0000000D			event_connect ENDP
 
+				; // ----------------------------------
+				; // event_disconnect
+				; // Removes the connection from the vector and frees its memory
+				; //
+				; // Register Parameters: 
+				; //	ecx - THIS pointer
+				; // ----------------------------------
  0000000D			event_disconnect PROC pConnection : DWORD
  0000000D  55		   *	    push   ebp
  0000000E  8B EC	   *	    mov    ebp, esp
@@ -162,6 +169,13 @@ event.asm						     Page 1 - 1
  00000014  C2 0004	   *	    ret    00004h
  00000017			event_disconnect ENDP
 
+				; // ----------------------------------
+				; // event_fire
+				; // Loops through all connections and calls their functions
+				; //
+				; // Register Parameters: 
+				; //	ecx - THIS pointer
+				; // ----------------------------------
  00000017			event_fire PROC pArgs : DWORD
  00000017  55		   *	    push   ebp
  00000018  8B EC	   *	    mov    ebp, esp
@@ -172,7 +186,7 @@ event.asm						     Page 1 - 1
  00000021			event_fire ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:07:30
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:11:44
 event.asm						     Symbols 2 - 1
 
 

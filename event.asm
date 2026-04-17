@@ -27,11 +27,25 @@ event_connect PROC pInstance : DWORD, pFunction : DWORD
 	ret
 event_connect ENDP
 
+; // ----------------------------------
+; // event_disconnect
+; // Removes the connection from the vector and frees its memory
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 event_disconnect PROC pConnection : DWORD
 	mov eax, pConnection
 	ret
 event_disconnect ENDP
 
+; // ----------------------------------
+; // event_fire
+; // Loops through all connections and calls their functions
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 event_fire PROC pArgs : DWORD
 	mov eax, pArgs
 	ret
