@@ -518,6 +518,23 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 		mov srcY, eax
 	.ENDIF
 
+	; // Check if the sprite is of zero height or width
+	cmp rw, 0
+	jle drawSprite_done
+	cmp rh, 0
+	jle drawSprite_done
+
+	; // Adjust transform for origin pos
+	mov ebx, pTrans
+	mov eax, (TransformComponent PTR [ebx]).x
+	sub eax, (SpriteComponent PTR [edi]).originX
+	mov edx, (TransformComponent PTR [ebx]).y
+	sub edx, (SpriteComponent PTR [edi]).originY
+		
+	; // Put screen position
+	mov sx, eax
+	mov sy, edx
+
 drawSprite_done:
 	ret
 drawSprite ENDP
