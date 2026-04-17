@@ -14,7 +14,17 @@ INCLUDE heap_functions.inc
 ; // ********************************************
 ; // Constructor Methods
 ; // ********************************************
+
+; // ----------------------------------
+; // init_event
+; // Initializes memory with the contents of an Event and creates the list of connections
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 init_event PROC PUBLIC USES ebx ecx edx esi edi
+	; // Initialize the unordered vector with a capacity for 5 connections initially
+	INVOKE init_unordered_vector, 5
 	ret
 init_event ENDP
 
