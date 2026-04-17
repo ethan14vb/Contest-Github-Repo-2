@@ -460,6 +460,12 @@ drawRect ENDP
 ; // ----------------------------------
 drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, pCamera:DWORD, pBuffer:DWORD
 
+	; // skip if not visible
+	mov edi, pSprite
+	mov eax, (RenderableComponent PTR [edi]).visible
+	test eax, eax
+	jz drawSprite_done
+
 drawSprite_done:
 	ret
 drawSprite ENDP
