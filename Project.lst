@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:11:44
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:13:47
 event.asm						     Page 1 - 1
 
 
@@ -161,13 +161,25 @@ event.asm						     Page 1 - 1
 				; //	ecx - THIS pointer
 				; // ----------------------------------
  0000000D			event_disconnect PROC pConnection : DWORD
+					; // The UnorderedVector is at the same offset as the event, so
+					; // ecx contains the UnorderedVector pointer
  0000000D  55		   *	    push   ebp
  0000000E  8B EC	   *	    mov    ebp, esp
- 00000010  8B 45 08			mov eax, pConnection
+					INVOKE remove_element, pConnection
+ 00000010  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000013  E8 00000000 E   *	    call   remove_element
+
+					; // Free the connection
+					INVOKE HeapFree, hHeap, 0, pConnection
+ 00000018  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 0000001B  6A 00	   *	    push   +000000000h
+ 0000001D  FF 35 00000000 E *	    push   hHeap
+ 00000023  E8 00000000 E   *	    call   HeapFree
+
 					ret
- 00000013  C9		   *	    leave  
- 00000014  C2 0004	   *	    ret    00004h
- 00000017			event_disconnect ENDP
+ 00000028  C9		   *	    leave  
+ 00000029  C2 0004	   *	    ret    00004h
+ 0000002C			event_disconnect ENDP
 
 				; // ----------------------------------
 				; // event_fire
@@ -176,17 +188,17 @@ event.asm						     Page 1 - 1
 				; // Register Parameters: 
 				; //	ecx - THIS pointer
 				; // ----------------------------------
- 00000017			event_fire PROC pArgs : DWORD
- 00000017  55		   *	    push   ebp
- 00000018  8B EC	   *	    mov    ebp, esp
- 0000001A  8B 45 08			mov eax, pArgs
+ 0000002C			event_fire PROC pArgs : DWORD
+ 0000002C  55		   *	    push   ebp
+ 0000002D  8B EC	   *	    mov    ebp, esp
+ 0000002F  8B 45 08			mov eax, pArgs
 					ret
- 0000001D  C9		   *	    leave  
- 0000001E  C2 0004	   *	    ret    00004h
- 00000021			event_fire ENDP
+ 00000032  C9		   *	    leave  
+ 00000033  C2 0004	   *	    ret    00004h
+ 00000036			event_fire ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:11:44
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:13:47
 event.asm						     Symbols 2 - 1
 
 
@@ -222,7 +234,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000021 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000036 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -238,9 +250,9 @@ VirtualFree  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 event_connect  . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000000D Public STDCALL
   pInstance  . . . . . . . . . .	DWord	 bp + 00000008
   pFunction  . . . . . . . . . .	DWord	 bp + 0000000C
-event_disconnect . . . . . . . .	P Near	 0000000D _TEXT	Length= 0000000A Public STDCALL
+event_disconnect . . . . . . . .	P Near	 0000000D _TEXT	Length= 0000001F Public STDCALL
   pConnection  . . . . . . . . .	DWord	 bp + 00000008
-event_fire . . . . . . . . . . .	P Near	 00000017 _TEXT	Length= 0000000A Public STDCALL
+event_fire . . . . . . . . . . .	P Near	 0000002C _TEXT	Length= 0000000A Public STDCALL
   pArgs  . . . . . . . . . . . .	DWord	 bp + 00000008
 free_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL

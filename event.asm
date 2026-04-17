@@ -35,7 +35,13 @@ event_connect ENDP
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 event_disconnect PROC pConnection : DWORD
-	mov eax, pConnection
+	; // The UnorderedVector is at the same offset as the event, so
+	; // ecx contains the UnorderedVector pointer
+	INVOKE remove_element, pConnection
+
+	; // Free the connection
+	INVOKE HeapFree, hHeap, 0, pConnection
+
 	ret
 event_disconnect ENDP
 
