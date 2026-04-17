@@ -22,8 +22,19 @@ TimerComponent STRUCT
 
 	; // Members
 	wait_time	REAL4 ?
+	time_left	REAL4 ?
 	timeout		Event <>
 
 TimerComponent ENDS
+
+; // Instance methods
+timer_start PROTO
+timer_stop PROTO
+timer_resume PROTO
+
+timer_update PROTO deltaTime : REAL4 ; // Called by the engine, not for use by GameObjects
+
+; // Constructors
+new_timer PROTO wait_time:REAL4, one_shot:DWORD, autostart:DWORD
 
 ENDIF
