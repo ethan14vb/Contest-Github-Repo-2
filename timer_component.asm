@@ -10,6 +10,7 @@
 INCLUDE default_header.inc
 INCLUDE timer_component.inc
 INCLUDE heap_functions.inc
+INCLUDE event.inc
 
 .code
 ; // ----------------------------------
@@ -20,18 +21,34 @@ INCLUDE heap_functions.inc
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 init_timer PROC PUBLIC USES ebx ecx edx esi edi, wait_time : REAL4, one_shot : DWORD, autostart : DWORD
+	local pThis
+	mov pThis, ecx
+
 	; // Parent constructor
 	INVOKE init_component
 	mov (Component PTR [ecx]).componentType, TIMER_COMPONENT_ID
 
 	mov esi, wait_time
 	mov (TimerComponent PTR [ecx]).wait_time, esi
+	mov (TimerComponent PTR [ecx]).time_left, esi ; // time_left should start equal to wait_time
 	mov esi, one_shot
 	mov (TimerComponent PTR [ecx]).one_shot, esi
 
 	; // Autostart logic
 	mov (TimerComponent PTR [ecx]).autostart, 0 ; // Always set autostart to 0
 	mov ebx, autostart
+
+	.IF ebx != 0
+		mov (TimerComponent PTR [ecx]).paused, 0 ; // Immediately start the timer
+	.ELSE
+		mov (TimerComponent PTR [ecx]).paused, 0FFFFFFFFh ; // Pause the timer
+	.ENDIF
+
+	lea ecx, (TimerComponent PTR [ecx]).timeout
+	INVOKE init_event
+
+	mov ecx, pThis
+	mov eax, ecx ; // Return the "this" pointer
 
 	ret
 init_timer ENDP
