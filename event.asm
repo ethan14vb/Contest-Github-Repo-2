@@ -25,6 +25,8 @@ INCLUDE heap_functions.inc
 init_event PROC PUBLIC USES ebx ecx edx esi edi
 	; // Initialize the unordered vector with a capacity for 5 connections initially
 	INVOKE init_unordered_vector, 5
+
+	mov eax, ecx ; // Return the this pointer
 	ret
 init_event ENDP
 
@@ -40,7 +42,34 @@ new_event PROC PUBLIC USES ebx ecx edx esi edi
 	ret
 new_event ENDP
 
+; // ----------------------------------
+; // free_event
+; // Destructs an event
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 free_event PROC PUBLIC USES ebx ecx edx esi edi
+	mov esi, ecx
+
+	; // Free the connections
+	mov eax, (UnorderedVector PTR [ecx]).pData
+	mov ebx, (UnorderedVector PTR [ecx]).count
+
+	mov ecx, 0 ; // Loop counter (int i = 0)
+	.WHILE ecx < ebx
+		mov edx, [eax + ecx * 4] ; // edx = connections[i]
+
+		; // Free the connection
+		pushad
+		INVOKE HeapFree, hHeap, 0, edx
+		popad
+
+		inc ecx ; // i++
+	.ENDW
+	
+	mov ecx, esi
+	INVOKE free_unordered_vector
 	ret
 free_event ENDP
 
