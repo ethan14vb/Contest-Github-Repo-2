@@ -164,5 +164,8 @@
     <MASM Include="main.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
+    <MASM Include="sprite_test_scene.asm">
+      <Filter>Resource\Scenes</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
