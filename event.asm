@@ -11,6 +11,25 @@ INCLUDE unordered_vector.inc
 INCLUDE heap_functions.inc
 
 .code
+; // ********************************************
+; // Constructor Methods
+; // ********************************************
+init_event PROC
+	ret
+init_event ENDP
+
+new_event PROC
+	ret
+new_event ENDP
+
+free_event PROC
+	ret
+free_event ENDP
+
+; // ********************************************
+; // Instance methods
+; // ********************************************
+
 ; // ----------------------------------
 ; // event_connect
 ; // Allocates a new connection and adds it to the vector
