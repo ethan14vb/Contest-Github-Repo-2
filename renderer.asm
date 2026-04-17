@@ -455,76 +455,10 @@ drawRect ENDP
 
 ; // ----------------------------------
 ; // drawSprite
-; // Private helper. Blits sprite to the buffer.
+; // Private helper. Draws a texture cell to the buffer.
 ; // Position is relative to camera (unless ignoreCamera set).
-; // Anchor point (originX/originY) is placed at transform position.
-; // pTexture must point to a cellW*cellH Pixel buffer.
-; // No flipping, no spritesheet stride, no clipping.
 ; // ----------------------------------
 drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, pCamera:DWORD, pBuffer:DWORD
-	local sx:DWORD, sy:DWORD, sw:DWORD, sh:DWORD, pTex:DWORD
-
-	; // skip if not visible
-	mov edx, pSprite
-	mov eax, (RenderableComponent PTR [edx]).visible
-	test eax, eax
-	jz drawSprite_done
-
-	; // screen position
-	mov ebx, pTrans
-	mov eax, (TransformComponent PTR [ebx]).x
-	mov edx, (TransformComponent PTR [ebx]).y
-
-	.IF [ebx].TransformComponent.ignoreCamera == 0
-		sub eax, (Camera PTR [pCamera]).x
-		sub edx, (Camera PTR [pCamera]).y
-	.ENDIF
-	; // anchor at transform
-	sub eax, (SpriteComponent PTR [pSprite]).originX
-	sub edx, (SpriteComponent PTR [pSprite]).originY
-	mov sx, eax
-	mov sy, edx
-
-	; // cell size
-	mov eax, (SpriteComponent PTR [pSprite]).cellW
-	mov sw, eax
-	mov eax, (SpriteComponent PTR [pSprite]).cellH
-	mov sh, eax
-
-	; // texture pointer
-	mov eax, (SpriteComponent PTR [pSprite]).pTexture
-	mov pTex, eax
-
-	; // draw loops
-	mov esi, sy
-	mov edx, sy
-	add edx, sh
-yloop_sprite:
-	cmp esi, edx
-	jge drawSprite_done
-	mov eax, esi
-	imul eax, GAME_WIDTH
-	add eax, sx
-	shl eax, 2
-	add eax, pBuffer
-	mov edi, eax
-	; // source row in texture
-	mov ebx, esi
-	sub ebx, sy
-	mov eax, sw
-	imul ebx, eax
-	shl ebx, 2
-	add ebx, pTex
-	mov ecx, sw
-xloop_sprite:
-	mov eax, [ebx]
-	mov [edi], eax
-	add ebx, 4
-	add edi, 4
-	dec ecx
-	jnz xloop_sprite
-	inc esi
-	jmp yloop_sprite
 
 drawSprite_done:
 	ret

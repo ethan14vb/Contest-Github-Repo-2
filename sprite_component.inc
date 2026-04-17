@@ -29,6 +29,7 @@ SpriteComponent STRUCT
 	; // *************************
 	flipX DWORD ?
 	flipY DWORD ? 
+	isCell DWORD ?
 SpriteComponent ENDS
 
 ENDIF
