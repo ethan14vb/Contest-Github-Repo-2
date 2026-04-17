@@ -64,7 +64,23 @@ event_disconnect ENDP
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 event_fire PROC pArgs : DWORD
-	mov eax, pArgs
+	; // Get the vector data and count
+    mov esi, (UnorderedVector PTR [ecx]).pData
+    mov edi, (UnorderedVector PTR [ecx]).count
+
+	test edi, edi
+	jz event_fire_exit
+
+	; // Iterate backwards through the vector
+fire_loop:
+    dec edi
+
+	; // Loop body goes here TODO
+
+	test edi, edi
+    jg fire_loop
+
+event_fire_exit:
 	ret
 event_fire ENDP
 

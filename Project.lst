@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:20:31
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:24:15
 event.asm						     Page 1 - 1
 
 
@@ -206,16 +206,33 @@ event.asm						     Page 1 - 1
 				; //	ecx - THIS pointer
 				; // ----------------------------------
  00000048			event_fire PROC pArgs : DWORD
+					; // Get the vector data and count
  00000048  55		   *	    push   ebp
  00000049  8B EC	   *	    mov    ebp, esp
- 0000004B  8B 45 08			mov eax, pArgs
+ 0000004B  8B 31		    mov esi, (UnorderedVector PTR [ecx]).pData
+ 0000004D  8B 79 04		    mov edi, (UnorderedVector PTR [ecx]).count
+
+ 00000050  85 FF			test edi, edi
+ 00000052  74 05			jz event_fire_exit
+
+					; // Iterate backwards through the vector
+ 00000054			fire_loop:
+ 00000054  4F			    dec edi
+
+					; // Loop body goes here TODO
+
+ 00000055  85 FF			test edi, edi
+ 00000057  7F FB		    jg fire_loop
+
+ 00000059			event_fire_exit:
 					ret
- 0000004E  C9		   *	    leave  
- 0000004F  C2 0004	   *	    ret    00004h
- 00000052			event_fire ENDP
+ 00000059  C9		   *	    leave  
+ 0000005A  C2 0004	   *	    ret    00004h
+ 0000005D			event_fire ENDP
+event.asm(85) : warning A6004:procedure argument or local not referenced : pArgs
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:20:31
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/17/26 12:24:15
 event.asm						     Symbols 2 - 1
 
 
@@ -251,7 +268,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000052 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000005D Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -269,8 +286,10 @@ event_connect  . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000029 Public 
   pFunction  . . . . . . . . . .	DWord	 bp + 0000000C
 event_disconnect . . . . . . . .	P Near	 00000029 _TEXT	Length= 0000001F Public STDCALL
   pConnection  . . . . . . . . .	DWord	 bp + 00000008
-event_fire . . . . . . . . . . .	P Near	 00000048 _TEXT	Length= 0000000A Public STDCALL
+event_fire . . . . . . . . . . .	P Near	 00000048 _TEXT	Length= 00000015 Public STDCALL
   pArgs  . . . . . . . . . . . .	DWord	 bp + 00000008
+  fire_loop  . . . . . . . . . .	L Near	 00000054 _TEXT	
+  event_fire_exit  . . . . . . .	L Near	 00000059 _TEXT	
 free_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -305,5 +324,5 @@ PAGE_READWRITE . . . . . . . . .	Number	 00000004h
 UNORDERED_VECTOR_INC . . . . . .	Number	 00000001h   
 hHeap  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
 
-	   0 Warnings
+	   1 Warnings
 	   0 Errors
