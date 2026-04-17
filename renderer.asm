@@ -562,7 +562,17 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 	mov eax, 0
 
 check_x_end:
-	 ; // Check rightmost bounds here (TODO)
+	; // Check rightmost bounds
+	cmp ecx, GAME_WIDTH
+	jle set_x_bounds
+	mov ecx, GAME_WIDTH
+
+set_x_bounds:
+	cmp eax, ecx ; // Fail case for if the right and left of the sprite are flipped
+	jge drawSprite_done
+
+	sub ecx, eax
+	mov rw, ecx
 
 drawSprite_done:
 	ret
