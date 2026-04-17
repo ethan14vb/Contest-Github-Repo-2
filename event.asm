@@ -22,9 +22,20 @@ INCLUDE heap_functions.inc
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 event_connect PROC pInstance : DWORD, pFunction : DWORD
-	mov eax, pInstance
-	mov eax, pFunction
-	ret
+	; // Create the connection
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF Connection
+
+    mov ebx, pInstance
+    mov (Connection PTR [eax]).pInstance, ebx
+    mov ebx, pFunction
+    mov (Connection PTR [eax]).pFunction, ebx
+
+	; // Add the connection to the vector (ecx points to the connections UnorderedVector)
+    push eax
+    INVOKE push_back, eax 
+	pop eax
+
+    ret
 event_connect ENDP
 
 ; // ----------------------------------
