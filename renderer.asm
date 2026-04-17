@@ -12,6 +12,7 @@ INCLUDE renderer.inc
 INCLUDE camera.inc
 INCLUDE render_command.inc
 INCLUDE graph_wind.inc
+INCLUDE texture.inc
 
 ; // ********************************************
 ; // Windows function prototypes
@@ -459,7 +460,13 @@ drawRect ENDP
 ; // Position is relative to camera (unless ignoreCamera set).
 ; // ----------------------------------
 drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, pCamera:DWORD, pBuffer:DWORD
-	LOCAL texW:DWORD, texPixels:DWORD
+	local texW:DWORD, texH:DWORD, texPixels:DWORD	; // Texture data
+
+	local sx : DWORD, sy : DWORD					; // buffer coords adjusted for clipping
+	local rw : DWORD, rh : DWORD					; // size after clipping
+
+	local srcX : DWORD, srcY : DWORD		; // base position in the texture
+	local srcW : DWORD, srcH : DWORD				; // original size of the texture
 
 	; // Skip if not visible
 	mov edi, pSprite
@@ -472,11 +479,29 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 	test ebx, ebx
 	jz drawSprite_done
 
+	mov eax, (Texture PTR [ebx]).w
+	mov texW, eax
+	mov eax, (Texture PTR [ebx]).h
+	mov texH, eax
+	mov eax, (Texture PTR [ebx]).pPixels
+	mov texPixels, eax
+
 	; // Get base dimensions and source coordinates
 	mov eax, (SpriteComponent PTR [edi]).isCell
 
 	.IF eax == 0
 		; // Texture is a full image
+		mov eax, texW
+		mov srcW, eax
+		mov rw, eax
+	
+		mov eax, (Texture PTR [ebx]).h
+		mov srcH, eax
+		mov rh, eax
+
+		mov srcX, 0
+		mov srcY, 0
+
 	.ELSE
 		; // Texture is a cell
 	.ENDIF
