@@ -693,7 +693,7 @@ xloop_sprite:
 	bswap eax ; // The bswap instruction was not learned in class. It is used here as an easy way of flipping the DWORD around.
 	ror eax, 8
 
-	INVOKE blendColor, eax, ebx
+	; // INVOKE blendColor, eax, ebx
 
 	mov [edi], eax
 	add edi, 4

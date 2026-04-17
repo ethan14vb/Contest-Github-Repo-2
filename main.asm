@@ -9,6 +9,7 @@
 INCLUDE default_header.inc
 INCLUDE sprite_test_scene.inc
 INCLUDE resource_manager.inc
+INCLUDE engine_types.inc
 INCLUDE scene.inc
 INCLUDE graph_wind.inc
 
@@ -55,6 +56,7 @@ WinMain PROC PUBLIC
 	; // Engine initialization
 	INVOKE Randomize
 	INVOKE initialize_heap
+	INVOKE SetProcessDPIAware
 
 	; // Window initialization
 	INVOKE GetModuleHandle, 0
@@ -93,10 +95,10 @@ WinMain PROC PUBLIC
 		ADDR ClassName, 
 		ADDR WindowName, 
 		WS_POPUP OR WS_VISIBLE, 
-		0, 
-		0, 
-		ecx, 
-		edx, 
+		0,
+		0,
+		ecx,
+		edx,
 		0, 
 		0, 
 		hInstance, 

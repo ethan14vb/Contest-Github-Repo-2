@@ -90,8 +90,10 @@ camera_mover_update PROC stdcall USES eax, deltaTime: REAL4
 	lea ecx, (Scene PTR [ecx]).camera
 
 	mov eax, xMov
+	shl eax, 4
 	add (Camera PTR [ecx]).x, eax
 	mov eax, yMov
+	shl eax, 4
 	add (Camera PTR [ecx]).y, eax
 
 	mov ecx, pThis ; // Restore the THIS pointer

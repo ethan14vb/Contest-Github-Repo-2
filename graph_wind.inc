@@ -147,6 +147,9 @@ StretchDIBits PROTO hdc:HDC,
 	iUsage:DWORD, 
 	rop:DWORD
 
+; // from learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setprocessdpiaware
+SetProcessDPIAware PROTO
+
 ; // ********************************
 ; // Constants
 ; // ********************************
@@ -166,6 +169,7 @@ SM_CYSCREEN			= 1
 ; Window Style Constants
 WS_POPUP			= 80000000h
 WS_VISIBLE			= 10000000h
+WS_OVERLAPPEDWINDOW = 00CF0000h
 
 WM_QUIT				= 12h
 WM_DESTROY			= 0002h
