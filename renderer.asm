@@ -667,6 +667,16 @@ yloop_sprite:
 	mov xCounter, ebx
 
 xloop_sprite:
+	cmp xCounter, 0
+	je end_xloop
+
+end_xloop:
+	; // Advance source Y
+	mov eax, dirY
+	add curSrcY, eax
+	
+	inc esi
+	jmp yloop_sprite
 
 drawSprite_done:
 	ret
