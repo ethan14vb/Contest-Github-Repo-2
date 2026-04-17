@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 22:10:07
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 22:11:27
 sprite_component.asm					     Page 1 - 1
 
 
@@ -241,19 +241,34 @@ sprite_component.asm					     Page 1 - 1
 				; // Allocates memory for a SpriteComponent and then calls
 				; // the initializer method on it.
 				; // ----------------------------------
- 00000043			new_sprite_component PROC PUBLIC USES ebx ecx esi
- 00000043  53		   *	    push   ebx
- 00000044  51		   *	    push   ecx
- 00000045  56		   *	    push   esi
+ 00000043			new_sprite_component PROC PUBLIC USES ebx ecx esi, originX:DWORD, originY : DWORD, pTexture : DWORD
+ 00000043  55		   *	    push   ebp
+ 00000044  8B EC	   *	    mov    ebp, esp
+ 00000046  53		   *	    push   ebx
+ 00000047  51		   *	    push   ecx
+ 00000048  56		   *	    push   esi
+					INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF SpriteComponent
+ 00000049  6A 38	   *	    push   +000000038h
+ 0000004B  6A 04	   *	    push   +000000004h
+ 0000004D  FF 35 00000000 E *	    push   hHeap
+ 00000053  E8 00000000 E   *	    call   HeapAlloc
+ 00000058  8B C8			mov ecx, eax; // Move the memory address to ecx so it can function as a "this" pointer
+					INVOKE init_sprite_component, originX, originY, pTexture
+ 0000005A  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
+ 0000005D  FF 75 0C	   *	    push   dword  ptr ss:[ebp]+00000000Ch
+ 00000060  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000063  E8 FFFFFF98	   *	    call   init_sprite_component
+
 					ret ; // Return with the address of the memory block in HeapAlloc
- 00000046  5E		   *	    pop    esi
- 00000047  59		   *	    pop    ecx
- 00000048  5B		   *	    pop    ebx
- 00000049  C3		   *	    ret    00000h
- 0000004A			new_sprite_component ENDP
+ 00000068  5E		   *	    pop    esi
+ 00000069  59		   *	    pop    ecx
+ 0000006A  5B		   *	    pop    ebx
+ 0000006B  C9		   *	    leave  
+ 0000006C  C2 000C	   *	    ret    0000Ch
+ 0000006F			new_sprite_component ENDP
 
 				END 
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 22:10:07
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 22:11:27
 sprite_component.asm					     Symbols 2 - 1
 
 
@@ -309,7 +324,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000004A DWord	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000006F DWord	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -332,7 +347,10 @@ init_sprite_component  . . . . .	P Near	 00000000 _TEXT	Length= 00000043 Public 
   pTexture . . . . . . . . . . .	DWord	 bp + 00000010
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 new_component  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-new_sprite_component . . . . . .	P Near	 00000043 _TEXT	Length= 00000007 Public STDCALL
+new_sprite_component . . . . . .	P Near	 00000043 _TEXT	Length= 0000002C Public STDCALL
+  originX  . . . . . . . . . . .	DWord	 bp + 00000008
+  originY  . . . . . . . . . . .	DWord	 bp + 0000000C
+  pTexture . . . . . . . . . . .	DWord	 bp + 00000010
 
 
 Symbols:

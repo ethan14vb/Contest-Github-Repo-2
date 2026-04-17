@@ -46,7 +46,11 @@ init_sprite_component ENDP
 ; // Allocates memory for a SpriteComponent and then calls
 ; // the initializer method on it.
 ; // ----------------------------------
-new_sprite_component PROC PUBLIC USES ebx ecx esi
+new_sprite_component PROC PUBLIC USES ebx ecx esi, originX:DWORD, originY : DWORD, pTexture : DWORD
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF SpriteComponent
+	mov ecx, eax; // Move the memory address to ecx so it can function as a "this" pointer
+	INVOKE init_sprite_component, originX, originY, pTexture
+
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_sprite_component ENDP
 
