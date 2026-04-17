@@ -12,10 +12,26 @@ INCLUDE timer_component.inc
 INCLUDE heap_functions.inc
 
 .code
+; // ----------------------------------
+; // init_timer
+; // Initializes memory with the contents of a TimerComponent
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 init_timer PROC PUBLIC USES ebx ecx edx esi edi, wait_time : REAL4, one_shot : DWORD, autostart : DWORD
-	mov eax, wait_time
-	mov eax, one_shot
-	mov eax, autostart
+	; // Parent constructor
+	INVOKE init_component
+	mov (Component PTR [ecx]).componentType, TIMER_COMPONENT_ID
+
+	mov esi, wait_time
+	mov (TimerComponent PTR [ecx]).wait_time, esi
+	mov esi, one_shot
+	mov (TimerComponent PTR [ecx]).one_shot, esi
+
+	; // Autostart logic
+	mov (TimerComponent PTR [ecx]).autostart, 0 ; // Always set autostart to 0
+	mov ebx, autostart
 
 	ret
 init_timer ENDP
