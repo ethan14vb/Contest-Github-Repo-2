@@ -469,7 +469,9 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 	local srcW : DWORD, srcH : DWORD				; // original size of the texture
 
 	local startSrcX : DWORD, startSrcY : DWORD		; // position that the drawing starts from (adjusted for flipping)
+	local curSrcX : DWORD, curSrcY : DWORD			; // current position in the source texture while drawing
 	local dirX : DWORD, dirY : DWORD				; // direction of printing the texture (either 1 or -1)
+	local xCounter:DWORD, endY:DWORD, srcRowBase:DWORD
 	
 	local clipLeft:DWORD, clipTop:DWORD
 
@@ -631,6 +633,19 @@ set_y_bounds:
 		sub ebx, clipTop
 		mov startSrcY, ebx
 	.ENDIF
+
+	; // Now draw the sprite
+	mov esi, sy
+	mov eax, sy
+	add eax, rh
+	mov endY, eax
+
+	mov eax, startSrcY
+	mov curSrcY, eax
+
+yloop_sprite:
+
+xloop_sprite:
 
 drawSprite_done:
 	ret
