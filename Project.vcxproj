@@ -51,6 +51,7 @@
     <None Include="sprite_component.inc">
       <FileType>Document</FileType>
     </None>
+    <None Include="sprite_test_scene.inc" />
     <None Include="texture.inc" />
     <None Include="unordered_vector.inc" />
   </ItemGroup>

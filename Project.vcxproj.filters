@@ -76,6 +76,9 @@
     <None Include="knight_game_object.inc">
       <Filter>Include\Engine</Filter>
     </None>
+    <None Include="sprite_test_scene.inc">
+      <Filter>Resource\Scenes</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
