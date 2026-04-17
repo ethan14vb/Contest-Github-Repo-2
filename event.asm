@@ -61,9 +61,11 @@ free_event PROC PUBLIC USES ebx ecx edx esi edi
 		mov edx, [eax + ecx * 4] ; // edx = connections[i]
 
 		; // Free the connection
-		pushad
+		push eax
+		push ecx
 		INVOKE HeapFree, hHeap, 0, edx
-		popad
+		pop ecx
+		pop eax
 
 		inc ecx ; // i++
 	.ENDW
