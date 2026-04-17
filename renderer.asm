@@ -504,6 +504,18 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 
 	.ELSE
 		; // Texture is a cell
+		mov eax, (SpriteComponent PTR [edi]).cellW
+		mov srcW, eax
+		mov rw, eax
+
+		mov eax, (SpriteComponent PTR [edi]).cellH
+		mov srcH, eax
+		mov rh, eax
+
+		mov eax, (SpriteComponent PTR [edi]).cellX
+		mov srcX, eax
+		mov eax, (SpriteComponent PTR [edi]).cellY
+		mov srcY, eax
 	.ENDIF
 
 drawSprite_done:
