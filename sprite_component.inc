@@ -32,4 +32,7 @@ SpriteComponent STRUCT
 	isCell DWORD ?
 SpriteComponent ENDS
 
+init_sprite_component PROTO originX:DWORD, originY:DWORD, pTexture:DWORD
+new_sprite_component PROTO originX:DWORD, originY : DWORD, pTexture : DWORD
+
 ENDIF
