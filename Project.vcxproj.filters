@@ -82,6 +82,9 @@
     <None Include="event.inc">
       <Filter>Include\Engine</Filter>
     </None>
+    <None Include="timer_component.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
