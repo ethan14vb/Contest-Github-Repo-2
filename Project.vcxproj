@@ -14,6 +14,7 @@
     <MASM Include="camera.asm" />
     <MASM Include="camera_mover_game_object.asm" />
     <MASM Include="component.asm" />
+    <MASM Include="event.asm" />
     <MASM Include="game_object.asm" />
     <MASM Include="heap_functions.asm" />
     <MASM Include="input_manager.asm" />

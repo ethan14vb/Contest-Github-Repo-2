@@ -176,5 +176,8 @@
     <MASM Include="sprite_component.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
+    <MASM Include="event.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
