@@ -574,6 +574,31 @@ set_x_bounds:
 	sub ecx, eax
 	mov rw, ecx
 
+	; // Check y clipping
+	mov esi, sy
+	mov edx, sy
+	add edx, rh
+
+	cmp esi, 0
+	jge check_y_end
+	neg esi
+	mov clipTop, esi
+	mov sy, 0
+	mov esi, 0
+
+check_y_end:
+	; // Check uppermost bounds
+	cmp edx, GAME_HEIGHT
+	jle set_y_bounds
+	mov edx, GAME_HEIGHT
+
+set_y_bounds:
+	cmp esi, edx ; // Fail case for if the top and bottom of the sprite are flipped
+	jge drawSprite_done
+
+	sub edx, esi
+	mov rh, edx
+
 drawSprite_done:
 	ret
 drawSprite ENDP
