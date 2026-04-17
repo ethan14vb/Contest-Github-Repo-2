@@ -17,7 +17,27 @@ INCLUDE heap_functions.inc
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-init_sprite_component PROC PUBLIC USES ebx esi
+init_sprite_component PROC PUBLIC USES ebx esi, originX:DWORD, originY:DWORD, pTexture:DWORD
+	; // Parent constructor
+	INVOKE init_renderable_component, 0FFFFFFFFh, 1
+	mov (Component PTR [ecx]).componentType, SPRITE_COMPONENT_ID
+
+	; // Origin
+	mov esi, originX
+	mov (SpriteComponent PTR [ecx]).originX, esi
+	mov esi, originY
+	mov (SpriteComponent PTR [ecx]).originY, esi
+
+	; // pTexture
+	mov esi, pTexture
+	mov (SpriteComponent PTR [ecx]).pTexture, esi
+
+	; // Booleans
+	mov (SpriteComponent PTR [ecx]).isCell, 0
+	mov (SpriteComponent PTR [ecx]).flipX, 0
+	mov (SpriteComponent PTR [ecx]).flipY, 0
+
+	mov eax, ecx
 	ret
 init_sprite_component ENDP
 
