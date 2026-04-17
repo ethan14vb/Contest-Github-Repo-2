@@ -14,6 +14,16 @@ INCLUDE component.inc
 
 TimerComponent STRUCT
 	baseComponent Component <>
+
+	; // Booleans
+	autostart	DWORD ?
+	one_shot	DWORD ?
+	paused		DWORD ?
+
+	; // Members
+	wait_time	REAL4 ?
+	timeout		Event <>
+
 TimerComponent ENDS
 
 ENDIF
