@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 21:52:50
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 21:54:42
 renderer.asm						     Page 1 - 1
 
 
@@ -1144,18 +1144,18 @@ renderer.asm(313) : warning A6004:procedure argument or local not referenced : f
 				; // Position is relative to camera (unless ignoreCamera set).
 				; // ----------------------------------
  000002F3			drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, pCamera:DWORD, pBuffer:DWORD
-					local texW:DWORD, texH:DWORD, texPixels:DWORD	; // Texture data
+					local texW:DWORD, texH:DWORD, texPixels:DWORD		; // Texture data
 
-					local sx : DWORD, sy : DWORD					; // buffer coords adjusted for clipping
-					local rw : DWORD, rh : DWORD					; // size after clipping
+					local sx : DWORD, sy : DWORD						; // buffer coords adjusted for clipping
+					local rw : DWORD, rh : DWORD						; // size after clipping
 
-					local srcX : DWORD, srcY : DWORD				; // base position in the texture
-					local srcW : DWORD, srcH : DWORD				; // original size of the texture
+					local srcX : DWORD, srcY : DWORD					; // base position in the texture
+					local srcW : DWORD, srcH : DWORD					; // original size of the texture
 
-					local startSrcX : DWORD, startSrcY : DWORD		; // position that the drawing starts from (adjusted for flipping)
-					local curSrcX : DWORD, curSrcY : DWORD			; // current position in the source texture while drawing
-					local dirX : DWORD, dirY : DWORD				; // direction of printing the texture (either 1 or -1)
-					local xCounter:DWORD, endY:DWORD, srcRowBase:DWORD
+					local startSrcX : DWORD, startSrcY : DWORD			; // position that the drawing starts from (adjusted for flipping)
+					local curSrcX : DWORD, curSrcY : DWORD				; // current position in the source texture while drawing
+					local dirX : DWORD, dirY : DWORD					; // direction of printing the texture (either 1 or -1)
+					local xCounter:DWORD, endY:DWORD, srcRowBase:DWORD	; // local variables for the draw loop
 					
 					local clipLeft:DWORD, clipTop:DWORD
 
@@ -1587,7 +1587,7 @@ renderer.asm(652) : warning A6004:procedure argument or local not referenced : s
  00000596			renderCommands ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 21:52:50
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/16/26 21:54:42
 renderer.asm						     Symbols 2 - 1
 
 

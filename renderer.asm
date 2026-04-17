@@ -460,18 +460,18 @@ drawRect ENDP
 ; // Position is relative to camera (unless ignoreCamera set).
 ; // ----------------------------------
 drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, pCamera:DWORD, pBuffer:DWORD
-	local texW:DWORD, texH:DWORD, texPixels:DWORD	; // Texture data
+	local texW:DWORD, texH:DWORD, texPixels:DWORD		; // Texture data
 
-	local sx : DWORD, sy : DWORD					; // buffer coords adjusted for clipping
-	local rw : DWORD, rh : DWORD					; // size after clipping
+	local sx : DWORD, sy : DWORD						; // buffer coords adjusted for clipping
+	local rw : DWORD, rh : DWORD						; // size after clipping
 
-	local srcX : DWORD, srcY : DWORD				; // base position in the texture
-	local srcW : DWORD, srcH : DWORD				; // original size of the texture
+	local srcX : DWORD, srcY : DWORD					; // base position in the texture
+	local srcW : DWORD, srcH : DWORD					; // original size of the texture
 
-	local startSrcX : DWORD, startSrcY : DWORD		; // position that the drawing starts from (adjusted for flipping)
-	local curSrcX : DWORD, curSrcY : DWORD			; // current position in the source texture while drawing
-	local dirX : DWORD, dirY : DWORD				; // direction of printing the texture (either 1 or -1)
-	local xCounter:DWORD, endY:DWORD, srcRowBase:DWORD
+	local startSrcX : DWORD, startSrcY : DWORD			; // position that the drawing starts from (adjusted for flipping)
+	local curSrcX : DWORD, curSrcY : DWORD				; // current position in the source texture while drawing
+	local dirX : DWORD, dirY : DWORD					; // direction of printing the texture (either 1 or -1)
+	local xCounter:DWORD, endY:DWORD, srcRowBase:DWORD	; // local variables for the draw loop
 	
 	local clipLeft:DWORD, clipTop:DWORD
 
