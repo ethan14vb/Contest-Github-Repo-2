@@ -530,6 +530,14 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 	sub eax, (SpriteComponent PTR [edi]).originX
 	mov edx, (TransformComponent PTR [ebx]).y
 	sub edx, (SpriteComponent PTR [edi]).originY
+
+	; // Adjust transform for camera pos (if applicable)
+	mov ebx, pTrans
+	.IF [ebx].TransformComponent.ignoreCamera == 0
+		mov esi, pCamera
+		sub eax, (Camera PTR [esi]).x
+		sub edx, (Camera PTR [esi]).y
+	.ENDIF
 		
 	; // Put screen position
 	mov sx, eax
