@@ -655,6 +655,17 @@ yloop_sprite:
 	add eax, pBuffer
 	mov edi, eax
 
+	; // Calculate row base
+	mov eax, curSrcY
+	imul eax, texW
+	mov srcRowBase, eax
+
+	mov eax, startSrcX
+	mov curSrcX, eax
+
+	mov ebx, rw
+	mov xCounter, ebx
+
 xloop_sprite:
 
 drawSprite_done:
