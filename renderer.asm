@@ -467,6 +467,9 @@ drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, p
 
 	local srcX : DWORD, srcY : DWORD				; // base position in the texture
 	local srcW : DWORD, srcH : DWORD				; // original size of the texture
+
+	local startSrcX : DWORD, startSrcY : DWORD		; // position that the drawing starts from (adjusted for flipping)
+	local dirX : DWORD, dirY : DWORD				; // direction of printing the texture (either 1 or -1)
 	
 	local clipLeft:DWORD, clipTop:DWORD
 
@@ -598,6 +601,21 @@ set_y_bounds:
 
 	sub edx, esi
 	mov rh, edx
+
+	; // calculate the actual start position based on flipping
+	mov eax, srcX
+	mov esi, (SpriteComponent PTR [edi]).flipX
+	.IF esi == 0
+		mov dirX, 1
+		add eax, clipLeft
+		mov startSrcX, eax
+	.ELSE
+		mov dirX, -1
+		add eax, srcW
+		dec eax
+		sub eax, clipLeft
+		mov startSrcX, eax
+	.ENDIF
 
 drawSprite_done:
 	ret
