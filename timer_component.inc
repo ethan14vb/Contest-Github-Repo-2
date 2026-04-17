@@ -36,5 +36,6 @@ timer_update PROTO deltaTime : REAL4 ; // Called by the engine, not for use by G
 
 ; // Constructors
 new_timer PROTO wait_time:REAL4, one_shot:DWORD, autostart:DWORD
+init_timer PROTO wait_time:REAL4, one_shot:DWORD, autostart:DWORD
 
 ENDIF
