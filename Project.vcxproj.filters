@@ -79,6 +79,9 @@
     <None Include="sprite_test_scene.inc">
       <Filter>Resource\Scenes</Filter>
     </None>
+    <None Include="event.inc">
+      <Filter>Include\Engine</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
