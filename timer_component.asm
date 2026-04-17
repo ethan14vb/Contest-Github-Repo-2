@@ -13,6 +13,10 @@ INCLUDE heap_functions.inc
 INCLUDE event.inc
 
 .code
+; // ********************************************
+; // Constructor Methods
+; // ********************************************
+
 ; // ----------------------------------
 ; // init_timer
 ; // Initializes memory with the contents of a TimerComponent
@@ -65,5 +69,60 @@ new_timer PROC PUBLIC USES ebx ecx edx esi edi, wait_time : REAL4, one_shot : DW
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_timer ENDP
+
+; // ********************************************
+; // Instance Methods
+; // ********************************************
+
+; // ----------------------------------
+; // timer_update
+; // Updates the timer and fires the timeout event if ready.
+; // This function is meant to be called by the engine, do not
+; // call it with GameObjects.
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+timer_update PROC PUBLIC USES ebx ecx edx esi edi, deltaTime : REAL4
+	local pThis
+	mov pThis, ecx
+
+	mov ebx, (TimerComponent PTR [ecx]).paused
+	cmp ebx, 0
+	jnz timer_update_exit
+
+	; // Update the time_left
+	fld (TimerComponent PTR [ecx]).time_left
+	fsub deltaTime
+	fst (TimerComponent PTR [ecx]).time_left
+
+	; // Find whether the time_left is less than or equal to zero
+	fldz
+	fcomip st(0), st(1) ; // This is a .686 architecture instruction, it skips the middleman of getting the floating point flags
+	fstp st(0)
+
+	jb timer_update_exit
+
+	; // Fire timeout!
+	lea ecx, (TimerComponent PTR [ecx]).timeout
+	INVOKE event_fire, 0
+	
+	; // Restart the timer if applicable
+	mov ecx, pThis
+	mov ebx, (TimerComponent PTR [ecx]).one_shot
+	.IF ebx == 0
+		; // Restart the timer
+		fld (TimerComponent PTR [ecx]).time_left
+		fadd (TimerComponent PTR [ecx]).wait_time
+		fstp (TimerComponent PTR [ecx]).time_left
+		
+	.ELSE
+		; // Pause the timer
+		mov (TimerComponent PTR [ecx]).paused, 0FFFFFFFFh
+	.ENDIF
+
+timer_update_exit:
+	ret
+timer_update ENDP
 
 END
