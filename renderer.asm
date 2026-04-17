@@ -459,12 +459,27 @@ drawRect ENDP
 ; // Position is relative to camera (unless ignoreCamera set).
 ; // ----------------------------------
 drawSprite PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pSprite:DWORD, pCamera:DWORD, pBuffer:DWORD
+	LOCAL texW:DWORD, texPixels:DWORD
 
-	; // skip if not visible
+	; // Skip if not visible
 	mov edi, pSprite
 	mov eax, (RenderableComponent PTR [edi]).visible
 	test eax, eax
 	jz drawSprite_done
+
+	; // Skip the rendering in case of a null pointer
+	mov ebx, (SpriteComponent PTR [edi]).pTexture
+	test ebx, ebx
+	jz drawSprite_done
+
+	; // Get base dimensions and source coordinates
+	mov eax, (SpriteComponent PTR [edi]).isCell
+
+	.IF eax == 0
+		; // Texture is a full image
+	.ELSE
+		; // Texture is a cell
+	.ENDIF
 
 drawSprite_done:
 	ret
