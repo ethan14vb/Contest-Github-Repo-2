@@ -1,12 +1,12 @@
 ; // ==================================
-; // knight.inc
+; // knight_game_object.inc
 ; // ----------------------------------
 ; // The knight is a subclass of GameObject that
 ; // defines basic behavior for all knights
 ; // ==================================
 
-IFNDEF KNIGHT_INC
-KNIGHT_INC EQU 1
+IFNDEF KNIGHT_GAME_OBJECT_INC
+KNIGHT_GAME_OBJECT_INC EQU 1
 
 INCLUDE game_object.inc
 
