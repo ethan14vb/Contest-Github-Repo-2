@@ -7,6 +7,9 @@ INCLUDE default_header.inc
 INCLUDE heap_functions.inc
 INCLUDE bouncing_image_game_object.inc
 
+.data
+BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
+
 .code
 ; // ********************************************
 ; // Constructor Methods
@@ -20,7 +23,13 @@ INCLUDE bouncing_image_game_object.inc
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
+	; // Parent constructor
+	INVOKE init_game_object, 0
+	mov (GameObject PTR [ecx]).gameObjectType, BOUNCING_IMAGE_GAME_OBJECT_ID
+	mov (GameObject PTR [ecx]).pVt, OFFSET BOUNCING_IMAGE_GAMEOBJECT_VTABLE
+
 	mov eax, pTexture
+
 	ret
 init_bouncing_image_game_object ENDP
 
