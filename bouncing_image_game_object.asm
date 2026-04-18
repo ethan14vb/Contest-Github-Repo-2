@@ -62,6 +62,24 @@ new_bouncing_image_game_object ENDP
 ; // ********************************************
 
 ; // ----------------------------------
+; // bouncing_image_on_timeout
+; // Event callback. Flips the direction
+; // ----------------------------------
+bouncing_image_on_timeout PROC PUBLIC USES eax ebx, pThis:DWORD, pArgs:DWORD
+	mov ebx, pArgs ; // we don't need any arguments, but use it so that Lord MASM will permit the code to compile
+
+	mov ebx, pThis
+	mov eax, (BouncingImageGameObject PTR [ebx]).direction
+	
+	; // Flip the direction
+	neg eax 
+	
+	mov (BouncingImageGameObject PTR [ebx]).direction, eax
+
+	ret
+bouncing_image_on_timeout ENDP
+
+; // ----------------------------------
 ; // bouncing_image_update
 ; // Moves the camera depending on the keys pressed
 ; // 
