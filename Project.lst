@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/18/26 13:45:14
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/18/26 13:55:35
 bouncing_image_game_object.asm				     Page 1 - 1
 
 
@@ -533,10 +533,10 @@ bouncing_image_game_object.asm				     Page 1 - 1
 			      C 
 
  00000000			.data
- 00000000 00000000 E		BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET bouncing_image_update, OFFSET game_object_exit, OFFSET free_game_object>
-	   000000CB R
+ 00000000 00000000 E		BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET bouncing_image_update, OFFSET game_object_exit, OFFSET free_bouncing_image>
+	   000000C8 R
 	   00000000 E
-	   00000000 E
+	   000000F4 R
  00000010 40000000		TIMER_WAIT_TIME REAL4 2.0
 
  00000000			.code
@@ -547,28 +547,30 @@ bouncing_image_game_object.asm				     Page 1 - 1
 				; // ----------------------------------
 				; // bouncing_image_on_timeout
 				; // Event callback. Flips the direction
+				; // 
+				; // Register Parameters: 
+				; //	ecx - THIS pointer
 				; // ----------------------------------
- 00000000			bouncing_image_on_timeout PROC PUBLIC USES eax ebx, pThis:DWORD, pArgs:DWORD
+ 00000000			bouncing_image_on_timeout PROC PUBLIC USES eax ebx, pArgs:DWORD
  00000000  55		   *	    push   ebp
  00000001  8B EC	   *	    mov    ebp, esp
  00000003  50		   *	    push   eax
  00000004  53		   *	    push   ebx
- 00000005  8B 5D 0C			mov ebx, pArgs ; // we don't need any arguments, but use it so that Lord MASM will permit the code to compile
+ 00000005  8B 5D 08			mov ebx, pArgs ; // we don't need any arguments, but use it so that Lord MASM will permit the code to compile
 				
- 00000008  8B 5D 08			mov ebx, pThis
- 0000000B  8B 43 20			mov eax, (BouncingImageGameObject PTR [ebx]).direction
+ 00000008  8B 41 20			mov eax, (BouncingImageGameObject PTR [ecx]).direction
 					
 					; // Flip the direction
- 0000000E  F7 D8			neg eax 
+ 0000000B  F7 D8			neg eax 
 					
- 00000010  89 43 20			mov (BouncingImageGameObject PTR [ebx]).direction, eax
+ 0000000D  89 41 20			mov (BouncingImageGameObject PTR [ecx]).direction, eax
 				
 					ret
- 00000013  5B		   *	    pop    ebx
- 00000014  58		   *	    pop    eax
- 00000015  C9		   *	    leave  
- 00000016  C2 0008	   *	    ret    00008h
- 00000019			bouncing_image_on_timeout ENDP
+ 00000010  5B		   *	    pop    ebx
+ 00000011  58		   *	    pop    eax
+ 00000012  C9		   *	    leave  
+ 00000013  C2 0004	   *	    ret    00004h
+ 00000016			bouncing_image_on_timeout ENDP
 
 				; // ********************************************
 				; // Constructor Methods
@@ -581,116 +583,116 @@ bouncing_image_game_object.asm				     Page 1 - 1
 				; // Register Parameters: 
 				; //	ecx - THIS pointer
 				; // ----------------------------------
- 00000019			init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
+ 00000016			init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
 					local pThis
- 00000019  55		   *	    push   ebp
- 0000001A  8B EC	   *	    mov    ebp, esp
- 0000001C  83 C4 FC	   *	    add    esp, 0FFFFFFFCh
- 0000001F  53		   *	    push   ebx
- 00000020  51		   *	    push   ecx
- 00000021  52		   *	    push   edx
- 00000022  56		   *	    push   esi
- 00000023  57		   *	    push   edi
- 00000024  89 4D FC			mov pThis, ecx
+ 00000016  55		   *	    push   ebp
+ 00000017  8B EC	   *	    mov    ebp, esp
+ 00000019  83 C4 FC	   *	    add    esp, 0FFFFFFFCh
+ 0000001C  53		   *	    push   ebx
+ 0000001D  51		   *	    push   ecx
+ 0000001E  52		   *	    push   edx
+ 0000001F  56		   *	    push   esi
+ 00000020  57		   *	    push   edi
+ 00000021  89 4D FC			mov pThis, ecx
 
 					; // Parent constructor
 					INVOKE init_game_object, 0
- 00000027  6A 00	   *	    push   +000000000h
- 00000029  E8 00000000 E   *	    call   init_game_object
- 0000002E  C7 01 00000003		mov (GameObject PTR [ecx]).gameObjectType, BOUNCING_IMAGE_GAME_OBJECT_ID
- 00000034  C7 41 10			mov (GameObject PTR [ecx]).pVt, OFFSET BOUNCING_IMAGE_GAMEOBJECT_VTABLE
+ 00000024  6A 00	   *	    push   +000000000h
+ 00000026  E8 00000000 E   *	    call   init_game_object
+ 0000002B  C7 01 00000003		mov (GameObject PTR [ecx]).gameObjectType, BOUNCING_IMAGE_GAME_OBJECT_ID
+ 00000031  C7 41 10			mov (GameObject PTR [ecx]).pVt, OFFSET BOUNCING_IMAGE_GAMEOBJECT_VTABLE
 	   00000000 R
 
- 0000003B  C7 41 20			mov (BouncingImageGameObject PTR [ecx]).direction, 1
-	   00000001
+ 00000038  C7 41 20			mov (BouncingImageGameObject PTR [ecx]).direction, 2
+	   00000002
 
 					INVOKE new_transform_component, 0, 0, 0
- 00000042  6A 00	   *	    push   +000000000h
- 00000044  6A 00	   *	    push   +000000000h
- 00000046  6A 00	   *	    push   +000000000h
- 00000048  E8 00000000 E   *	    call   new_transform_component
+ 0000003F  6A 00	   *	    push   +000000000h
+ 00000041  6A 00	   *	    push   +000000000h
+ 00000043  6A 00	   *	    push   +000000000h
+ 00000045  E8 00000000 E   *	    call   new_transform_component
 					INVOKE add_component, ecx, eax
- 0000004D  50		   *	    push   eax
- 0000004E  51		   *	    push   ecx
- 0000004F  E8 00000000 E   *	    call   add_component
+ 0000004A  50		   *	    push   eax
+ 0000004B  51		   *	    push   ecx
+ 0000004C  E8 00000000 E   *	    call   add_component
 
 					INVOKE new_sprite_component, 0, 0, pTexture
- 00000054  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
- 00000057  6A 00	   *	    push   +000000000h
- 00000059  6A 00	   *	    push   +000000000h
- 0000005B  E8 00000000 E   *	    call   new_sprite_component
+ 00000051  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000054  6A 00	   *	    push   +000000000h
+ 00000056  6A 00	   *	    push   +000000000h
+ 00000058  E8 00000000 E   *	    call   new_sprite_component
 					INVOKE add_component, ecx, eax
- 00000060  50		   *	    push   eax
- 00000061  51		   *	    push   ecx
- 00000062  E8 00000000 E   *	    call   add_component
+ 0000005D  50		   *	    push   eax
+ 0000005E  51		   *	    push   ecx
+ 0000005F  E8 00000000 E   *	    call   add_component
 
 					; // Create the timer
 					INVOKE new_timer, TIMER_WAIT_TIME, 0, 1
- 00000067  6A 01	   *	    push   +000000001h
- 00000069  6A 00	   *	    push   +000000000h
- 0000006B  FF 35 00000010 R *	    push   dword  ptr TIMER_WAIT_TIME
- 00000071  E8 00000000 E   *	    call   new_timer
- 00000076  50				push eax
+ 00000064  6A 01	   *	    push   +000000001h
+ 00000066  6A 00	   *	    push   +000000000h
+ 00000068  FF 35 00000010 R *	    push   dword  ptr TIMER_WAIT_TIME
+ 0000006E  E8 00000000 E   *	    call   new_timer
+ 00000073  50				push eax
 					INVOKE add_component, ecx, eax
- 00000077  50		   *	    push   eax
- 00000078  51		   *	    push   ecx
- 00000079  E8 00000000 E   *	    call   add_component
- 0000007E  58				pop eax
+ 00000074  50		   *	    push   eax
+ 00000075  51		   *	    push   ecx
+ 00000076  E8 00000000 E   *	    call   add_component
+ 0000007B  58				pop eax
 
 					; // Connect the event to the callback function
- 0000007F  8D 48 1C			lea ecx, (TimerComponent PTR [eax]).timeout
+ 0000007C  8D 48 1C			lea ecx, (TimerComponent PTR [eax]).timeout
 					INVOKE event_connect, pThis, OFFSET bouncing_image_on_timeout
- 00000082  68 00000000 R   *	    push   dword  ptr OFFSET FLAT: bouncing_image_on_timeout
- 00000087  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
- 0000008A  E8 00000000 E   *	    call   event_connect
+ 0000007F  68 00000000 R   *	    push   dword  ptr OFFSET FLAT: bouncing_image_on_timeout
+ 00000084  FF 75 FC	   *	    push   dword  ptr ss:[ebp]+0FFFFFFFCh
+ 00000087  E8 00000000 E   *	    call   event_connect
 
- 0000008F  8B 5D FC			mov ebx, pThis
- 00000092  89 43 1C			mov (BouncingImageGameObject PTR [ebx]).pTimeoutConnection, eax
+ 0000008C  8B 5D FC			mov ebx, pThis
+ 0000008F  89 43 1C			mov (BouncingImageGameObject PTR [ebx]).pTimeoutConnection, eax
 
- 00000095  8B 45 FC			mov eax, pThis
+ 00000092  8B 45 FC			mov eax, pThis
 
 					ret
- 00000098  5F		   *	    pop    edi
- 00000099  5E		   *	    pop    esi
- 0000009A  5A		   *	    pop    edx
- 0000009B  59		   *	    pop    ecx
- 0000009C  5B		   *	    pop    ebx
- 0000009D  C9		   *	    leave  
- 0000009E  C2 0004	   *	    ret    00004h
- 000000A1			init_bouncing_image_game_object ENDP
+ 00000095  5F		   *	    pop    edi
+ 00000096  5E		   *	    pop    esi
+ 00000097  5A		   *	    pop    edx
+ 00000098  59		   *	    pop    ecx
+ 00000099  5B		   *	    pop    ebx
+ 0000009A  C9		   *	    leave  
+ 0000009B  C2 0004	   *	    ret    00004h
+ 0000009E			init_bouncing_image_game_object ENDP
 
 				; // ----------------------------------
 				; // new_bouncing_image_game_object
 				; // Allocates memory for a BouncingImageGameObject and then calls
 				; // the initializer method on it.
 				; // ----------------------------------
- 000000A1			new_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
- 000000A1  55		   *	    push   ebp
- 000000A2  8B EC	   *	    mov    ebp, esp
- 000000A4  53		   *	    push   ebx
- 000000A5  51		   *	    push   ecx
- 000000A6  52		   *	    push   edx
- 000000A7  56		   *	    push   esi
- 000000A8  57		   *	    push   edi
+ 0000009E			new_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
+ 0000009E  55		   *	    push   ebp
+ 0000009F  8B EC	   *	    mov    ebp, esp
+ 000000A1  53		   *	    push   ebx
+ 000000A2  51		   *	    push   ecx
+ 000000A3  52		   *	    push   edx
+ 000000A4  56		   *	    push   esi
+ 000000A5  57		   *	    push   edi
 					INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF BouncingImageGameObject
- 000000A9  6A 24	   *	    push   +000000024h
- 000000AB  6A 04	   *	    push   +000000004h
- 000000AD  FF 35 00000000 E *	    push   hHeap
- 000000B3  E8 00000000 E   *	    call   HeapAlloc
- 000000B8  8B C8			mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
+ 000000A6  6A 24	   *	    push   +000000024h
+ 000000A8  6A 04	   *	    push   +000000004h
+ 000000AA  FF 35 00000000 E *	    push   hHeap
+ 000000B0  E8 00000000 E   *	    call   HeapAlloc
+ 000000B5  8B C8			mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
 					INVOKE init_bouncing_image_game_object, pTexture
- 000000BA  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
- 000000BD  E8 FFFFFF57	   *	    call   init_bouncing_image_game_object
+ 000000B7  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 000000BA  E8 FFFFFF57	   *	    call   init_bouncing_image_game_object
 
 					ret ; // Return with the address of the memory block in HeapAlloc
- 000000C2  5F		   *	    pop    edi
- 000000C3  5E		   *	    pop    esi
- 000000C4  5A		   *	    pop    edx
- 000000C5  59		   *	    pop    ecx
- 000000C6  5B		   *	    pop    ebx
- 000000C7  C9		   *	    leave  
- 000000C8  C2 0004	   *	    ret    00004h
- 000000CB			new_bouncing_image_game_object ENDP
+ 000000BF  5F		   *	    pop    edi
+ 000000C0  5E		   *	    pop    esi
+ 000000C1  5A		   *	    pop    edx
+ 000000C2  59		   *	    pop    ecx
+ 000000C3  5B		   *	    pop    ebx
+ 000000C4  C9		   *	    leave  
+ 000000C5  C2 0004	   *	    ret    00004h
+ 000000C8			new_bouncing_image_game_object ENDP
 
 				; // ********************************************
 				; // Instance methods
@@ -703,41 +705,86 @@ bouncing_image_game_object.asm				     Page 1 - 1
 				; // Register Parameters: 
 				; //	ecx - THIS pointer
 				; // ----------------------------------
- 000000CB			bouncing_image_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
+ 000000C8			bouncing_image_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 					local pThis : DWORD
- 000000CB  55		   *	    push   ebp
- 000000CC  8B EC	   *	    mov    ebp, esp
- 000000CE  83 C4 FC	   *	    add    esp, 0FFFFFFFCh
- 000000D1  50		   *	    push   eax
- 000000D2  53		   *	    push   ebx
- 000000D3  51		   *	    push   ecx
- 000000D4  52		   *	    push   edx
- 000000D5  56		   *	    push   esi
- 000000D6  57		   *	    push   edi
- 000000D7  89 4D FC			mov pThis, ecx
- 000000DA  8B 45 08			mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
+ 000000C8  55		   *	    push   ebp
+ 000000C9  8B EC	   *	    mov    ebp, esp
+ 000000CB  83 C4 FC	   *	    add    esp, 0FFFFFFFCh
+ 000000CE  50		   *	    push   eax
+ 000000CF  53		   *	    push   ebx
+ 000000D0  51		   *	    push   ecx
+ 000000D1  52		   *	    push   edx
+ 000000D2  56		   *	    push   esi
+ 000000D3  57		   *	    push   edi
+ 000000D4  89 4D FC			mov pThis, ecx
+ 000000D7  8B 45 08			mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
 
 					INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
- 000000DD  6A 03	   *	    push   +000000003h
- 000000DF  E8 00000000 E   *	    call   get_first_component_which_is_a
+ 000000DA  6A 03	   *	    push   +000000003h
+ 000000DC  E8 00000000 E   *	    call   get_first_component_which_is_a
 
- 000000E4  8B 59 20			mov ebx, (BouncingImageGameObject PTR [ecx]).direction
- 000000E7  01 58 08			add (TransformComponent PTR [eax]).x, ebx
+ 000000E1  8B 59 20			mov ebx, (BouncingImageGameObject PTR [ecx]).direction
+ 000000E4  01 58 08			add (TransformComponent PTR [eax]).x, ebx
 
- 000000EA  8B 4D FC			mov ecx, pThis ; // Restore the THIS pointer
+ 000000E7  8B 4D FC			mov ecx, pThis ; // Restore the THIS pointer
 					ret
- 000000ED  5F		   *	    pop    edi
- 000000EE  5E		   *	    pop    esi
- 000000EF  5A		   *	    pop    edx
- 000000F0  59		   *	    pop    ecx
- 000000F1  5B		   *	    pop    ebx
- 000000F2  58		   *	    pop    eax
- 000000F3  C9		   *	    leave  
- 000000F4  C2 0004	   *	    ret    00004h
- 000000F7			bouncing_image_update ENDP
+ 000000EA  5F		   *	    pop    edi
+ 000000EB  5E		   *	    pop    esi
+ 000000EC  5A		   *	    pop    edx
+ 000000ED  59		   *	    pop    ecx
+ 000000EE  5B		   *	    pop    ebx
+ 000000EF  58		   *	    pop    eax
+ 000000F0  C9		   *	    leave  
+ 000000F1  C2 0004	   *	    ret    00004h
+ 000000F4			bouncing_image_update ENDP
+
+				; // ----------------------------------
+				; // free_bouncing_image
+				; // Disconnects the callbacks
+				; //
+				; // Register Parameters: 
+				; //	ecx - THIS pointer
+				; // ----------------------------------
+ 000000F4			free_bouncing_image PROC stdcall USES eax ebx ecx
+					local pThis
+ 000000F4  55		   *	    push   ebp
+ 000000F5  8B EC	   *	    mov    ebp, esp
+ 000000F7  83 C4 FC	   *	    add    esp, 0FFFFFFFCh
+ 000000FA  50		   *	    push   eax
+ 000000FB  53		   *	    push   ebx
+ 000000FC  51		   *	    push   ecx
+ 000000FD  89 4D FC			mov pThis, ecx
+				
+ 00000100  8B 4D FC			mov ecx, pThis
+					INVOKE get_first_component_which_is_a, TIMER_COMPONENT_ID
+ 00000103  6A 05	   *	    push   +000000005h
+ 00000105  E8 00000000 E   *	    call   get_first_component_which_is_a
+					
+					; // Disconnect the event
+ 0000010A  8D 48 1C			lea ecx, (TimerComponent PTR [eax]).timeout
+						
+ 0000010D  8B 5D FC			mov ebx, pThis
+ 00000110  8B 5B 1C			mov ebx, (BouncingImageGameObject PTR [ebx]).pTimeoutConnection
+				
+					INVOKE event_disconnect, ebx
+ 00000113  53		   *	    push   ebx
+ 00000114  E8 00000000 E   *	    call   event_disconnect
+				
+					; // Destroy myself
+ 00000119  8B 4D FC			mov ecx, pThis
+					INVOKE free_game_object
+ 0000011C  E8 00000000 E   *	    call   free_game_object
+				
+					ret
+ 00000121  59		   *	    pop    ecx
+ 00000122  5B		   *	    pop    ebx
+ 00000123  58		   *	    pop    eax
+ 00000124  C9		   *	    leave  
+ 00000125  C3		   *	    ret    00000h
+ 00000126			free_bouncing_image ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/18/26 13:45:14
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/18/26 13:55:35
 bouncing_image_game_object.asm				     Symbols 2 - 1
 
 
@@ -831,7 +878,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000014 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 000000F7 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000126 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -845,16 +892,17 @@ HeapReAlloc  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 VirtualAlloc . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 VirtualFree  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 add_component  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-bouncing_image_on_timeout  . . .	P Near	 00000000 _TEXT	Length= 00000019 Public STDCALL
-  pThis  . . . . . . . . . . . .	DWord	 bp + 00000008
-  pArgs  . . . . . . . . . . . .	DWord	 bp + 0000000C
-bouncing_image_update  . . . . .	P Near	 000000CB _TEXT	Length= 0000002C Private STDCALL
+bouncing_image_on_timeout  . . .	P Near	 00000000 _TEXT	Length= 00000016 Public STDCALL
+  pArgs  . . . . . . . . . . . .	DWord	 bp + 00000008
+bouncing_image_update  . . . . .	P Near	 000000C8 _TEXT	Length= 0000002C Private STDCALL
   deltaTime  . . . . . . . . . .	DWord	 bp + 00000008
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
 check_rect_collision . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_connect  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_disconnect . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_fire . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+free_bouncing_image  . . . . . .	P Near	 000000F4 _TEXT	Length= 00000032 Private STDCALL
+  pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
 free_component_virtual . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 free_component . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 free_event . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -868,7 +916,7 @@ game_object_start  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 game_object_update_virtual . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 game_object_update . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 get_first_component_which_is_a .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-init_bouncing_image_game_object 	P Near	 00000019 _TEXT	Length= 00000088 Public STDCALL
+init_bouncing_image_game_object 	P Near	 00000016 _TEXT	Length= 00000088 Public STDCALL
   pTexture . . . . . . . . . . .	DWord	 bp + 00000008
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
 init_component . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -880,7 +928,7 @@ init_timer . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 init_transform_component . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-new_bouncing_image_game_object .	P Near	 000000A1 _TEXT	Length= 0000002A Public STDCALL
+new_bouncing_image_game_object .	P Near	 0000009E _TEXT	Length= 0000002A Public STDCALL
   pTexture . . . . . . . . . . .	DWord	 bp + 00000008
 new_component  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 new_event  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL

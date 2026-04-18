@@ -12,7 +12,7 @@ INCLUDE sprite_component.inc
 INCLUDE bouncing_image_game_object.inc
 
 .data
-BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET bouncing_image_update, OFFSET game_object_exit, OFFSET free_game_object>
+BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET bouncing_image_update, OFFSET game_object_exit, OFFSET free_bouncing_image>
 TIMER_WAIT_TIME REAL4 2.0
 
 .code
@@ -23,17 +23,19 @@ TIMER_WAIT_TIME REAL4 2.0
 ; // ----------------------------------
 ; // bouncing_image_on_timeout
 ; // Event callback. Flips the direction
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
 ; // ----------------------------------
-bouncing_image_on_timeout PROC PUBLIC USES eax ebx, pThis:DWORD, pArgs:DWORD
+bouncing_image_on_timeout PROC PUBLIC USES eax ebx, pArgs:DWORD
 	mov ebx, pArgs ; // we don't need any arguments, but use it so that Lord MASM will permit the code to compile
 
-	mov ebx, pThis
-	mov eax, (BouncingImageGameObject PTR [ebx]).direction
+	mov eax, (BouncingImageGameObject PTR [ecx]).direction
 	
 	; // Flip the direction
 	neg eax 
 	
-	mov (BouncingImageGameObject PTR [ebx]).direction, eax
+	mov (BouncingImageGameObject PTR [ecx]).direction, eax
 
 	ret
 bouncing_image_on_timeout ENDP
@@ -58,7 +60,7 @@ init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture :
 	mov (GameObject PTR [ecx]).gameObjectType, BOUNCING_IMAGE_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET BOUNCING_IMAGE_GAMEOBJECT_VTABLE
 
-	mov (BouncingImageGameObject PTR [ecx]).direction, 1
+	mov (BouncingImageGameObject PTR [ecx]).direction, 2
 
 	INVOKE new_transform_component, 0, 0, 0
 	INVOKE add_component, ecx, eax
@@ -121,5 +123,34 @@ bouncing_image_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL
 	mov ecx, pThis ; // Restore the THIS pointer
 	ret
 bouncing_image_update ENDP
+
+; // ----------------------------------
+; // free_bouncing_image
+; // Disconnects the callbacks
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+free_bouncing_image PROC stdcall USES eax ebx ecx
+	local pThis
+	mov pThis, ecx
+
+	mov ecx, pThis
+	INVOKE get_first_component_which_is_a, TIMER_COMPONENT_ID
+	
+	; // Disconnect the event
+	lea ecx, (TimerComponent PTR [eax]).timeout
+		
+	mov ebx, pThis
+	mov ebx, (BouncingImageGameObject PTR [ebx]).pTimeoutConnection
+
+	INVOKE event_disconnect, ebx
+
+	; // Destroy myself
+	mov ecx, pThis
+	INVOKE free_game_object
+
+	ret
+free_bouncing_image ENDP
 
 END
