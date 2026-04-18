@@ -9,6 +9,8 @@ INCLUDE default_header.inc
 INCLUDE game_object.inc
 INCLUDE heap_functions.inc
 INCLUDE knight_game_object.inc
+INCLUDE transform_component.inc
+INCLUDE sprite_component.inc
 
 .data
 KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
@@ -25,7 +27,7 @@ KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET gam
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-init_knight_game_object PROC PUBLIC USES esi ebx edx
+init_knight_game_object PROC PUBLIC USES esi ebx edx, pTexture:DWORD
 		local pThis
 	mov pThis, ecx
 	; // Parent constructor
@@ -36,7 +38,11 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx
 	mov (KnightGameObject PTR [ecx]).MOVSP, 10
 
 	; // Gives Knight a transform
-	INVOKE new_transform_component, 0, 0, 0
+	INVOKE new_transform_component, 0, 200, 0
+	INVOKE add_component, ecx, eax
+
+	; // Gives Knight a sprite
+	INVOKE new_sprite_component, 0, 0, pTexture
 	INVOKE add_component, ecx, eax
 	
 	mov eax, pThis
@@ -47,10 +53,10 @@ init_knight_game_object ENDP
 ; // new_knight_game_object
 ; // Reserves heap space for the Object with parameters calls the initializer method
 ; // ----------------------------------
-new_knight_game_object PROC PUBLIC USES ecx
+new_knight_game_object PROC PUBLIC USES ecx, pTexture:DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF KnightGameObject
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_knight_game_object
+	INVOKE init_knight_game_object, pTexture
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_knight_game_object ENDP

@@ -9,6 +9,7 @@ INCLUDE default_header.inc
 INCLUDE game_object.inc
 INCLUDE heap_functions.inc
 INCLUDE lane_game_object.inc
+INCLUDE transform_component.inc
 
 .data
 LANE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
