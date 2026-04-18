@@ -3,8 +3,11 @@
 ; // ----------------------------------
 ; // An image that bounces left and right, mainly used to test that events work.
 ; // ==================================
+
 INCLUDE default_header.inc
 INCLUDE heap_functions.inc
+INCLUDE transform_component.inc
+INCLUDE sprite_component.inc
 INCLUDE bouncing_image_game_object.inc
 
 .data
@@ -28,7 +31,11 @@ init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture :
 	mov (GameObject PTR [ecx]).gameObjectType, BOUNCING_IMAGE_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET BOUNCING_IMAGE_GAMEOBJECT_VTABLE
 
-	mov eax, pTexture
+	INVOKE new_transform_component, 0, 0, 0
+	INVOKE add_component, ecx, eax
+
+	INVOKE new_sprite_component, 0, 0, pTexture
+	INVOKE add_component, ecx, eax
 
 	ret
 init_bouncing_image_game_object ENDP
