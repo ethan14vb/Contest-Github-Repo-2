@@ -7,13 +7,37 @@
 INCLUDE default_header.inc
 INCLUDE heap_functions.inc
 INCLUDE transform_component.inc
+INCLUDE timer_component.inc
 INCLUDE sprite_component.inc
 INCLUDE bouncing_image_game_object.inc
 
 .data
 BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET bouncing_image_update, OFFSET game_object_exit, OFFSET free_game_object>
+TIMER_WAIT_TIME REAL4 2.0
 
 .code
+; // ********************************************
+; // Callback Methods
+; // ********************************************
+
+; // ----------------------------------
+; // bouncing_image_on_timeout
+; // Event callback. Flips the direction
+; // ----------------------------------
+bouncing_image_on_timeout PROC PUBLIC USES eax ebx, pThis:DWORD, pArgs:DWORD
+	mov ebx, pArgs ; // we don't need any arguments, but use it so that Lord MASM will permit the code to compile
+
+	mov ebx, pThis
+	mov eax, (BouncingImageGameObject PTR [ebx]).direction
+	
+	; // Flip the direction
+	neg eax 
+	
+	mov (BouncingImageGameObject PTR [ebx]).direction, eax
+
+	ret
+bouncing_image_on_timeout ENDP
+
 ; // ********************************************
 ; // Constructor Methods
 ; // ********************************************
@@ -26,6 +50,9 @@ BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OF
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
+	local pThis
+	mov pThis, ecx
+
 	; // Parent constructor
 	INVOKE init_game_object, 0
 	mov (GameObject PTR [ecx]).gameObjectType, BOUNCING_IMAGE_GAME_OBJECT_ID
@@ -39,7 +66,20 @@ init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture :
 	INVOKE new_sprite_component, 0, 0, pTexture
 	INVOKE add_component, ecx, eax
 
-	mov eax, ecx
+	; // Create the timer
+	INVOKE new_timer, TIMER_WAIT_TIME, 0, 1
+	push eax
+	INVOKE add_component, ecx, eax
+	pop eax
+
+	; // Connect the event to the callback function
+	lea ecx, (TimerComponent PTR [eax]).timeout
+	INVOKE event_connect, pThis, OFFSET bouncing_image_on_timeout
+
+	mov ebx, pThis
+	mov (BouncingImageGameObject PTR [ebx]).pTimeoutConnection, eax
+
+	mov eax, pThis
 
 	ret
 init_bouncing_image_game_object ENDP
@@ -60,24 +100,6 @@ new_bouncing_image_game_object ENDP
 ; // ********************************************
 ; // Instance methods
 ; // ********************************************
-
-; // ----------------------------------
-; // bouncing_image_on_timeout
-; // Event callback. Flips the direction
-; // ----------------------------------
-bouncing_image_on_timeout PROC PUBLIC USES eax ebx, pThis:DWORD, pArgs:DWORD
-	mov ebx, pArgs ; // we don't need any arguments, but use it so that Lord MASM will permit the code to compile
-
-	mov ebx, pThis
-	mov eax, (BouncingImageGameObject PTR [ebx]).direction
-	
-	; // Flip the direction
-	neg eax 
-	
-	mov (BouncingImageGameObject PTR [ebx]).direction, eax
-
-	ret
-bouncing_image_on_timeout ENDP
 
 ; // ----------------------------------
 ; // bouncing_image_update
