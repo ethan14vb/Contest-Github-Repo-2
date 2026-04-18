@@ -11,7 +11,7 @@ INCLUDE sprite_component.inc
 INCLUDE bouncing_image_game_object.inc
 
 .data
-BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
+BOUNCING_IMAGE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET bouncing_image_update, OFFSET game_object_exit, OFFSET free_game_object>
 
 .code
 ; // ********************************************
@@ -30,6 +30,8 @@ init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture :
 	INVOKE init_game_object, 0
 	mov (GameObject PTR [ecx]).gameObjectType, BOUNCING_IMAGE_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET BOUNCING_IMAGE_GAMEOBJECT_VTABLE
+
+	mov (BouncingImageGameObject PTR [ecx]).direction, 1
 
 	INVOKE new_transform_component, 0, 0, 0
 	INVOKE add_component, ecx, eax
@@ -54,5 +56,30 @@ new_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : 
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_bouncing_image_game_object ENDP
+
+; // ********************************************
+; // Instance methods
+; // ********************************************
+
+; // ----------------------------------
+; // bouncing_image_update
+; // Moves the camera depending on the keys pressed
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+bouncing_image_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
+	local pThis : DWORD
+	mov pThis, ecx
+	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
+
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+
+	mov ebx, (BouncingImageGameObject PTR [ecx]).direction
+	add (TransformComponent PTR [eax]).x, ebx
+
+	mov ecx, pThis ; // Restore the THIS pointer
+	ret
+bouncing_image_update ENDP
 
 END

@@ -11,8 +11,9 @@ INCLUDE game_object.inc
 INCLUDE event.inc
 
 BouncingImageGameObject STRUCT
-	baseGameObject GameObject<>
-	timeoutConnection Connection <>
+	baseGameObject		GameObject<>
+	pTimeoutConnection	DWORD ?
+	direction			DWORD ?
 BouncingImageGameObject ENDS
 
 init_bouncing_image_game_object PROTO pTexture : DWORD
