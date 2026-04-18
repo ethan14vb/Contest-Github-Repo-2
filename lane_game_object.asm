@@ -25,5 +25,13 @@ LANE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
+init_lane_game_object PROC PUBLIC USES esi ebx edx
+	; // Parent constructor
+	INVOKE init_game_object, 0
+	mov (GameObject PTR [ecx]).gameObjectType, LANE_GAME_OBJECT_ID
+	mov (GameObject PTR [ecx]).pVt, OFFSET LANE_GAMEOBJECT_VTABLE
+		
+	ret
+init_lane_game_object ENDP
 
 END

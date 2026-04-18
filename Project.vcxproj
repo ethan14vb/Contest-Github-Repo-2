@@ -23,6 +23,7 @@
     <MASM Include="heap_functions.asm" />
     <MASM Include="input_manager.asm" />
     <MASM Include="knight_game_object.asm" />
+    <MASM Include="lane_game_object.asm" />
     <MASM Include="main.asm" />
     <MASM Include="music_player.asm" />
     <MASM Include="rectangle_test_scene.asm" />
@@ -51,6 +52,7 @@
     <None Include="heap_functions.inc" />
     <None Include="input_manager.inc" />
     <None Include="knight_game_object.inc" />
+    <None Include="lane_game_object.inc" />
     <None Include="music_player.inc" />
     <None Include="rectangle_test_scene.inc" />
     <None Include="renderable_component.inc" />
