@@ -10,8 +10,13 @@ KNIGHT_GAME_OBJECT_INC EQU 1
 
 INCLUDE game_object.inc
 
+; // Constants for identifying teams
+ALLY EQU 0
+ENEMY EQU 1
+
 KnightGameObject STRUCT
 	baseGameObject GameObject<>
+	team DWORD ?
 	HP DWORD ?
 	ATK DWORD ?
 	DEF DWORD ?
@@ -20,7 +25,7 @@ KnightGameObject STRUCT
 	RANGE DWORD ?	; // Distance to next enemy to be able to attack
 KnightGameObject ENDS
 
-init_knight_game_object PROTO, pTexture:DWORD
-new_knight_game_object PROTO, pTexture:DWORD
+init_knight_game_object PROTO, team:DWORD, pTexture:DWORD
+new_knight_game_object PROTO, team:DWORD, pTexture:DWORD
 
 ENDIF
