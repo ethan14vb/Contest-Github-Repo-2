@@ -217,7 +217,24 @@ scene_process_start_queue ENDP
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 scene_update_time_sensitive_components PROC PRIVATE USES eax ebx ecx edx esi edi, deltaTime: REAL4
-	mov eax, deltaTime
+	local pThis
+	mov pThis, ecx ; // Save the THIS pointer just in case
+
+	mov edx, 0 ; // int i = 0
+
+time_sensitive_components_game_object_loop:
+	mov ecx, pThis
+	lea ecx, (Scene PTR [ecx]).gameObjects
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	mov eax, (UnorderedVector PTR [ecx]).pData
+
+	; // esi = gameObjects[i]
+	mov esi, [eax + edx * 4]
+
+	inc edx
+	cmp edx, ebx
+	jb time_sensitive_components_game_object_loop
+
 	ret
 scene_update_time_sensitive_components ENDP
 
