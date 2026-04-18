@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="bouncing_image_game_object.inc">
+      <FileType>Document</FileType>
+    </None>
     <MASM Include="camera.asm" />
     <MASM Include="camera_mover_game_object.asm" />
     <MASM Include="component.asm" />
