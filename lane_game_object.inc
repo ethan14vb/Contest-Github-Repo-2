@@ -15,10 +15,10 @@ MAX_LANE_KNIGHTS EQU 10
 
 LaneGameObject STRUCT
 	baseGameObject GameObject<>
-	firstAlly DWORD ?	; // Pointers to each team's respective first knight
-	firstEnemy DWORD ?
-	allyKnights DWORD MAX_LANE_KNIGHTS DUP(?)
-	enemyKnights DWORD MAX_LANE_KNIGHTS DUP (?)
+	pFirstAlly DWORD ?	; // Pointers to each team's respective first knight
+	pFirstEnemy DWORD ?
+	pAllyKnights DWORD MAX_LANE_KNIGHTS DUP(?)
+	pEnemyKnights DWORD MAX_LANE_KNIGHTS DUP (?)
 LaneGameObject ENDS
 
 init_lane_game_object PROTO

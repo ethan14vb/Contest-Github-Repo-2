@@ -18,6 +18,7 @@ INCLUDE sprite_component.inc
 
 .data
 testFile BYTE "other soldier ideas.pam", 0
+pLane DWORD ?
 
 PUBLIC pTex
 pTex DWORD ?
@@ -49,10 +50,19 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 
 	; // Lane
 	INVOKE new_lane_game_object
+	mov pLane, eax
+
+	mov ecx, pScene
+	INVOKE instantiate_game_object, pLane
+
+	; // Ally Knight
+	INVOKE new_knight_game_object
 	mov esi, eax
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
+
+	mov (LaneGameObject PTR [pLane]).pFirstAlly, esi
 
 	ret
 populate_sprite_test_scene ENDP
