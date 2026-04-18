@@ -31,7 +31,7 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx
 	mov (GameObject PTR [ecx]).gameObjectType, KNIGHT_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET KNIGHT_GAMEOBJECT_VTABLE
 
-	mov (KnightGameObject PTR [ecx]).stats[MOVSP * 4], 10
+	mov (KnightGameObject PTR [ecx]).MOVSP, 10
 		
 	ret
 init_knight_game_object ENDP
