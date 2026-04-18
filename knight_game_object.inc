@@ -10,17 +10,14 @@ KNIGHT_INC EQU 1
 
 INCLUDE game_object.inc
 
-; // Identifiers for the stat offsets
-HP EQU 0
-ATK EQU 1
-DEF EQU 2
-ATKSP EQU 3
-MOVSP EQU 4
-RANGE EQU 5
-
 KnightGameObject STRUCT
 	baseGameObject GameObject<>
-	stats DWORD 6 DUP(?)
+	HP DWORD ?
+	ATK DWORD ?
+	DEF DWORD ?
+	ATKSP DWORD ?	; // Cooldown time between attacks
+	MOVSP DWORD ?	; // Speed at which unit moves in lane
+	RANGE DWORD ?	; // Distance to next enemy to be able to attack
 KnightGameObject ENDS
 
 ENDIF
