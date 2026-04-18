@@ -188,5 +188,8 @@
     <MASM Include="timer_component.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
+    <MASM Include="bouncing_image_game_object.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
