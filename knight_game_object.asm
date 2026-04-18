@@ -35,16 +35,24 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov (GameObject PTR [ecx]).gameObjectType, KNIGHT_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET KNIGHT_GAMEOBJECT_VTABLE
 
-	mov eax, team		; // must be moved here first for it to compile
+	mov eax, team		; // Must be moved here first for it to compile
 	mov (KnightGameObject PTR [ecx]).team, eax
 	mov (KnightGameObject PTR [ecx]).MOVSP, 50
 
+	mov eax, 0			; // Default x position for allies
+	cmp team, ENEMY
+	jne NotEnemy
+	mov eax, 1400		; // Spawns on opposite end if this is an enemy
+	NotEnemy:
 	; // Gives Knight a transform
-	INVOKE new_transform_component, 0, 200, 0
+	INVOKE new_transform_component, eax, 500, 0
 	INVOKE add_component, ecx, eax
 
 	; // Gives Knight a sprite
 	INVOKE new_sprite_component, 0, 0, pTexture
+	.IF team == ENEMY	; // Enemies have their sprite flipped
+		mov (SpriteComponent PTR [eax]).flipX, 1
+	.ENDIF
 	INVOKE add_component, ecx, eax
 	
 	mov eax, pThis
