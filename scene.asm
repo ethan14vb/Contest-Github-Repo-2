@@ -210,6 +210,18 @@ scene_process_start_queue PROC PRIVATE USES eax ebx ecx edx esi edi
 scene_process_start_queue ENDP
 
 ; // ----------------------------------
+; // scene_update_time_sensitive_components
+; // Calls the update method on all of the time sensitive components (TimerComponents and TweenComponents)
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+scene_update_time_sensitive_components PROC PRIVATE USES eax ebx ecx edx esi edi, deltaTime: REAL4
+	mov eax, deltaTime
+	ret
+scene_update_time_sensitive_components ENDP
+
+; // ----------------------------------
 ; // scene_update_game_objects
 ; // Calls the update method of all of the GameObjects in gameObjects
 ; //
@@ -468,7 +480,8 @@ scene_update PROC PUBLIC USES eax ebx ecx edx esi edi, deltaTime: REAL4, hWnd: D
 	; // Process start queue
 	INVOKE scene_process_start_queue
 
-	; // NYI Update time sensitive components such as timers and tweens 
+	; // Update time sensitive components such as timers and tweens (Tweens are NYI)
+	INVOKE scene_update_time_sensitive_components, deltaTime
 
 	; // Update all of the GameObject logic
 	INVOKE scene_update_game_objects, deltaTime
