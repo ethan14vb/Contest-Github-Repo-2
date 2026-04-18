@@ -21,4 +21,7 @@ LaneGameObject STRUCT
 	enemyKnights DWORD MAX_LANE_KNIGHTS DUP (?)
 LaneGameObject ENDS
 
+init_lane_game_object PROTO
+new_lane_game_object PROTO
+
 ENDIF

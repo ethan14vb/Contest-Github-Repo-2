@@ -11,6 +11,8 @@ INCLUDE game_object.inc
 INCLUDE transform_component.inc
 INCLUDE camera_mover_game_object.inc
 INCLUDE bouncing_image_game_object.inc
+INCLUDE knight_game_object.inc
+INCLUDE lane_game_object.inc
 INCLUDE resource_manager.inc
 INCLUDE sprite_component.inc
 
@@ -40,6 +42,13 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 
 	; // Camera mover game object
 	INVOKE new_camera_mover_game_object
+	mov esi, eax
+
+	mov ecx, pScene
+	INVOKE instantiate_game_object, esi
+
+	; // Lane
+	INVOKE new_lane_game_object
 	mov esi, eax
 
 	mov ecx, pScene

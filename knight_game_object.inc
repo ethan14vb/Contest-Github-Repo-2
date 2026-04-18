@@ -20,4 +20,7 @@ KnightGameObject STRUCT
 	RANGE DWORD ?	; // Distance to next enemy to be able to attack
 KnightGameObject ENDS
 
+init_knight_game_object PROTO
+new_knight_game_object PROTO
+
 ENDIF
