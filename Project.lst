@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/18/26 13:20:10
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/18/26 13:23:52
 bouncing_image_game_object.asm				     Page 1 - 1
 
 
@@ -7,6 +7,7 @@ bouncing_image_game_object.asm				     Page 1 - 1
 				; // ----------------------------------
 				; // An image that bounces left and right, mainly used to test that events work.
 				; // ==================================
+
 				INCLUDE default_header.inc
 			      C .686
 			      C .model flat, stdcall
@@ -511,51 +512,53 @@ bouncing_image_game_object.asm				     Page 1 - 1
  0000003B  51		   *	    push   ecx
  0000003C  E8 00000000 E   *	    call   add_component
 
+ 00000041  8B C1			mov eax, ecx
+
 					ret
- 00000041  5F		   *	    pop    edi
- 00000042  5E		   *	    pop    esi
- 00000043  5A		   *	    pop    edx
- 00000044  59		   *	    pop    ecx
- 00000045  5B		   *	    pop    ebx
- 00000046  C9		   *	    leave  
- 00000047  C2 0004	   *	    ret    00004h
- 0000004A			init_bouncing_image_game_object ENDP
+ 00000043  5F		   *	    pop    edi
+ 00000044  5E		   *	    pop    esi
+ 00000045  5A		   *	    pop    edx
+ 00000046  59		   *	    pop    ecx
+ 00000047  5B		   *	    pop    ebx
+ 00000048  C9		   *	    leave  
+ 00000049  C2 0004	   *	    ret    00004h
+ 0000004C			init_bouncing_image_game_object ENDP
 
 				; // ----------------------------------
 				; // new_bouncing_image_game_object
 				; // Allocates memory for a BouncingImageGameObject and then calls
 				; // the initializer method on it.
 				; // ----------------------------------
- 0000004A			new_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
- 0000004A  55		   *	    push   ebp
- 0000004B  8B EC	   *	    mov    ebp, esp
- 0000004D  53		   *	    push   ebx
- 0000004E  51		   *	    push   ecx
- 0000004F  52		   *	    push   edx
- 00000050  56		   *	    push   esi
- 00000051  57		   *	    push   edi
+ 0000004C			new_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
+ 0000004C  55		   *	    push   ebp
+ 0000004D  8B EC	   *	    mov    ebp, esp
+ 0000004F  53		   *	    push   ebx
+ 00000050  51		   *	    push   ecx
+ 00000051  52		   *	    push   edx
+ 00000052  56		   *	    push   esi
+ 00000053  57		   *	    push   edi
 					INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF BouncingImageGameObject
- 00000052  6A 24	   *	    push   +000000024h
- 00000054  6A 04	   *	    push   +000000004h
- 00000056  FF 35 00000000 E *	    push   hHeap
- 0000005C  E8 00000000 E   *	    call   HeapAlloc
- 00000061  8B C8			mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
+ 00000054  6A 24	   *	    push   +000000024h
+ 00000056  6A 04	   *	    push   +000000004h
+ 00000058  FF 35 00000000 E *	    push   hHeap
+ 0000005E  E8 00000000 E   *	    call   HeapAlloc
+ 00000063  8B C8			mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
 					INVOKE init_bouncing_image_game_object, pTexture
- 00000063  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
- 00000066  E8 FFFFFF95	   *	    call   init_bouncing_image_game_object
+ 00000065  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 00000068  E8 FFFFFF93	   *	    call   init_bouncing_image_game_object
 
 					ret ; // Return with the address of the memory block in HeapAlloc
- 0000006B  5F		   *	    pop    edi
- 0000006C  5E		   *	    pop    esi
- 0000006D  5A		   *	    pop    edx
- 0000006E  59		   *	    pop    ecx
- 0000006F  5B		   *	    pop    ebx
- 00000070  C9		   *	    leave  
- 00000071  C2 0004	   *	    ret    00004h
- 00000074			new_bouncing_image_game_object ENDP
+ 0000006D  5F		   *	    pop    edi
+ 0000006E  5E		   *	    pop    esi
+ 0000006F  5A		   *	    pop    edx
+ 00000070  59		   *	    pop    ecx
+ 00000071  5B		   *	    pop    ebx
+ 00000072  C9		   *	    leave  
+ 00000073  C2 0004	   *	    ret    00004h
+ 00000076			new_bouncing_image_game_object ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/18/26 13:20:10
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/18/26 13:23:52
 bouncing_image_game_object.asm				     Symbols 2 - 1
 
 
@@ -640,7 +643,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000010 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000074 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000076 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -671,7 +674,7 @@ game_object_start  . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 game_object_update_virtual . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 game_object_update . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 get_first_component_which_is_a .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-init_bouncing_image_game_object 	P Near	 00000000 _TEXT	Length= 0000004A Public STDCALL
+init_bouncing_image_game_object 	P Near	 00000000 _TEXT	Length= 0000004C Public STDCALL
   pTexture . . . . . . . . . . .	DWord	 bp + 00000008
 init_component . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_event . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -681,7 +684,7 @@ init_sprite_component  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 init_transform_component . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-new_bouncing_image_game_object .	P Near	 0000004A _TEXT	Length= 0000002A Public STDCALL
+new_bouncing_image_game_object .	P Near	 0000004C _TEXT	Length= 0000002A Public STDCALL
   pTexture . . . . . . . . . . .	DWord	 bp + 00000008
 new_component  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 new_event  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL

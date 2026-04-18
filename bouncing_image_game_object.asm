@@ -37,6 +37,8 @@ init_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture :
 	INVOKE new_sprite_component, 0, 0, pTexture
 	INVOKE add_component, ecx, eax
 
+	mov eax, ecx
+
 	ret
 init_bouncing_image_game_object ENDP
 

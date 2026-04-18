@@ -10,11 +10,12 @@ INCLUDE scene.inc
 INCLUDE game_object.inc
 INCLUDE transform_component.inc
 INCLUDE camera_mover_game_object.inc
+INCLUDE bouncing_image_game_object.inc
 INCLUDE resource_manager.inc
 INCLUDE sprite_component.inc
 
 .data
-testFile BYTE "Concept 2.pam", 0
+testFile BYTE "other soldier ideas.pam", 0
 
 PUBLIC pTex
 pTex DWORD ?
@@ -30,14 +31,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov pTex, eax
 
 	; // Sprite
-	INVOKE new_game_object, 2
+	INVOKE new_bouncing_image_game_object, pTex
 	mov ecx, eax
-
-	INVOKE new_transform_component, 0, 0, 0
-	INVOKE add_component, ecx, eax
-
-	INVOKE new_sprite_component, 0, 0, pTex
-	INVOKE add_component, ecx, eax
 
 	mov esi, ecx
 	mov ecx, pScene
