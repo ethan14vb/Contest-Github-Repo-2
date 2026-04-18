@@ -14,6 +14,7 @@ INCLUDE scene.inc
 INCLUDE game_object.inc
 INCLUDE game_object_ids.inc
 INCLUDE renderer.inc
+INCLUDE timer_component.inc
 INCLUDE render_command.inc
 INCLUDE camera.inc
 INCLUDE input_manager.inc
@@ -226,14 +227,55 @@ time_sensitive_components_game_object_loop:
 	mov ecx, pThis
 	lea ecx, (Scene PTR [ecx]).gameObjects
 	mov ebx, (UnorderedVector PTR [ecx]).count
+
+	cmp ebx, 0
+	je time_sensitive_components_game_object_loop_exit
+
 	mov eax, (UnorderedVector PTR [ecx]).pData
 
 	; // esi = gameObjects[i]
 	mov esi, [eax + edx * 4]
 
+	push ebx
+	push edx
+
+	mov edx, 0		
+	
+	; // Now loop through the components
+time_sensitive_components_components_loop:
+	lea ecx, (GameObject PTR [esi]).components
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	cmp ebx, 0
+	je time_sensitive_components_components_loop_exit
+
+	mov eax, (UnorderedVector PTR [ecx]).pData
+	; // esi = components[i]
+	mov edi, [eax + edx * 4]
+	mov ecx, (Component PTR [edi]).componentType
+
+	.IF ecx == TIMER_COMPONENT_ID
+		mov ecx, edi
+		push eax
+		INVOKE timer_update, deltaTime
+		pop eax
+	.ENDIF
+
+	inc edx
+	cmp edx, ebx
+	jb time_sensitive_components_components_loop
+time_sensitive_components_components_loop_exit:
+
+	; // End of game objects loop
+	pop edx
+	pop ebx
+
 	inc edx
 	cmp edx, ebx
 	jb time_sensitive_components_game_object_loop
+
+time_sensitive_components_game_object_loop_exit:
+	; // Restore the THIS pointer
+	mov ecx, pThis
 
 	ret
 scene_update_time_sensitive_components ENDP
