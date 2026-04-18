@@ -30,8 +30,11 @@ init_bouncing_image_game_object ENDP
 ; // the initializer method on it.
 ; // ----------------------------------
 new_bouncing_image_game_object PROC PUBLIC USES ebx ecx edx esi edi, pTexture : DWORD
-	mov eax, pTexture
-	ret
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF BouncingImageGameObject
+	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
+	INVOKE init_bouncing_image_game_object, pTexture
+
+	ret ; // Return with the address of the memory block in HeapAlloc
 new_bouncing_image_game_object ENDP
 
 END
