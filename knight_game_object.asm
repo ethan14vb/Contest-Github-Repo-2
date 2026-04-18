@@ -26,13 +26,20 @@ KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET gam
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 init_knight_game_object PROC PUBLIC USES esi ebx edx
+		local pThis
+	mov pThis, ecx
 	; // Parent constructor
 	INVOKE init_game_object, 0
 	mov (GameObject PTR [ecx]).gameObjectType, KNIGHT_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET KNIGHT_GAMEOBJECT_VTABLE
 
 	mov (KnightGameObject PTR [ecx]).MOVSP, 10
-		
+
+	; // Gives Knight a transform
+	INVOKE new_transform_component, 0, 0, 0
+	INVOKE add_component, ecx, eax
+	
+	mov eax, pThis
 	ret
 init_knight_game_object ENDP
 
