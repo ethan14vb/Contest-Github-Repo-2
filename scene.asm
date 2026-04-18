@@ -226,6 +226,7 @@ scene_update_time_sensitive_components PROC PRIVATE USES eax ebx ecx edx esi edi
 time_sensitive_components_game_object_loop:
 	mov ecx, pThis
 	lea ecx, (Scene PTR [ecx]).gameObjects
+
 	mov ebx, (UnorderedVector PTR [ecx]).count
 
 	cmp ebx, 0
@@ -235,6 +236,15 @@ time_sensitive_components_game_object_loop:
 
 	; // esi = gameObjects[i]
 	mov esi, [eax + edx * 4]
+
+	; // Check if the GameObject is dead
+	mov eax, (GameObject PTR [esi]).awaitingFree
+	.IF eax != 0
+		push ebx
+		push edx
+
+		jmp time_sensitive_components_components_loop_exit
+	.ENDIF
 
 	push ebx
 	push edx
