@@ -10,8 +10,15 @@ LANE_GAME_OBJECT_INC EQU 1
 
 INCLUDE lane_game_object.inc
 
+; // Maximum number of knights of each team per lane
+MAX_LANE_KNIGHTS EQU 10
+
 LaneGameObject STRUCT
 	baseGameObject GameObject<>
+	firstAlly DWORD ?	; // Pointers to each team's respective first knight
+	firstEnemy DWORD ?
+	allyKnights DWORD MAX_LANE_KNIGHTS DUP(?)
+	enemyKnights DWORD MAX_LANE_KNIGHTS DUP (?)
 LaneGameObject ENDS
 
 ENDIF
