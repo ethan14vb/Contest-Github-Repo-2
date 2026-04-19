@@ -13,7 +13,7 @@ INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
 
 .data
-KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
+KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET knight_update, OFFSET game_object_exit, OFFSET free_game_object>
 
 .code
 ; // ********************************************
@@ -37,7 +37,7 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 
 	mov eax, team		; // Must be moved here first for it to compile
 	mov (KnightGameObject PTR [ecx]).team, eax
-	mov (KnightGameObject PTR [ecx]).MOVSP, 50
+	mov (KnightGameObject PTR [ecx]).MOVSP, 5
 
 	mov eax, 0			; // Default x position for allies
 	cmp team, ENEMY
@@ -74,5 +74,33 @@ new_knight_game_object ENDP
 ; // ********************************************
 ; // Instance methods
 ; // ********************************************
+
+; // ----------------------------------
+; // knight_update
+; // Moves the knight forward depending on team
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
+	local pThis : DWORD
+	mov pThis, ecx
+	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
+
+	push ecx
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	pop ecx
+
+	mov ebx, (KnightGameObject PTR [ecx]).MOVSP
+	mov edx, (KnightGameObject PTR [ecx]).team
+	.IF  edx == ENEMY
+		neg ebx
+	.ENDIF
+
+	add (TransformComponent PTR [eax]).x, ebx
+
+	mov ecx, pThis ; // Restore the THIS pointer
+	ret
+knight_update ENDP
 
 END 
