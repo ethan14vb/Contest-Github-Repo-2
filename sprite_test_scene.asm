@@ -18,6 +18,7 @@ INCLUDE sprite_component.inc
 
 .data
 testFile BYTE "other soldier ideas.pam", 0
+knightFile BYTE "Knight.pam", 0
 pLane DWORD ?
 
 PUBLIC pTex
@@ -55,6 +56,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, pLane
 
+	INVOKE load_texture, OFFSET knightFile
+	mov pTex, eax
 	; // Ally Knight
 	INVOKE new_knight_game_object, ALLY, pTex
 	mov esi, eax
