@@ -93,7 +93,7 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 
 	mov ebx, (KnightGameObject PTR [ecx]).MOVSP
 	mov edx, (KnightGameObject PTR [ecx]).team
-	.IF  edx == ENEMY
+	.IF edx == ENEMY
 		neg ebx			; // Enemy moves opposite direction
 	.ENDIF
 

@@ -8,7 +8,7 @@
 IFNDEF LANE_GAME_OBJECT_INC
 LANE_GAME_OBJECT_INC EQU 1
 
-INCLUDE lane_game_object.inc
+INCLUDE game_object.inc
 
 ; // Maximum number of knights of each team per lane
 MAX_LANE_KNIGHTS EQU 10

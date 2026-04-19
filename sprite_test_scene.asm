@@ -7,7 +7,6 @@
 INCLUDE default_header.inc
 INCLUDE game_object.inc
 INCLUDE scene.inc
-INCLUDE game_object.inc
 INCLUDE transform_component.inc
 INCLUDE camera_mover_game_object.inc
 INCLUDE bouncing_image_game_object.inc
@@ -23,6 +22,9 @@ pLane DWORD ?
 
 PUBLIC pTex
 pTex DWORD ?
+
+PUBLIC pKnightTex
+pKnightTex DWORD ?
 
 .code
 ; // ----------------------------------
@@ -57,23 +59,25 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE instantiate_game_object, pLane
 
 	INVOKE load_texture, OFFSET knightFile
-	mov pTex, eax
+	mov pKnightTex, eax
 	; // Ally Knight
-	INVOKE new_knight_game_object, ALLY, pTex
+	INVOKE new_knight_game_object, ALLY, pKnightTex
 	mov esi, eax
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
-	mov (LaneGameObject PTR [pLane]).pFirstAlly, esi
+	mov ebx, pLane
+	mov (LaneGameObject PTR [ebx]).pFirstAlly, esi
 
 	; // Enemy Knight
-	INVOKE new_knight_game_object, ENEMY, pTex
+	INVOKE new_knight_game_object, ENEMY, pKnightTex
 	mov esi, eax
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
 
-	mov (LaneGameObject PTR [pLane]).pFirstEnemy, esi
+	mov ebx, pLane
+	mov (LaneGameObject PTR [ebx]).pFirstEnemy, esi
 
 	ret
 populate_sprite_test_scene ENDP
