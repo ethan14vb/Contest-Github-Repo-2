@@ -24,8 +24,7 @@ TextComponent STRUCT
 	spacing			DWORD ?
 TextComponent ENDS
 
-init_text_component PROTO pFontTexture:DWORD, charW: DWORD, charH: DWORD, spacing: DWORD, maxChars:DWORD, pText: DWORD
-new_text_component PROTO pFontTexture:DWORD, charW: DWORD, charH: DWORD, spacing: DWORD, maxChars:DWORD, pText: DWORD
-free_text_component PROTO
+init_text_component PROTO pFontTexture:DWORD, charW: DWORD, charH: DWORD, spacing: DWORD, maxChars:DWORD
+new_text_component PROTO pFontTexture:DWORD, charW: DWORD, charH: DWORD, spacing: DWORD, maxChars:DWORD
 
 ENDIF
