@@ -200,5 +200,8 @@
     <MASM Include="lane_game_object.asm">
       <Filter>Source\Engine</Filter>
     </MASM>
+    <MASM Include="text_component.asm">
+      <Filter>Source\Engine</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
