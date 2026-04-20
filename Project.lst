@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/20/26 19:01:51
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/20/26 19:04:43
 text_component.asm					     Page 1 - 1
 
 
@@ -187,45 +187,66 @@ text_component.asm					     Page 1 - 1
 			      C 
 
  00000000			.code
- 00000000			init_text_component PROC pFontTexture : DWORD, charW : DWORD, charH : DWORD, spacing : DWORD, maxChars : DWORD, pText : DWORD
+ 00000000			init_text_component PROC PUBLIC USES ebx ecx esi, pFontTexture : DWORD, charW : DWORD, charH : DWORD, spacing : DWORD, maxChars : DWORD, pText : DWORD
  00000000  55		   *	    push   ebp
  00000001  8B EC	   *	    mov    ebp, esp
- 00000003  8B 45 08			mov eax, pFontTexture
- 00000006  8B 45 0C			mov eax, charW
- 00000009  8B 45 10			mov eax, charH
- 0000000C  8B 45 14			mov eax, spacing
- 0000000F  8B 45 18			mov eax, maxChars
- 00000012  8B 45 1C			mov eax, pText
-					ret
- 00000015  C9		   *	    leave  
- 00000016  C2 0018	   *	    ret    00018h
- 00000019			init_text_component ENDP
+ 00000003  53		   *	    push   ebx
+ 00000004  51		   *	    push   ecx
+ 00000005  56		   *	    push   esi
+ 00000006  8B 75 08			mov esi, pFontTexture
+ 00000009  89 71 10			mov (TextComponent PTR [ecx]).pFontTexture, esi
+ 0000000C  8B 75 0C			mov esi, charW
+ 0000000F  89 71 1C			mov (TextComponent PTR [ecx]).charW, esi
+ 00000012  8B 75 10			mov esi, charH
+ 00000015  89 71 20			mov (TextComponent PTR [ecx]).charH, esi
+ 00000018  8B 75 14			mov esi, spacing
+ 0000001B  89 71 24			mov (TextComponent PTR [ecx]).spacing, esi
+ 0000001E  8B 75 18			mov esi, maxChars
+ 00000021  89 71 18			mov (TextComponent PTR [ecx]).textMaxLen, esi
+ 00000024  8B 75 1C			mov esi, pText
+ 00000027  89 71 14			mov (TextComponent PTR [ecx]).pText, esi
 
- 00000019			new_text_component PROC pFontTexture : DWORD, charW : DWORD, charH : DWORD, spacing : DWORD, maxChars : DWORD, pText : DWORD
- 00000019  55		   *	    push   ebp
- 0000001A  8B EC	   *	    mov    ebp, esp
+ 0000002A  8B C1			mov eax, ecx
+
+					ret
+ 0000002C  5E		   *	    pop    esi
+ 0000002D  59		   *	    pop    ecx
+ 0000002E  5B		   *	    pop    ebx
+ 0000002F  C9		   *	    leave  
+ 00000030  C2 0018	   *	    ret    00018h
+ 00000033			init_text_component ENDP
+
+ 00000033			new_text_component PROC PUBLIC USES ebx ecx esi, pFontTexture : DWORD, charW : DWORD, charH : DWORD, spacing : DWORD, maxChars : DWORD, pText : DWORD
+ 00000033  55		   *	    push   ebp
+ 00000034  8B EC	   *	    mov    ebp, esp
+ 00000036  53		   *	    push   ebx
+ 00000037  51		   *	    push   ecx
+ 00000038  56		   *	    push   esi
 					INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF TextComponent
- 0000001C  6A 28	   *	    push   +000000028h
- 0000001E  6A 04	   *	    push   +000000004h
- 00000020  FF 35 00000000 E *	    push   hHeap
- 00000026  E8 00000000 E   *	    call   HeapAlloc
- 0000002B  8B C8			mov ecx, eax; // Move the memory address to ecx so it can function as a "this" pointer
+ 00000039  6A 28	   *	    push   +000000028h
+ 0000003B  6A 04	   *	    push   +000000004h
+ 0000003D  FF 35 00000000 E *	    push   hHeap
+ 00000043  E8 00000000 E   *	    call   HeapAlloc
+ 00000048  8B C8			mov ecx, eax; // Move the memory address to ecx so it can function as a "this" pointer
 					INVOKE init_text_component, pFontTexture, charW, charH, spacing, maxChars, pText
- 0000002D  FF 75 1C	   *	    push   dword  ptr ss:[ebp]+00000001Ch
- 00000030  FF 75 18	   *	    push   dword  ptr ss:[ebp]+000000018h
- 00000033  FF 75 14	   *	    push   dword  ptr ss:[ebp]+000000014h
- 00000036  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
- 00000039  FF 75 0C	   *	    push   dword  ptr ss:[ebp]+00000000Ch
- 0000003C  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
- 0000003F  E8 FFFFFFBC	   *	    call   init_text_component
+ 0000004A  FF 75 1C	   *	    push   dword  ptr ss:[ebp]+00000001Ch
+ 0000004D  FF 75 18	   *	    push   dword  ptr ss:[ebp]+000000018h
+ 00000050  FF 75 14	   *	    push   dword  ptr ss:[ebp]+000000014h
+ 00000053  FF 75 10	   *	    push   dword  ptr ss:[ebp]+000000010h
+ 00000056  FF 75 0C	   *	    push   dword  ptr ss:[ebp]+00000000Ch
+ 00000059  FF 75 08	   *	    push   dword  ptr ss:[ebp]+000000008h
+ 0000005C  E8 FFFFFF9F	   *	    call   init_text_component
 
 					ret ; // Return with the address of the memory block in HeapAlloc
- 00000044  C9		   *	    leave  
- 00000045  C2 0018	   *	    ret    00018h
- 00000048			new_text_component ENDP
+ 00000061  5E		   *	    pop    esi
+ 00000062  59		   *	    pop    ecx
+ 00000063  5B		   *	    pop    ebx
+ 00000064  C9		   *	    leave  
+ 00000065  C2 0018	   *	    ret    00018h
+ 00000068			new_text_component ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/20/26 19:01:51
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/20/26 19:04:43
 text_component.asm					     Symbols 2 - 1
 
 
@@ -277,7 +298,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000048 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000068 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -295,7 +316,7 @@ free_component . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 free_text_component  . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_component . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_renderable_component  . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-init_text_component  . . . . . .	P Near	 00000000 _TEXT	Length= 00000019 Public STDCALL
+init_text_component  . . . . . .	P Near	 00000000 _TEXT	Length= 00000033 Public STDCALL
   pFontTexture . . . . . . . . .	DWord	 bp + 00000008
   charW  . . . . . . . . . . . .	DWord	 bp + 0000000C
   charH  . . . . . . . . . . . .	DWord	 bp + 00000010
@@ -304,7 +325,7 @@ init_text_component  . . . . . .	P Near	 00000000 _TEXT	Length= 00000019 Public 
   pText  . . . . . . . . . . . .	DWord	 bp + 0000001C
 initialize_heap  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 new_component  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-new_text_component . . . . . . .	P Near	 00000019 _TEXT	Length= 0000002F Public STDCALL
+new_text_component . . . . . . .	P Near	 00000033 _TEXT	Length= 00000035 Public STDCALL
   pFontTexture . . . . . . . . .	DWord	 bp + 00000008
   charW  . . . . . . . . . . . .	DWord	 bp + 0000000C
   charH  . . . . . . . . . . . .	DWord	 bp + 00000010
