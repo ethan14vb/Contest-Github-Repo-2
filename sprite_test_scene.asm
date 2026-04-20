@@ -16,7 +16,7 @@ INCLUDE resource_manager.inc
 INCLUDE sprite_component.inc
 
 .data
-testFile BYTE "other soldier ideas.pam", 0
+testFile BYTE "Knight.pam", 0
 knightFile BYTE "Knight.pam", 0
 pLane DWORD ?
 
