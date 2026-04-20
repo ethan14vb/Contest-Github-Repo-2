@@ -755,6 +755,40 @@ drawText PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pTextComp:DWORD, p
 	; // Retrive the pointer to the text string
 	mov esi, (TextComponent PTR [esi]).pText
 drawText_charloop:
+	; // Fetch next character
+	movzx eax, BYTE PTR [esi]
+	test eax, eax
+	jz drawText_exit; // Found a null terminator
+
+	; // Find Column (Index % 16)
+	mov ebx, eax
+	and ebx, 15 
+
+	; // Find Row (Index / 16)
+	mov ecx, eax
+	shr ecx, 4  
+
+	; // CellX
+	mov edi, pTextComp
+	mov edx, (TextComponent PTR [edi]).charW
+	imul ebx, edx
+	mov tempSprite.cellX, ebx
+
+	; // CellY
+	mov edx, (TextComponent PTR [edi]).charH
+	imul ecx, edx
+	mov tempSprite.cellY, ecx
+
+	; // Draw the character using drawSprite
+	lea eax, tempTransform
+	lea ebx, tempSprite
+	INVOKE drawSprite, eax, ebx, pCamera, pBuffer
+
+	; // Advance x position
+	mov edi, pTextComp
+	mov eax, (TextComponent PTR [edi]).charW
+	add eax, (TextComponent PTR [edi]).spacing
+	add tempTransform.x, eax
 
 	inc esi
 	jmp drawText_charloop
