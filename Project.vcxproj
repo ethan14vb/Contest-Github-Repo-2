@@ -62,6 +62,7 @@
     </None>
     <None Include="sprite_test_scene.inc" />
     <None Include="texture.inc" />
+    <None Include="text_component.inc" />
     <None Include="timer_component.inc" />
     <None Include="unordered_vector.inc" />
   </ItemGroup>
