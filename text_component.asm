@@ -87,7 +87,46 @@ free_text_component ENDP
 ; // ********************************************
 ; // Instance methods
 ; // ********************************************
-set_text_component_text PROC PUBLIC USES ebx ecx edx esi edi
+
+; // ----------------------------------
+; // set_text_component_text
+; // Copies a string into the text component's string buffer.
+; // There a few laws about this function.
+; //
+; // Law 1: Thou shalt not pass in a string that is not null terminated
+; // Law 2: Thou shalt not pass in a string that is larger than the buffer.
+; //
+; // If you do not abide by these laws, may God have mercy upon your heap.
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+set_text_component_text PROC PUBLIC USES ebx ecx edx esi edi, pText: DWORD
+	mov edi, (TextComponent PTR [ecx]).pText
+	mov esi, pText
+
+	test esi, esi
+	jz set_text_component_text_need_null
+
+set_text_component_text_copy_loop:
+	mov al, BYTE PTR [esi]
+
+	; // Write the byte to the destination
+	mov BYTE PTR [edi], al
+
+	; // Check for a null terminator
+	test al, al
+	jz set_text_component_text_exit
+
+	inc esi
+	inc edi
+	jmp set_text_component_text_copy_loop
+
+set_text_component_text_need_null:
+	; // In case we were passed a null pointer
+	mov BYTE PTR [edi], 0
+
+set_text_component_text_exit:
 	ret
 set_text_component_text ENDP
 
