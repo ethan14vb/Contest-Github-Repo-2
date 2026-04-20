@@ -12,6 +12,17 @@ INCLUDE heap_functions.inc
 TEXT_COMPONENT_VTABLE Component_vtable <OFFSET free_text_component>
 
 .code
+; // ********************************************
+; // Constructor Methods
+; // ********************************************
+
+; // ----------------------------------
+; // init_text_component
+; // Initializes memory with the contents of a TextComponent
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 init_text_component PROC PUBLIC USES ebx ecx edx esi, pFontTexture : DWORD, charW : DWORD, charH : DWORD, spacing : DWORD, maxChars : DWORD
 	local pThis
 	mov pThis, ecx
@@ -35,6 +46,11 @@ init_text_component PROC PUBLIC USES ebx ecx edx esi, pFontTexture : DWORD, char
 	ret
 init_text_component ENDP
 
+; // ----------------------------------
+; // new_text_component
+; // Allocates memory for a TextComponent and then calls
+; // the initializer method on it.
+; // ----------------------------------
 new_text_component PROC PUBLIC USES ebx ecx esi, pFontTexture : DWORD, charW : DWORD, charH : DWORD, spacing : DWORD, maxChars : DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF TextComponent
 	mov ecx, eax; // Move the memory address to ecx so it can function as a "this" pointer
@@ -43,6 +59,13 @@ new_text_component PROC PUBLIC USES ebx ecx esi, pFontTexture : DWORD, charW : D
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_text_component ENDP
 
+; // ----------------------------------
+; // free_text_component
+; // Destructs the TextComponent and frees it
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 free_text_component PROC PUBLIC USES ebx ecx edx esi edi
 	local pThis
 	mov pThis, ecx
@@ -53,5 +76,9 @@ free_text_component PROC PUBLIC USES ebx ecx edx esi edi
 
 	ret
 free_text_component ENDP
+
+; // ********************************************
+; // Instance methods
+; // ********************************************
 
 END
