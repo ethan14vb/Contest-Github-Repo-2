@@ -752,11 +752,14 @@ drawText PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pTextComp:DWORD, p
 	mov tempSprite.originX, 0
 	mov tempSprite.originY, 0
 
-	mov eax, pTrans
-	mov eax, pTextComp
-	mov eax, pCamera
-	mov eax, pBuffer
-	
+	; // Retrive the pointer to the text string
+	mov esi, (TextComponent PTR [esi]).pText
+drawText_charloop:
+
+	inc esi
+	jmp drawText_charloop
+		
+drawText_exit:	
 	ret
 drawText ENDP
 
