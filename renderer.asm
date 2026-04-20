@@ -735,6 +735,23 @@ drawText PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pTextComp:DWORD, p
 	mov eax, (TransformComponent PTR [esi]).ignoreCamera
 	mov tempTransform.ignoreCamera, eax
 
+	; // Initialize tempSprite
+	mov esi, pTextComp
+	mov eax, (TextComponent PTR [esi]).pFontTexture
+	mov tempSprite.pTexture, eax
+
+	mov eax, (TextComponent PTR [esi]).charW
+	mov tempSprite.cellW, eax
+
+	mov eax, (TextComponent PTR [esi]).charH
+	mov tempSprite.cellH, eax
+
+	mov tempSprite.isCell, 1
+	mov tempSprite.flipX, 0
+	mov tempSprite.flipY, 0
+	mov tempSprite.originX, 0
+	mov tempSprite.originY, 0
+
 	mov eax, pTrans
 	mov eax, pTextComp
 	mov eax, pCamera

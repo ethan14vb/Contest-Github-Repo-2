@@ -13,6 +13,7 @@ RENDERER_COMMAND_INC EQU 1
 INCLUDE transform_component.inc
 INCLUDE rect_component.inc
 INCLUDE sprite_component.inc
+INCLUDE text_component.inc
 
 RenderCommand STRUCT
 	; // Pointer to the transform that describes where the object should be rendered
