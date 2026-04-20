@@ -718,6 +718,23 @@ drawSprite_done:
 drawSprite ENDP
 
 ; // ----------------------------------
+; // drawText
+; // Private helper. Draws a string of text to the buffer from a font atlas.
+; // Position is relative to camera (unless ignoreCamera set).
+; // ----------------------------------
+drawText PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pTextComp:DWORD, pCamera:DWORD, pBuffer:DWORD
+	local tempTransform : TransformComponent
+	local tempSprite : SpriteComponent
+
+	mov eax, pTrans
+	mov eax, pTextComp
+	mov eax, pCamera
+	mov eax, pBuffer
+	
+	ret
+drawText ENDP
+
+; // ----------------------------------
 ; // renderCommands
 ; // Takes the render commands list and camera position,
 ; // sorts the command pointers by layer (lowest first) using insertion sort,
@@ -869,6 +886,8 @@ cmd_loop:
 		INVOKE drawRect, (RenderCommand PTR [eax]).pTransform, (RenderCommand PTR [eax]).pRenderable, pCamera, pBuffer
 	.ELSEIF edx == SPRITE_COMPONENT_ID
 		INVOKE drawSprite, (RenderCommand PTR [eax]).pTransform, (RenderCommand PTR [eax]).pRenderable, pCamera, pBuffer
+	.ELSEIF edx == TEXT_COMPONENT_ID
+		INVOKE drawText, (RenderCommand PTR[eax]).pTransform, (RenderCommand PTR[eax]).pRenderable, pCamera, pBuffer
 	.ENDIF
 
 	add esi, TYPE DWORD
