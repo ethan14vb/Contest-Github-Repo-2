@@ -726,6 +726,15 @@ drawText PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pTextComp:DWORD, p
 	local tempTransform : TransformComponent
 	local tempSprite : SpriteComponent
 
+	; // Initialize tempTransform
+	mov esi, pTrans
+	mov eax, (TransformComponent PTR [esi]).x
+	mov tempTransform.x, eax
+	mov eax, (TransformComponent PTR [esi]).y
+	mov tempTransform.y, eax
+	mov eax, (TransformComponent PTR [esi]).ignoreCamera
+	mov tempTransform.ignoreCamera, eax
+
 	mov eax, pTrans
 	mov eax, pTextComp
 	mov eax, pCamera
