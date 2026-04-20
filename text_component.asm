@@ -25,6 +25,11 @@ TEXT_COMPONENT_VTABLE Component_vtable <OFFSET free_text_component>
 ; // ----------------------------------
 init_text_component PROC PUBLIC USES ebx ecx edx esi, pFontTexture : DWORD, charW : DWORD, charH : DWORD, spacing : DWORD, maxChars : DWORD
 	local pThis
+	; // Parent constructor
+	INVOKE init_renderable_component, 0FFFFFFFFh, 1
+	mov (Component PTR [ecx]).componentType, TEXT_COMPONENT_ID
+	mov (Component PTR [ecx]).pVt, OFFSET TEXT_COMPONENT_VTABLE
+
 	mov pThis, ecx
 	mov esi, pFontTexture
 	mov (TextComponent PTR [ecx]).pFontTexture, esi
@@ -37,7 +42,9 @@ init_text_component PROC PUBLIC USES ebx ecx edx esi, pFontTexture : DWORD, char
 	mov esi, maxChars
 	mov (TextComponent PTR [ecx]).textMaxLen, esi
 
-	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, maxChars + 1
+	mov eax, maxChars
+	inc eax
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, eax
 	mov ecx, pThis
 	mov (TextComponent PTR [ecx]).pText, eax
 
@@ -80,5 +87,8 @@ free_text_component ENDP
 ; // ********************************************
 ; // Instance methods
 ; // ********************************************
+set_text_component_text PROC PUBLIC USES ebx ecx edx esi edi
+	ret
+set_text_component_text ENDP
 
 END
