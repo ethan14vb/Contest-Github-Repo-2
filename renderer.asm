@@ -689,10 +689,6 @@ xloop_sprite:
 	
 	mov ebx, [edi]
 
-	; // convert from RGBA to BGRA
-	bswap eax; // The bswap instruction was not learned in class. It is used here as an easy way of flipping the DWORD around.
-	ror eax, 8
-
 	; // ********************************************
 	; // Alpha blending logic
 	; // ********************************************

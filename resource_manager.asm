@@ -173,6 +173,21 @@ load_texture PROC PUBLIC USES ebx ecx edx esi edi, pFilename:DWORD
 	mov remainingSize, eax
 	INVOKE ReadFile, hFile, pPixels, remainingSize, ADDR bytesRead, 0
 
+	; // Convert from RGBA to BGRA
+	mov ecx, remainingSize
+	shr ecx, 2
+	mov edi, pPixels
+
+load_texture_conversion_loop:
+	mov eax, [edi]
+	bswap eax
+	ror eax, 8
+	mov [edi], eax
+
+	add edi, 4
+	dec ecx
+	jnz load_texture_conversion_loop
+
 	; // Cleanup
 	INVOKE CloseHandle, hFile
 	mov eax, pTex
