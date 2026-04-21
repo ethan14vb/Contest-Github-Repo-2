@@ -689,13 +689,71 @@ xloop_sprite:
 	
 	mov ebx, [edi]
 
-	; // Blend the alpha value
-	bswap eax ; // The bswap instruction was not learned in class. It is used here as an easy way of flipping the DWORD around.
+	; // convert from RGBA to BGRA
+	bswap eax; // The bswap instruction was not learned in class. It is used here as an easy way of flipping the DWORD around.
 	ror eax, 8
 
-	; // INVOKE blendColor, eax, ebx
+	; // ********************************************
+	; // Alpha blending logic
+	; // ********************************************
+	mov ecx, eax
+	shr ecx, 24
 
+	cmp ecx, 255 ; // If the pixel is opaque, we can immediately draw it
+	je write_pixel
+
+	cmp ecx, 0 ; // If the pixel is fully transparent, don't blend it
+	je skip_pixel
+
+	; // Calculate 255 - fgAlpha
+	push esi
+	push edi
+
+	mov edx, 255
+	sub edx, ecx
+
+	; // Blend red and blue
+	; // Mask the G & A foreground colors
+	mov esi, eax
+	and esi, 00FF00FFh
+	imul esi, ecx
+
+	; // Mask the G & A background colors 
+	mov edi, ebx
+	and edi, 00FF00FFh
+	imul edi, edx
+
+	add esi, edi
+	shr esi, 8
+	and esi, 00FF00FFh
+
+	; // Blend green
+	; // Mask the B & R & A foreground colors
+	mov edi, eax
+	and edi, 0000FF00h
+	imul edi, ecx
+
+	; // Mask the B & R & A background colors
+	mov eax, ebx
+	and eax, 0000FF00h
+	imul eax, edx
+
+	add edi, eax
+	shr edi, 8
+	and edi, 0000FF00h
+
+	; // Combine to the final DWORD
+	or eax, esi             ; // Combine green with red and blue
+	or eax, edi
+	or eax, 0FF000000h		; // Restore alpha to FF
+
+	pop edi
+	pop esi
+
+write_pixel:
 	mov [edi], eax
+
+skip_pixel:
 	add edi, 4
 
 	; // Advance source X
