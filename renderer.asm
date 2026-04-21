@@ -976,7 +976,7 @@ sort_done:
 	mov edi, pScreenBuffer
 	mov pBuffer, edi
 	mov ecx, GAME_WIDTH * GAME_HEIGHT
-	mov eax, 0FF000000h
+	mov eax, 0FF202030h
 	rep stosd
 
 	; // ----------------------------------------------------------------
