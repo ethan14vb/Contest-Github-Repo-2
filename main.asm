@@ -23,6 +23,7 @@ Sleep		PROTO : DWORD ; // This function was added because it is the Win32 method
 .data
 EXTERNDEF pTex : DWORD
 EXTERNDEF pKnightTex : DWORD
+EXTERNDEF pFontTex : DWORD
 
 ; // Engine data
 deltaTime REAL4 0.016667
@@ -137,6 +138,7 @@ loop_exit:
 	INVOKE free_scene
 	INVOKE unload_texture, pTex
 	INVOKE unload_texture, pKnightTex
+	INVOKE unload_texture, pFontTex
 
 	INVOKE ExitProcess, 0
 	ret

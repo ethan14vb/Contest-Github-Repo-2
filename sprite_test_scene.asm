@@ -14,17 +14,24 @@ INCLUDE knight_game_object.inc
 INCLUDE lane_game_object.inc
 INCLUDE resource_manager.inc
 INCLUDE sprite_component.inc
+INCLUDE text_component.inc
 
 .data
 testFile BYTE "Knight.pam", 0
 knightFile BYTE "Knight.pam", 0
+fontFile BYTE "16x32 cartoon font.pam", 0
 pLane DWORD ?
+
+text BYTE "This is a MAGNIFICENT! test to see if the text string rendering system works. 0123456789", 0
 
 PUBLIC pTex
 pTex DWORD ?
 
 PUBLIC pKnightTex
 pKnightTex DWORD ?
+
+PUBLIC pFontTex
+pFontTex DWORD ?
 
 .code
 ; // ----------------------------------
@@ -36,11 +43,20 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE load_texture, OFFSET testFile
 	mov pTex, eax
 
+	INVOKE load_texture, OFFSET fontFile
+	mov pFontTex, eax
+
 	; // Sprite
 	INVOKE new_bouncing_image_game_object, pTex
 	mov ecx, eax
 
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 200
+	INVOKE add_component, ecx, eax
+
 	mov esi, ecx
+	mov ecx, eax
+	INVOKE set_text_component_text, OFFSET text
+
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
 

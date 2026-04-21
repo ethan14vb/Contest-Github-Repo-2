@@ -26,5 +26,6 @@ TextComponent ENDS
 
 init_text_component PROTO pFontTexture:DWORD, charW: DWORD, charH: DWORD, spacing: DWORD, maxChars:DWORD
 new_text_component PROTO pFontTexture:DWORD, charW: DWORD, charH: DWORD, spacing: DWORD, maxChars:DWORD
+set_text_component_text PROTO pText:DWORD
 
 ENDIF

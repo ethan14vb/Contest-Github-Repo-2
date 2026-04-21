@@ -514,6 +514,29 @@ scene_render_frame PROC PRIVATE USES eax ebx edx esi edi, hWnd:DWORD
 			jmp scene_render_frame_loop_exit
 		.ENDIF
 
+		; // Now check if there's a TextComponent
+		mov ecx, esi
+		INVOKE get_first_component_which_is_a, TEXT_COMPONENT_ID
+		
+		.IF eax != 0
+			; // Create the new RenderCommand
+			push ebx
+			mov ecx, esi
+
+			mov ebx, eax
+			INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID ; // Get the transform pointer from the GameObject
+			INVOKE new_render_command, eax, ebx
+
+			pop ebx
+
+			; // Add the render command to the RenderCommands list
+			mov ecx, pThis
+			lea ecx, (Scene PTR [ecx]).renderCommands
+			INVOKE push_back, eax 
+				
+			jmp scene_render_frame_loop_exit
+		.ENDIF
+
 		scene_render_frame_loop_exit:
 		; // Restore the pointer to pData and continue
 		pop edx
