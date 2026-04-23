@@ -152,7 +152,12 @@ isActionPressedSearch_loop:
     mov edi, pController
     mov edi, (VirtualController PTR [edi]).deviceID
 
-	; // Binding found, TODO check for the hardware key press
+	; // Binding found, check for the hardware key press
+	.IF edi == DEVICE_KEYBOARD
+
+	.ELSE
+		; // The device is one of the GAMEPADS
+	.ENDIF
 
 isActionPressed_nextBinding:
 	inc edx

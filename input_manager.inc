@@ -58,6 +58,12 @@ VirtualController STRUCT
 	bindings UnorderedVector <> 
 VirtualController ENDS
 
+DEVICE_GAMEPAD_0		= 0
+DEVICE_GAMEPAD_1		= 1
+DEVICE_GAMEPAD_2		= 2
+DEVICE_GAMEPAD_3		= 3
+DEVICE_KEYBOARD			= 4
+
 updateInput PROTO
 isKeyPressed PROTO vkCode: VK_CODE
 isKeyJustPressed PROTO vkCode: VK_CODE
