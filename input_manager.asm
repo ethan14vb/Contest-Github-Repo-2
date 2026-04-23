@@ -129,8 +129,37 @@ exitIsKeyJustPressed:
 isKeyJustPressed ENDP
 
 isActionPressed PROC PUBLIC USES ebx ecx edx esi edi, pController: DWORD, actionID: DWORD
+	mov ecx, pController
+	lea ecx, (VirtualController PTR [ecx]).bindings
+	mov eax, (UnorderedVector PTR [ecx]).pData
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	mov edx, 0
 	mov eax, pController
 	mov eax, actionID
+
+isActionPressedSearch_loop:
+    cmp edx, ebx
+    jge isActionPressedSearch_loopEnd
+
+    ; // esi = bindings[i]
+    mov esi, [eax + edx * 4]
+
+    ; // Check if this binding has the correct action
+    mov edi, (InputBinding PTR [esi]).actionID
+    cmp edi, actionID
+    jne isActionPressed_nextBinding
+
+    mov edi, pController
+    mov edi, (VirtualController PTR [edi]).deviceID
+
+	; // Binding found, TODO check for the hardware key press
+
+isActionPressed_nextBinding:
+	inc edx
+    jmp isActionPressedSearch_loop
+
+isActionPressedSearch_loopEnd:
+	mov eax, 0
 	ret
 isActionPressed ENDP
 
