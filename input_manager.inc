@@ -12,6 +12,7 @@ IFNDEF INPUT_MANAGER_INC
 INPUT_MANAGER_INC EQU 1
 
 INCLUDELIB XInput.lib
+INCLUDE unordered_vector.inc
 
 ; // From learn.microsoft.com/en-us/windows/win32/api/xinput/nf-xinput-xinputgetstate
 XInputGetState PROTO dwUserIndex:DWORD, pState:DWORD
@@ -46,6 +47,16 @@ VK_GAMEPAD_DPAD_DOWN	= 0CCh
 
 VK_GAMEPAD_LEFT_THUMBSTICK_UP	= 0D3h	
 VK_GAMEPAD_LEFT_THUMBSTICK_DOWN = 0D4h
+
+InputBinding STRUCT
+	actionID DWORD ?
+	buttonCode DWORD ?
+InputBinding ENDS
+
+VirtualController STRUCT
+	deviceID DWORD ?
+	bindings UnorderedVector <> 
+VirtualController ENDS
 
 updateInput PROTO
 isKeyPressed PROTO vkCode: VK_CODE

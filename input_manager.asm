@@ -128,4 +128,10 @@ exitIsKeyJustPressed:
 	ret
 isKeyJustPressed ENDP
 
+isActionPressed PROC PUBLIC USES ebx ecx edx esi edi, pController: DWORD, actionID: DWORD
+	mov eax, pController
+	mov eax, actionID
+	ret
+isActionPressed ENDP
+
 END
