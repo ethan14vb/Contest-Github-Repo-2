@@ -55,9 +55,6 @@
     <None Include="resource_manager.inc">
       <Filter>Engine\CoreSystems</Filter>
     </None>
-    <None Include="scene.inc">
-      <Filter>Engine\CoreSystems</Filter>
-    </None>
     <None Include="bouncing_image_game_object.inc">
       <Filter>GameObjects</Filter>
     </None>
@@ -83,16 +80,19 @@
       <Filter>Scenes</Filter>
     </None>
     <None Include="unordered_vector.inc">
-      <Filter>Engine\DataStructures</Filter>
+      <Filter>Engine\CoreDataStructures</Filter>
     </None>
     <None Include="event.inc">
-      <Filter>Engine\DataStructures</Filter>
+      <Filter>Engine\CoreDataStructures</Filter>
     </None>
     <None Include="camera.inc">
-      <Filter>Engine\CoreSystems</Filter>
+      <Filter>Engine\CoreDataStructures</Filter>
     </None>
     <None Include="texture.inc">
-      <Filter>Engine\CoreSystems</Filter>
+      <Filter>Engine\CoreDataStructures</Filter>
+    </None>
+    <None Include="scene.inc">
+      <Filter>Engine\CoreDataStructures</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -114,14 +114,14 @@
     <Filter Include="Scenes">
       <UniqueIdentifier>{fa569797-693a-4505-99ef-a3e213442298}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\DataStructures">
-      <UniqueIdentifier>{9ebdac55-84cc-4b2e-9645-f8b775102b44}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\GameObjectFramework">
       <UniqueIdentifier>{0026d724-bcab-4228-a3c5-99fb78c4699c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\CoreSystems">
       <UniqueIdentifier>{d42bdae6-8a7e-443d-a7bc-b1a9a8b895cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\CoreDataStructures">
+      <UniqueIdentifier>{9ebdac55-84cc-4b2e-9645-f8b775102b44}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +164,6 @@
     <MASM Include="resource_manager.asm">
       <Filter>Engine\CoreSystems</Filter>
     </MASM>
-    <MASM Include="scene.asm">
-      <Filter>Engine\CoreSystems</Filter>
-    </MASM>
     <MASM Include="bouncing_image_game_object.asm">
       <Filter>GameObjects</Filter>
     </MASM>
@@ -189,19 +186,22 @@
       <Filter>Scenes</Filter>
     </MASM>
     <MASM Include="unordered_vector.asm">
-      <Filter>Engine\DataStructures</Filter>
+      <Filter>Engine\CoreDataStructures</Filter>
     </MASM>
     <MASM Include="event.asm">
-      <Filter>Engine\DataStructures</Filter>
-    </MASM>
-    <MASM Include="camera.asm">
-      <Filter>Engine\CoreSystems</Filter>
-    </MASM>
-    <MASM Include="texture.asm">
-      <Filter>Engine\CoreSystems</Filter>
+      <Filter>Engine\CoreDataStructures</Filter>
     </MASM>
     <MASM Include="main.asm">
       <Filter>Engine</Filter>
+    </MASM>
+    <MASM Include="camera.asm">
+      <Filter>Engine\CoreDataStructures</Filter>
+    </MASM>
+    <MASM Include="texture.asm">
+      <Filter>Engine\CoreDataStructures</Filter>
+    </MASM>
+    <MASM Include="scene.asm">
+      <Filter>Engine\CoreDataStructures</Filter>
     </MASM>
   </ItemGroup>
 </Project>
