@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/23/26 12:59:04
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/23/26 13:02:34
 scene.asm						     Page 1 - 1
 
 
@@ -796,6 +796,14 @@ scene.asm						     Page 1 - 1
  00000008  0000		      C 	sThumbRX      SWORD ?
  0000000A  0000		      C 	sThumbRY      SWORD ?
 			      C XINPUT_GAMEPAD ENDS
+			      C 
+			      C ; // From learn.microsoft.com/en-us/windows/win32/api/xinput/ns-xinput-xinput_state
+ 00000010		      C XINPUT_STATE STRUCT
+ 00000000  00000000	      C 	dwPacketNumber DWORD ?
+ 00000004  0000 00 00	      C 	Gamepad        XINPUT_GAMEPAD <>
+	   0000 0000 0000
+	   0000
+			      C XINPUT_STATE ENDS
 			      C 
 			      C VK_CODE typedef BYTE 
 			      C 
@@ -1660,7 +1668,7 @@ scene.asm						     Page 1 - 1
  000003E5			scene_update ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/23/26 12:59:04
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/23/26 13:02:34
 scene.asm						     Symbols 2 - 1
 
 
@@ -1770,6 +1778,9 @@ XINPUT_GAMEPAD . . . . . . . . .	 0000000C
   sThumbLY . . . . . . . . . . .	 00000006	 Word
   sThumbRX . . . . . . . . . . .	 00000008	 Word
   sThumbRY . . . . . . . . . . .	 0000000A	 Word
+XINPUT_STATE . . . . . . . . . .	 00000010
+  dwPacketNumber . . . . . . . .	 00000000	 DWord
+  Gamepad  . . . . . . . . . . .	 00000004	 
 
 
 Types:

@@ -21,11 +21,13 @@ INCLUDE input_manager.inc
 GetAsyncKeyState PROTO vk_code : DWORD
 	
 .data
-; // Holds the data for all 256 virtual keys and whether they are currently pressed
-curInputBuffer BYTE 256 DUP(0)
+; // Holds the data for the current and previous virtual key inputs
+curInputBuffer		BYTE 256 DUP(0)
+prevInputBuffer		BYTE 256 DUP(0)
 
-; // Holds the data for the previous input buffer for determining if a key was just pressed
-prevInputBuffer BYTE 256 DUP(0)
+; // Holds the data for the current and previous xbox gamepad states
+curGamepadStates	XINPUT_STATE 4 DUP(<>)
+prevGamepadStates	XINPUT_STATE 4 DUP(<>)
 
 .code
 ; // ----------------------------------

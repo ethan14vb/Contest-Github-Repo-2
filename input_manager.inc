@@ -22,6 +22,12 @@ XINPUT_GAMEPAD STRUCT
 	sThumbRY      SWORD ?
 XINPUT_GAMEPAD ENDS
 
+; // From learn.microsoft.com/en-us/windows/win32/api/xinput/ns-xinput-xinput_state
+XINPUT_STATE STRUCT
+	dwPacketNumber DWORD ?
+	Gamepad        XINPUT_GAMEPAD <>
+XINPUT_STATE ENDS
+
 VK_CODE typedef BYTE 
 
 ; // Win32 virtual key codes taken from learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
