@@ -11,6 +11,11 @@
 IFNDEF INPUT_MANAGER_INC
 INPUT_MANAGER_INC EQU 1
 
+INCLUDELIB XInput.lib
+
+; // From learn.microsoft.com/en-us/windows/win32/api/xinput/nf-xinput-xinputgetstate
+XInputGetState PROTO dwUserIndex:DWORD, pState:DWORD
+
 ; // From learn.microsoft.com/en-us/windows/win32/api/xinput/ns-xinput-xinput_gamepad
 XINPUT_GAMEPAD STRUCT
 	wButtons      WORD ?

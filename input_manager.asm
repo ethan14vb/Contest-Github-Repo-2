@@ -59,6 +59,24 @@ updateInput PROC PUBLIC USES ebx ecx edx esi edi
 		inc ebx
 	.ENDW
 
+	; // Copy current xbox input to previous
+	lea esi, curGamepadStates
+	lea edi, prevGamepadStates
+	mov ecx, SIZEOF curGamepadStates
+	shr ecx, 2
+	cld
+	rep movsd
+
+	; // Get current xbox states
+	lea esi, curGamepadStates[0 * SIZEOF XINPUT_STATE]
+	INVOKE XInputGetState, 0, esi
+	lea esi, curGamepadStates[1 * SIZEOF XINPUT_STATE]
+	INVOKE XInputGetState, 1, esi
+	lea esi, curGamepadStates[2 * SIZEOF XINPUT_STATE]
+	INVOKE XInputGetState, 2, esi
+	lea esi, curGamepadStates[3 * SIZEOF XINPUT_STATE]
+	INVOKE XInputGetState, 3, esi
+
 	ret
 updateInput ENDP
 
