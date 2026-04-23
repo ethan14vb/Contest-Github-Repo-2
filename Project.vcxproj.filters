@@ -1,207 +1,207 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <None Include="camera.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="engine_types.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="scene.inc">
-      <Filter>Include\Engine</Filter>
+    <None Include="render_command.inc">
+      <Filter>Engine\Rendering</Filter>
     </None>
     <None Include="renderer.inc">
-      <Filter>Include\Rendering</Filter>
-    </None>
-    <None Include="render_command.inc">
-      <Filter>Include\Rendering</Filter>
-    </None>
-    <None Include="transform_component.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="rect_component.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="sprite_component.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="game_object.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="rectangle_test_scene.inc">
-      <Filter>Resource\Scenes</Filter>
-    </None>
-    <None Include="component_ids.inc">
-      <Filter>Include\Resource</Filter>
-    </None>
-    <None Include="game_object_ids.inc">
-      <Filter>Include\Resource</Filter>
-    </None>
-    <None Include="component.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="unordered_vector.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="input_manager.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="camera_mover_game_object.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="renderable_component.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="music_player.inc">
-      <Filter>Include\Engine</Filter>
-    </None>
-    <None Include="default_header.inc">
-      <Filter>Include</Filter>
+      <Filter>Engine\Rendering</Filter>
     </None>
     <None Include="graph_wind.inc">
-      <Filter>Include</Filter>
-    </None>
-    <None Include="heap_functions.inc">
-      <Filter>Include</Filter>
-    </None>
-    <None Include="texture.inc">
-      <Filter>Include\Engine</Filter>
+      <Filter>Engine\Win32Api</Filter>
     </None>
     <None Include="file_functions.inc">
-      <Filter>Include</Filter>
+      <Filter>Engine\Win32Api</Filter>
     </None>
-    <None Include="resource_manager.inc">
-      <Filter>Include\Engine</Filter>
+    <None Include="heap_functions.inc">
+      <Filter>Engine\Win32Api</Filter>
     </None>
-    <None Include="knight_game_object.inc">
-      <Filter>Include\Engine</Filter>
+    <None Include="default_header.inc">
+      <Filter>Engine\Win32Api</Filter>
     </None>
-    <None Include="sprite_test_scene.inc">
-      <Filter>Resource\Scenes</Filter>
+    <None Include="component_ids.inc">
+      <Filter>Engine\Components</Filter>
     </None>
-    <None Include="event.inc">
-      <Filter>Include\Engine</Filter>
+    <None Include="component.inc">
+      <Filter>Engine\Components</Filter>
     </None>
-    <None Include="timer_component.inc">
-      <Filter>Include\Engine</Filter>
+    <None Include="rect_component.inc">
+      <Filter>Engine\Components</Filter>
     </None>
-    <None Include="bouncing_image_game_object.inc">
-      <Filter>Include\Engine</Filter>
+    <None Include="renderable_component.inc">
+      <Filter>Engine\Components</Filter>
     </None>
-    <None Include="lane_game_object.inc">
-      <Filter>Include\Engine</Filter>
+    <None Include="sprite_component.inc">
+      <Filter>Engine\Components</Filter>
     </None>
     <None Include="text_component.inc">
-      <Filter>Include\Engine</Filter>
+      <Filter>Engine\Components</Filter>
+    </None>
+    <None Include="timer_component.inc">
+      <Filter>Engine\Components</Filter>
+    </None>
+    <None Include="transform_component.inc">
+      <Filter>Engine\Components</Filter>
+    </None>
+    <None Include="engine_types.inc">
+      <Filter>Engine\CoreSystems</Filter>
+    </None>
+    <None Include="input_manager.inc">
+      <Filter>Engine\CoreSystems</Filter>
+    </None>
+    <None Include="music_player.inc">
+      <Filter>Engine\CoreSystems</Filter>
+    </None>
+    <None Include="resource_manager.inc">
+      <Filter>Engine\CoreSystems</Filter>
+    </None>
+    <None Include="scene.inc">
+      <Filter>Engine\CoreSystems</Filter>
+    </None>
+    <None Include="bouncing_image_game_object.inc">
+      <Filter>GameObjects</Filter>
+    </None>
+    <None Include="camera_mover_game_object.inc">
+      <Filter>GameObjects</Filter>
+    </None>
+    <None Include="knight_game_object.inc">
+      <Filter>GameObjects</Filter>
+    </None>
+    <None Include="lane_game_object.inc">
+      <Filter>GameObjects</Filter>
+    </None>
+    <None Include="game_object.inc">
+      <Filter>Engine\GameObjectFramework</Filter>
+    </None>
+    <None Include="game_object_ids.inc">
+      <Filter>Engine\GameObjectFramework</Filter>
+    </None>
+    <None Include="rectangle_test_scene.inc">
+      <Filter>Scenes</Filter>
+    </None>
+    <None Include="sprite_test_scene.inc">
+      <Filter>Scenes</Filter>
+    </None>
+    <None Include="unordered_vector.inc">
+      <Filter>Engine\DataStructures</Filter>
+    </None>
+    <None Include="event.inc">
+      <Filter>Engine\DataStructures</Filter>
+    </None>
+    <None Include="camera.inc">
+      <Filter>Engine\CoreSystems</Filter>
+    </None>
+    <None Include="texture.inc">
+      <Filter>Engine\CoreSystems</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Source">
-      <UniqueIdentifier>{73c18493-04f4-4a80-8897-6813e9238d5e}</UniqueIdentifier>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{aabf4184-03ef-4048-aad9-98458d71f64c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include">
-      <UniqueIdentifier>{3224bbb7-1079-431e-9490-141390455819}</UniqueIdentifier>
+    <Filter Include="Engine\Rendering">
+      <UniqueIdentifier>{781cdc30-9e6c-48de-829b-587e54eef3d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource">
+    <Filter Include="Engine\Components">
+      <UniqueIdentifier>{dfac05a7-b52f-4160-9a48-03232f8fc207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects">
+      <UniqueIdentifier>{4d29a391-f6f5-41ce-9a3b-fdd94f66363b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Win32Api">
+      <UniqueIdentifier>{38d8452e-668c-4c5f-967a-11730c8d1375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes">
       <UniqueIdentifier>{fa569797-693a-4505-99ef-a3e213442298}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include\Engine">
-      <UniqueIdentifier>{0497e16b-d0b4-4853-8024-05a43d650370}</UniqueIdentifier>
+    <Filter Include="Engine\DataStructures">
+      <UniqueIdentifier>{9ebdac55-84cc-4b2e-9645-f8b775102b44}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include\Rendering">
-      <UniqueIdentifier>{e8f30457-8992-412f-9833-31c4ad6d88cd}</UniqueIdentifier>
+    <Filter Include="Engine\GameObjectFramework">
+      <UniqueIdentifier>{0026d724-bcab-4228-a3c5-99fb78c4699c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine">
-      <UniqueIdentifier>{19203411-f9b2-415f-8031-ee3e1a6d1d20}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Rendering">
-      <UniqueIdentifier>{1a5080f9-bf19-4c04-a1ad-c215501bcfbb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\Scenes">
-      <UniqueIdentifier>{107099d3-5bbe-4f80-b2ee-4de45e966fb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Include\Resource">
-      <UniqueIdentifier>{c9047129-f14e-414e-b0b7-b5e9be8e34a0}</UniqueIdentifier>
+    <Filter Include="Engine\CoreSystems">
+      <UniqueIdentifier>{d42bdae6-8a7e-443d-a7bc-b1a9a8b895cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="scene.asm">
-      <Filter>Source\Engine</Filter>
+    <MASM Include="render_command.asm">
+      <Filter>Engine\Rendering</Filter>
     </MASM>
     <MASM Include="renderer.asm">
-      <Filter>Source\Rendering</Filter>
-    </MASM>
-    <MASM Include="transform_component.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="heap_functions.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="rect_component.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="game_object.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="render_command.asm">
-      <Filter>Source\Rendering</Filter>
-    </MASM>
-    <MASM Include="rectangle_test_scene.asm">
-      <Filter>Resource\Scenes</Filter>
+      <Filter>Engine\Rendering</Filter>
     </MASM>
     <MASM Include="component.asm">
-      <Filter>Source\Engine</Filter>
+      <Filter>Engine\Components</Filter>
     </MASM>
-    <MASM Include="unordered_vector.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="camera.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="input_manager.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="camera_mover_game_object.asm">
-      <Filter>Source\Engine</Filter>
+    <MASM Include="heap_functions.asm">
+      <Filter>Engine\Win32Api</Filter>
     </MASM>
     <MASM Include="renderable_component.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="music_player.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="resource_manager.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="texture.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="knight_game_object.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="main.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="sprite_test_scene.asm">
-      <Filter>Resource\Scenes</Filter>
+      <Filter>Engine\Components</Filter>
     </MASM>
     <MASM Include="sprite_component.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="event.asm">
-      <Filter>Source\Engine</Filter>
+      <Filter>Engine\Components</Filter>
     </MASM>
     <MASM Include="timer_component.asm">
-      <Filter>Source\Engine</Filter>
+      <Filter>Engine\Components</Filter>
     </MASM>
-    <MASM Include="bouncing_image_game_object.asm">
-      <Filter>Source\Engine</Filter>
-    </MASM>
-    <MASM Include="lane_game_object.asm">
-      <Filter>Source\Engine</Filter>
+    <MASM Include="transform_component.asm">
+      <Filter>Engine\Components</Filter>
     </MASM>
     <MASM Include="text_component.asm">
-      <Filter>Source\Engine</Filter>
+      <Filter>Engine\Components</Filter>
+    </MASM>
+    <MASM Include="rect_component.asm">
+      <Filter>Engine\Components</Filter>
+    </MASM>
+    <MASM Include="input_manager.asm">
+      <Filter>Engine\CoreSystems</Filter>
+    </MASM>
+    <MASM Include="music_player.asm">
+      <Filter>Engine\CoreSystems</Filter>
+    </MASM>
+    <MASM Include="resource_manager.asm">
+      <Filter>Engine\CoreSystems</Filter>
+    </MASM>
+    <MASM Include="scene.asm">
+      <Filter>Engine\CoreSystems</Filter>
+    </MASM>
+    <MASM Include="bouncing_image_game_object.asm">
+      <Filter>GameObjects</Filter>
+    </MASM>
+    <MASM Include="camera_mover_game_object.asm">
+      <Filter>GameObjects</Filter>
+    </MASM>
+    <MASM Include="knight_game_object.asm">
+      <Filter>GameObjects</Filter>
+    </MASM>
+    <MASM Include="lane_game_object.asm">
+      <Filter>GameObjects</Filter>
+    </MASM>
+    <MASM Include="game_object.asm">
+      <Filter>Engine\GameObjectFramework</Filter>
+    </MASM>
+    <MASM Include="rectangle_test_scene.asm">
+      <Filter>Scenes</Filter>
+    </MASM>
+    <MASM Include="sprite_test_scene.asm">
+      <Filter>Scenes</Filter>
+    </MASM>
+    <MASM Include="unordered_vector.asm">
+      <Filter>Engine\DataStructures</Filter>
+    </MASM>
+    <MASM Include="event.asm">
+      <Filter>Engine\DataStructures</Filter>
+    </MASM>
+    <MASM Include="camera.asm">
+      <Filter>Engine\CoreSystems</Filter>
+    </MASM>
+    <MASM Include="texture.asm">
+      <Filter>Engine\CoreSystems</Filter>
+    </MASM>
+    <MASM Include="main.asm">
+      <Filter>Engine</Filter>
     </MASM>
   </ItemGroup>
 </Project>
