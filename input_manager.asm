@@ -154,7 +154,18 @@ isActionPressedSearch_loop:
 
 	; // Binding found, check for the hardware key press
 	.IF edi == DEVICE_KEYBOARD
-
+        mov ecx, (InputBinding PTR [esi]).buttonCode
+        
+        lea edi, curInputBuffer
+        movzx eax, BYTE PTR [edi + ecx]
+        
+        and eax, 80h 
+        .IF eax != 0
+            mov eax, 1
+        .ELSE
+            mov eax, 0
+        .ENDIF
+        jmp isActionPressed_exit
 	.ELSE
 		; // The device is one of the GAMEPADS
 	.ENDIF
@@ -165,6 +176,8 @@ isActionPressed_nextBinding:
 
 isActionPressedSearch_loopEnd:
 	mov eax, 0
+
+isActionPressed_exit:
 	ret
 isActionPressed ENDP
 

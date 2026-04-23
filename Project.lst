@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/23/26 19:27:39
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/23/26 19:30:43
 input_manager.asm					     Page 1 - 1
 
 
@@ -319,7 +319,7 @@ input_manager.asm					     Page 1 - 1
 
  00000102			isActionPressedSearch_loop:
  00000102  3B D3		    cmp edx, ebx
- 00000104  7D 19		    jge isActionPressedSearch_loopEnd
+ 00000104  7D 3D		    jge isActionPressedSearch_loopEnd
 				
 				    ; // esi = bindings[i]
  00000106  8B 34 90		    mov esi, [eax + edx * 4]
@@ -327,7 +327,7 @@ input_manager.asm					     Page 1 - 1
 				    ; // Check if this binding has the correct action
  00000109  8B 3E		    mov edi, (InputBinding PTR [esi]).actionID
  0000010B  3B 7D 0C		    cmp edi, actionID
- 0000010E  75 0C		    jne isActionPressed_nextBinding
+ 0000010E  75 30		    jne isActionPressed_nextBinding
 				
  00000110  8B 7D 08		    mov edi, pController
  00000113  8B 3F		    mov edi, (VirtualController PTR [edi]).deviceID
@@ -335,33 +335,51 @@ input_manager.asm					     Page 1 - 1
 					; // Binding found, check for the hardware key press
 					.IF edi == DEVICE_KEYBOARD
  00000115  83 FF 04	   *	    cmp    edi, DEVICE_KEYBOARD
- 00000118  75 02	   *	    jne    @C0004
-
+ 00000118  75 26	   *	    jne    @C0004
+ 0000011A  8B 4E 04		        mov ecx, (InputBinding PTR [esi]).buttonCode
+				        
+ 0000011D  8D 3D 00000000 R	        lea edi, curInputBuffer
+ 00000123  0F B6 04 39		        movzx eax, BYTE PTR [edi + ecx]
+				        
+ 00000127  25 00000080		        and eax, 80h 
+				        .IF eax != 0
+ 0000012C  0B C0	   *	    or	eax, eax
+ 0000012E  74 07	   *	    je	@C0006
+ 00000130  B8 00000001		            mov eax, 1
+				        .ELSE
+ 00000135  EB 05	   *	    jmp    @C0008
+ 00000137		   *@C0006:
+ 00000137  B8 00000000		            mov eax, 0
+				        .ENDIF
+ 0000013C		   *@C0008:
+ 0000013C  EB 0A		        jmp isActionPressed_exit
 					.ELSE
- 0000011A  EB 00	   *	    jmp    @C0006
- 0000011C		   *@C0004:
+ 0000013E  EB 00	   *	    jmp    @C0009
+ 00000140		   *@C0004:
 						; // The device is one of the GAMEPADS
 					.ENDIF
- 0000011C		   *@C0006:
+ 00000140		   *@C0009:
 
- 0000011C			isActionPressed_nextBinding:
- 0000011C  42				inc edx
- 0000011D  EB E3		    jmp isActionPressedSearch_loop
+ 00000140			isActionPressed_nextBinding:
+ 00000140  42				inc edx
+ 00000141  EB BF		    jmp isActionPressedSearch_loop
 
- 0000011F			isActionPressedSearch_loopEnd:
- 0000011F  B8 00000000			mov eax, 0
+ 00000143			isActionPressedSearch_loopEnd:
+ 00000143  B8 00000000			mov eax, 0
+
+ 00000148			isActionPressed_exit:
 					ret
- 00000124  5F		   *	    pop    edi
- 00000125  5E		   *	    pop    esi
- 00000126  5A		   *	    pop    edx
- 00000127  59		   *	    pop    ecx
- 00000128  5B		   *	    pop    ebx
- 00000129  C9		   *	    leave  
- 0000012A  C2 0008	   *	    ret    00008h
- 0000012D			isActionPressed ENDP
+ 00000148  5F		   *	    pop    edi
+ 00000149  5E		   *	    pop    esi
+ 0000014A  5A		   *	    pop    edx
+ 0000014B  59		   *	    pop    ecx
+ 0000014C  5B		   *	    pop    ebx
+ 0000014D  C9		   *	    leave  
+ 0000014E  C2 0008	   *	    ret    00008h
+ 00000151			isActionPressed ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/23/26 19:27:39
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/23/26 19:30:43
 input_manager.asm					     Symbols 2 - 1
 
 
@@ -409,7 +427,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000280 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000012D Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000151 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -420,12 +438,13 @@ GetAsyncKeyState . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External
 XInputGetState . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 free_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 init_unordered_vector  . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
-isActionPressed  . . . . . . . .	P Near	 000000E4 _TEXT	Length= 00000049 Public STDCALL
+isActionPressed  . . . . . . . .	P Near	 000000E4 _TEXT	Length= 0000006D Public STDCALL
   pController  . . . . . . . . .	DWord	 bp + 00000008
   actionID . . . . . . . . . . .	DWord	 bp + 0000000C
   isActionPressedSearch_loop . .	L Near	 00000102 _TEXT	
-  isActionPressed_nextBinding  .	L Near	 0000011C _TEXT	
-  isActionPressedSearch_loopEnd 	L Near	 0000011F _TEXT	
+  isActionPressed_nextBinding  .	L Near	 00000140 _TEXT	
+  isActionPressedSearch_loopEnd 	L Near	 00000143 _TEXT	
+  isActionPressed_exit . . . . .	L Near	 00000148 _TEXT	
 isKeyJustPressed . . . . . . . .	P Near	 000000BA _TEXT	Length= 0000002A Public STDCALL
   vkCode . . . . . . . . . . . .	Byte	 bp + 00000008
   keyNotJustPressed  . . . . . .	L Near	 000000DA _TEXT	
