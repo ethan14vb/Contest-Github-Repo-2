@@ -1,12 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <None Include="render_command.inc">
-      <Filter>Engine\Rendering</Filter>
-    </None>
-    <None Include="renderer.inc">
-      <Filter>Engine\Rendering</Filter>
-    </None>
     <None Include="graph_wind.inc">
       <Filter>Engine\Win32Api</Filter>
     </None>
@@ -80,27 +74,30 @@
       <Filter>Scenes</Filter>
     </None>
     <None Include="unordered_vector.inc">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
     </None>
     <None Include="event.inc">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
     </None>
     <None Include="camera.inc">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
     </None>
     <None Include="texture.inc">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
     </None>
     <None Include="scene.inc">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
+    </None>
+    <None Include="renderer.inc">
+      <Filter>Engine\CoreSystems</Filter>
+    </None>
+    <None Include="render_command.inc">
+      <Filter>Engine\CoreObjects</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
       <UniqueIdentifier>{aabf4184-03ef-4048-aad9-98458d71f64c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Rendering">
-      <UniqueIdentifier>{781cdc30-9e6c-48de-829b-587e54eef3d8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Components">
       <UniqueIdentifier>{dfac05a7-b52f-4160-9a48-03232f8fc207}</UniqueIdentifier>
@@ -120,17 +117,11 @@
     <Filter Include="Engine\CoreSystems">
       <UniqueIdentifier>{d42bdae6-8a7e-443d-a7bc-b1a9a8b895cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\CoreDataStructures">
+    <Filter Include="Engine\CoreObjects">
       <UniqueIdentifier>{9ebdac55-84cc-4b2e-9645-f8b775102b44}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="render_command.asm">
-      <Filter>Engine\Rendering</Filter>
-    </MASM>
-    <MASM Include="renderer.asm">
-      <Filter>Engine\Rendering</Filter>
-    </MASM>
     <MASM Include="component.asm">
       <Filter>Engine\Components</Filter>
     </MASM>
@@ -186,22 +177,28 @@
       <Filter>Scenes</Filter>
     </MASM>
     <MASM Include="unordered_vector.asm">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
     </MASM>
     <MASM Include="event.asm">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
     </MASM>
     <MASM Include="main.asm">
       <Filter>Engine</Filter>
     </MASM>
     <MASM Include="camera.asm">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
     </MASM>
     <MASM Include="texture.asm">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
     </MASM>
     <MASM Include="scene.asm">
-      <Filter>Engine\CoreDataStructures</Filter>
+      <Filter>Engine\CoreObjects</Filter>
+    </MASM>
+    <MASM Include="renderer.asm">
+      <Filter>Engine\CoreSystems</Filter>
+    </MASM>
+    <MASM Include="render_command.asm">
+      <Filter>Engine\CoreObjects</Filter>
     </MASM>
   </ItemGroup>
 </Project>

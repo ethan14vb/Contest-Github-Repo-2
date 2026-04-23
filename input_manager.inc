@@ -11,6 +11,17 @@
 IFNDEF INPUT_MANAGER_INC
 INPUT_MANAGER_INC EQU 1
 
+; // From learn.microsoft.com/en-us/windows/win32/api/xinput/ns-xinput-xinput_gamepad
+XINPUT_GAMEPAD STRUCT
+	wButtons      WORD ?
+	bLeftTrigger  BYTE ?
+	bRightTrigger BYTE ?
+	sThumbLX      SWORD ?
+	sThumbLY      SWORD ?
+	sThumbRX      SWORD ?
+	sThumbRY      SWORD ?
+XINPUT_GAMEPAD ENDS
+
 VK_CODE typedef BYTE 
 
 ; // Win32 virtual key codes taken from learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
