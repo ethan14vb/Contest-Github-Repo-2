@@ -168,6 +168,22 @@ isActionPressedSearch_loop:
         jmp isActionPressed_exit
 	.ELSE
 		; // The device is one of the GAMEPADS
+        imul edi, SIZEOF XINPUT_STATE
+        lea ecx, curGamepadStates
+        add ecx, edi
+
+        mov edi, (InputBinding PTR [esi]).buttonCode
+
+		lea eax, (XINPUT_STATE PTR [ecx]).Gamepad
+        movzx eax, (XINPUT_GAMEPAD PTR [eax]).wButtons
+        and eax, edi
+
+        .IF eax != 0
+            mov eax, 1
+        .ELSE
+            mov eax, 0
+        .ENDIF
+        jmp isActionPressed_exit
 	.ENDIF
 
 isActionPressed_nextBinding:
