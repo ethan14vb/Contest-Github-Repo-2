@@ -128,14 +128,16 @@ exitIsKeyJustPressed:
 	ret
 isKeyJustPressed ENDP
 
+; // ----------------------------------
+; // isActionPressed
+; // Returns 1 if an action binding is currently pressed and 0 if not
+; // ----------------------------------
 isActionPressed PROC PUBLIC USES ebx ecx edx esi edi, pController: DWORD, actionID: DWORD
 	mov ecx, pController
 	lea ecx, (VirtualController PTR [ecx]).bindings
 	mov eax, (UnorderedVector PTR [ecx]).pData
 	mov ebx, (UnorderedVector PTR [ecx]).count
 	mov edx, 0
-	mov eax, pController
-	mov eax, actionID
 
 isActionPressedSearch_loop:
     cmp edx, ebx
@@ -160,12 +162,10 @@ isActionPressedSearch_loop:
         movzx eax, BYTE PTR [edi + ecx]
         
         and eax, 80h 
-        .IF eax != 0
-            mov eax, 1
-        .ELSE
-            mov eax, 0
-        .ENDIF
-        jmp isActionPressed_exit
+		.IF eax != 0
+			mov eax, 1
+			jmp isActionPressed_exit
+		.ENDIF
 	.ELSE
 		; // The device is one of the GAMEPADS
         imul edi, SIZEOF XINPUT_STATE
@@ -180,10 +180,8 @@ isActionPressedSearch_loop:
 
         .IF eax != 0
             mov eax, 1
-        .ELSE
-            mov eax, 0
+			jmp isActionPressed_exit
         .ENDIF
-        jmp isActionPressed_exit
 	.ENDIF
 
 isActionPressed_nextBinding:
@@ -196,5 +194,86 @@ isActionPressedSearch_loopEnd:
 isActionPressed_exit:
 	ret
 isActionPressed ENDP
+
+; // ----------------------------------
+; // isActionJustPressed
+; // Returns 1 if an action binding is just pressed this frame and 0 if not
+; // ----------------------------------
+isActionJustPressed PROC PUBLIC USES ebx ecx edx esi edi, pController: DWORD, actionID: DWORD
+	mov ecx, pController
+	lea ecx, (VirtualController PTR [ecx]).bindings
+	mov eax, (UnorderedVector PTR [ecx]).pData
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	mov edx, 0
+
+isActionJustPressedSearch_loop:
+    cmp edx, ebx
+    jge isActionJustPressedSearch_loopEnd
+
+    ; // esi = bindings[i]
+    mov esi, [eax + edx * 4]
+
+    ; // Check if this binding has the correct action
+    mov edi, (InputBinding PTR [esi]).actionID
+    cmp edi, actionID
+    jne isActionJustPressed_nextBinding
+
+    mov edi, pController
+    mov edi, (VirtualController PTR [edi]).deviceID
+
+	; // Binding found, check for the hardware key press
+	.IF edi == DEVICE_KEYBOARD
+        mov ecx, (InputBinding PTR [esi]).buttonCode
+        
+        lea edi, curInputBuffer
+        movzx eax, BYTE PTR [edi + ecx]
+        and eax, 80h 
+        jz isActionJustPressedSearch_loopEnd
+
+        lea edi, prevInputBuffer
+        movzx eax, BYTE PTR [edi + ecx]
+        and eax, 80h
+        jnz isActionJustPressedSearch_loopEnd
+
+        mov eax, 1
+		jmp isActionJustPressed_exit
+	.ELSE
+		; // The device is one of the GAMEPADS
+        dec edi ; // Adjust to 0-based index for the gamepad array
+        imul edi, SIZEOF XINPUT_STATE
+
+        mov ebx, (InputBinding PTR [esi]).buttonCode
+
+        ; // Check current state
+        lea ecx, curGamepadStates
+        add ecx, edi
+        lea eax, (XINPUT_STATE PTR [ecx]).Gamepad
+        movzx eax, (XINPUT_GAMEPAD PTR [eax]).wButtons
+        and eax, ebx
+        jz isActionJustPressedSearch_loopEnd
+
+        ; // Check previous state
+        lea ecx, prevGamepadStates
+        add ecx, edi
+
+		lea eax, (XINPUT_STATE PTR [ecx]).Gamepad
+        movzx eax, (XINPUT_GAMEPAD PTR [eax]).wButtons
+        and eax, ebx
+        jnz isActionJustPressedSearch_loopEnd
+
+        mov eax, 1
+		jmp isActionJustPressed_exit
+	.ENDIF
+
+isActionJustPressed_nextBinding:
+	inc edx
+    jmp isActionJustPressedSearch_loop
+
+isActionJustPressedSearch_loopEnd:
+	mov eax, 0
+
+isActionJustPressed_exit:
+	ret
+isActionJustPressed ENDP
 
 END
