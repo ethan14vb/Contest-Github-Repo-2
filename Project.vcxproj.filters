@@ -203,5 +203,8 @@
     <MASM Include="render_command.asm">
       <Filter>Engine\CoreObjects</Filter>
     </MASM>
+    <MASM Include="animator_component.asm">
+      <Filter>Engine\Components</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
