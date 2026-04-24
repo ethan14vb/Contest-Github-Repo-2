@@ -239,7 +239,6 @@ isActionJustPressedSearch_loop:
 		jmp isActionJustPressed_exit
 	.ELSE
 		; // The device is one of the GAMEPADS
-        dec edi ; // Adjust to 0-based index for the gamepad array
         imul edi, SIZEOF XINPUT_STATE
 
         mov ebx, (InputBinding PTR [esi]).buttonCode
