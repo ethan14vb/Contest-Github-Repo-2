@@ -7,6 +7,7 @@
 
 INCLUDE default_header.inc
 INCLUDE animator_component.inc
+INCLUDE sprite_component.inc
 INCLUDE heap_functions.inc
 
 .code
@@ -55,7 +56,7 @@ animator_play PROC PUBLIC USES eax ebx ecx edx esi edi, targetAnimID : DWORD
 	local pThis
 	mov pThis, ecx
 
-	mov eax, (AnimatorComponent PTR [ecx]).currentAnimIndex
+	mov eax, (AnimatorComponent PTR [ecx]).curAnimIndex
 
 	; // Load the current animation
 	mov ebx, (AnimatorComponent PTR [ecx]).pAnimations
@@ -67,8 +68,46 @@ animator_play PROC PUBLIC USES eax ebx ecx edx esi edi, targetAnimID : DWORD
 	.ENDIF
 
 	; // Search for the targetAnimID in the pAnimations array
+	mov esi, ecx
 	mov ecx, 0 ; // i = 0
 	mov edi, (AnimatorComponent PTR [ecx]).animCount
+
+animator_play_search_loop:
+	; // Check if we've gone through all animations and not found it
+	cmp ecx, edi
+	jge animator_play_exit
+
+	; // animations[i]
+	mov eax, ecx
+	imul eax, SIZEOF Animation
+	mov edx, (Animation PTR [ebx + eax]).animID
+
+	.IF edx == targetAnimID
+		mov (AnimatorComponent PTR [esi]).curAnimIndex, ecx
+		mov (AnimatorComponent PTR [esi]).curFrameIndex, 0
+		
+		; // Reset timeAccumulator to 0.0
+		fldz
+		fstp (AnimatorComponent PTR [esi]).timeAccumulator
+		
+		; // Update SpriteComponent
+		lea ecx, (AnimatorComponent PTR [esi]).pSprite
+		lea edx, (Animation PTR [ebx + eax]).pFrames
+
+		mov eax, (AnimationFrame PTR [edx]).cellX
+		mov (SpriteComponent PTR [ecx]).cellX, eax
+		mov eax, (AnimationFrame PTR [edx]).cellY
+		mov (SpriteComponent PTR [ecx]).cellY, eax
+		mov eax, (AnimationFrame PTR [edx]).cellW
+		mov (SpriteComponent PTR [ecx]).cellW, eax
+		mov eax, (AnimationFrame PTR [edx]).cellH
+		mov (SpriteComponent PTR [ecx]).cellH, eax
+			
+		jmp animator_play_exit
+	.ENDIF
+
+	inc ecx
+	jmp animator_play_search_loop
 
 animator_play_exit:
 	ret
