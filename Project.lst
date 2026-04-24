@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 09:53:51
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 10:04:06
 scene.asm						     Page 1 - 1
 
 
@@ -283,6 +283,7 @@ scene.asm						     Page 1 - 1
 			      C DEF_ENUM RENDERABLE_COMPONENT_ID
 			      C DEF_ENUM TIMER_COMPONENT_ID
 			      C DEF_ENUM TEXT_COMPONENT_ID
+			      C DEF_ENUM ANIMATOR_COMPONENT_ID
 			      C 
 			      C ENDIF
 			      C 
@@ -1704,7 +1705,7 @@ scene.asm						     Page 1 - 1
  000003E5			scene_update ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 09:53:51
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 10:04:06
 scene.asm						     Symbols 2 - 1
 
 
@@ -1964,6 +1965,7 @@ Symbols:
 @fardata?  . . . . . . . . . . .	Text   	 FLAT
 @fardata . . . . . . . . . . . .	Text   	 FLAT
 @stack . . . . . . . . . . . . .	Text   	 FLAT
+ANIMATOR_COMPONENT_ID  . . . . .	Number	 00000007h   
 BOUNCING_IMAGE_GAME_OBJECT_ID  .	Number	 00000004h   
 CAMERA_INC . . . . . . . . . . .	Number	 00000001h   
 CAMERA_MOVER_GAME_OBJECT_ID  . .	Number	 00000001h   
@@ -2015,7 +2017,7 @@ VK_GAMEPAD_LEFT_THUMBSTICK_UP  .	Number	 000000D3h
 VK_LEFT  . . . . . . . . . . . .	Number	 00000025h   
 VK_RIGHT . . . . . . . . . . . .	Number	 00000027h   
 VK_UP  . . . . . . . . . . . . .	Number	 00000026h   
-enumId . . . . . . . . . . . . .	Number	 00000007h   
+enumId . . . . . . . . . . . . .	Number	 00000008h   
 hHeap  . . . . . . . . . . . . .	DWord	 00000000 FLAT	External STDCALL
 
 	   0 Warnings
