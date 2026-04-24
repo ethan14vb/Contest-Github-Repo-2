@@ -94,6 +94,9 @@
     <None Include="render_command.inc">
       <Filter>Engine\CoreObjects</Filter>
     </None>
+    <None Include="animator_component.inc">
+      <Filter>Engine\Components</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

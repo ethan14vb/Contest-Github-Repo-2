@@ -14,6 +14,9 @@
     <None Include="bouncing_image_game_object.inc">
       <FileType>Document</FileType>
     </None>
+    <None Include="animator_component.inc">
+      <FileType>Document</FileType>
+    </None>
     <MASM Include="bouncing_image_game_object.asm" />
     <MASM Include="camera.asm" />
     <MASM Include="camera_mover_game_object.asm" />
