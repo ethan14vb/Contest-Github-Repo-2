@@ -45,6 +45,7 @@ AnimatorComponent STRUCT
 	timeAccumulator		REAL4 ?
 
 	; // Events
+	frameEvent			Event <>
 	animFinishedEvent	Event <>
 AnimatorComponent ENDS
 

@@ -34,6 +34,10 @@ init_animator_component PROC PUBLIC USES ecx esi, pSprite:DWORD, pAnimations:DWO
 	INVOKE init_event
 
 	mov ecx, pThis
+	lea ecx, (AnimatorComponent PTR [ecx]).frameEvent
+	INVOKE init_event
+
+	mov ecx, pThis
 	mov eax, ecx
 
 	ret
@@ -46,5 +50,28 @@ new_animator_component PROC PUBLIC USES ecx esi, pSprite : DWORD, pAnimations : 
 
 	ret; // Return with the address of the memory block in HeapAlloc
 new_animator_component ENDP
+
+animator_play PROC PUBLIC USES eax ebx ecx edx esi edi, targetAnimID : DWORD
+	local pThis
+	mov pThis, ecx
+
+	mov eax, (AnimatorComponent PTR [ecx]).currentAnimIndex
+
+	; // Load the current animation
+	mov ebx, (AnimatorComponent PTR [ecx]).pAnimations
+	imul eax, SIZEOF Animation
+	mov edx, (Animation PTR [ebx + eax]).animID
+
+	.IF edx == targetAnimID
+		jmp animator_play_exit ; // The current animation is the target animation, immediately exit
+	.ENDIF
+
+	; // Search for the targetAnimID in the pAnimations array
+	mov ecx, 0 ; // i = 0
+	mov edi, (AnimatorComponent PTR [ecx]).animCount
+
+animator_play_exit:
+	ret
+animator_play ENDP
 
 END
