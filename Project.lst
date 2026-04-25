@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:29:26
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:32:44
 animator_component.asm					     Page 1 - 1
 
 
@@ -533,33 +533,41 @@ animator_component.asm					     Page 1 - 1
  00000134  DF F1			fcomip st(0), st(1) 
  00000136  DD D8			fstp st(0)          
 				
- 00000138  72 00			jb animator_update_apply_frame; // If no frame updates, display the current frame
+ 00000138  72 0D			jb animator_update_apply_frame; // If no frame updates, display the current frame
 
- 0000013A			animator_update_apply_frame:
- 0000013A  8B 51 08			mov edx, (AnimatorComponent PTR [ecx]).pSprite
+					; // Advancing to a new frame, adjust time
+ 0000013A  D9 41 1C			fld (AnimatorComponent PTR [ecx]).timeAccumulator
+ 0000013D  D8 63 10			fsub (AnimationFrame PTR [ebx]).duration
+ 00000140  D9 59 1C			fstp (AnimatorComponent PTR [ecx]).timeAccumulator
+
+ 00000143  8B 41 18			mov eax, (AnimatorComponent PTR [ecx]).curFrameIndex
+ 00000146  40				inc eax
+
+ 00000147			animator_update_apply_frame:
+ 00000147  8B 51 08			mov edx, (AnimatorComponent PTR [ecx]).pSprite
 					
- 0000013D  8B 03			mov eax, (AnimationFrame PTR [ebx]).cellX
- 0000013F  89 42 1C			mov (SpriteComponent PTR [edx]).cellX, eax
- 00000142  8B 43 04			mov eax, (AnimationFrame PTR [ebx]).cellY
- 00000145  89 42 20			mov (SpriteComponent PTR [edx]).cellY, eax
- 00000148  8B 43 08			mov eax, (AnimationFrame PTR [ebx]).cellW
- 0000014B  89 42 24			mov (SpriteComponent PTR [edx]).cellW, eax
- 0000014E  8B 43 0C			mov eax, (AnimationFrame PTR [ebx]).cellH
- 00000151  89 42 28			mov (SpriteComponent PTR [edx]).cellH, eax
+ 0000014A  8B 03			mov eax, (AnimationFrame PTR [ebx]).cellX
+ 0000014C  89 42 1C			mov (SpriteComponent PTR [edx]).cellX, eax
+ 0000014F  8B 43 04			mov eax, (AnimationFrame PTR [ebx]).cellY
+ 00000152  89 42 20			mov (SpriteComponent PTR [edx]).cellY, eax
+ 00000155  8B 43 08			mov eax, (AnimationFrame PTR [ebx]).cellW
+ 00000158  89 42 24			mov (SpriteComponent PTR [edx]).cellW, eax
+ 0000015B  8B 43 0C			mov eax, (AnimationFrame PTR [ebx]).cellH
+ 0000015E  89 42 28			mov (SpriteComponent PTR [edx]).cellH, eax
 
 					ret
- 00000154  5F		   *	    pop    edi
- 00000155  5E		   *	    pop    esi
- 00000156  5A		   *	    pop    edx
- 00000157  59		   *	    pop    ecx
- 00000158  5B		   *	    pop    ebx
- 00000159  58		   *	    pop    eax
- 0000015A  C9		   *	    leave  
- 0000015B  C2 0004	   *	    ret    00004h
- 0000015E			animator_update ENDP
+ 00000161  5F		   *	    pop    edi
+ 00000162  5E		   *	    pop    esi
+ 00000163  5A		   *	    pop    edx
+ 00000164  59		   *	    pop    ecx
+ 00000165  5B		   *	    pop    ebx
+ 00000166  58		   *	    pop    eax
+ 00000167  C9		   *	    leave  
+ 00000168  C2 0004	   *	    ret    00004h
+ 0000016B			animator_update ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:29:26
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:32:44
 animator_component.asm					     Symbols 2 - 1
 
 
@@ -646,7 +654,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 0000015E Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000016B Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -664,11 +672,11 @@ animator_play  . . . . . . . . .	P Near	 00000085 _TEXT	Length= 00000079 Public 
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
   animator_play_search_loop  . .	L Near	 000000B1 _TEXT	
   animator_play_exit . . . . . .	L Near	 000000F4 _TEXT	
-animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 00000060 Private STDCALL
+animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 0000006D Private STDCALL
   deltaTime  . . . . . . . . . .	DWord	 bp + 00000008
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
   animator_update_state  . . . .	L Near	 00000116 _TEXT	
-  animator_update_apply_frame  .	L Near	 0000013A _TEXT	
+  animator_update_apply_frame  .	L Near	 00000147 _TEXT	
 event_connect  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_disconnect . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_fire . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL

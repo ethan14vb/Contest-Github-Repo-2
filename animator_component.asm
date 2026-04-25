@@ -145,6 +145,14 @@ animator_update_state:
 
 	jb animator_update_apply_frame; // If no frame updates, display the current frame
 
+	; // Advancing to a new frame, adjust time
+	fld (AnimatorComponent PTR [ecx]).timeAccumulator
+	fsub (AnimationFrame PTR [ebx]).duration
+	fstp (AnimatorComponent PTR [ecx]).timeAccumulator
+
+	mov eax, (AnimatorComponent PTR [ecx]).curFrameIndex
+	inc eax
+
 animator_update_apply_frame:
 	mov edx, (AnimatorComponent PTR [ecx]).pSprite
 	
