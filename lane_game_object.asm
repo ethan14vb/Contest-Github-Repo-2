@@ -117,6 +117,41 @@ lane_update PROC stdcall USES eax edx ebx esi edi, deltaTime: REAL4
 		inc edx
 	.ENDW
 
+	mov ecx, pThis
+	; // Iterate over enemy knights to find the one in front
+	lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	mov edx, 0
+	.WHILE edx < ebx
+		mov ecx, pThis
+		push ecx
+
+		push (LaneGameObject PTR [ecx]).pFirstEnemy
+		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
+		mov ebx, (UnorderedVector PTR [ecx]).count
+		mov eax, (UnorderedVector PTR [ecx]).pData
+
+		; // esi = enemyKnights[i]
+		mov esi, [eax + edx * 4]
+		
+		; // Get the transform of the current first enemy
+		pop ecx
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov edi, (TransformComponent PTR [eax]).x
+		
+		mov ecx, esi
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov eax, (TransformComponent PTR [eax]).x
+
+		; // Assign new firstEnemy if further ahead in lane
+		pop ecx
+		.IF eax < edi	; // Comparison is flipped since enemies move left
+			mov (LaneGameObject PTR [ecx]).pFirstEnemy, esi
+		.ENDIF
+
+		inc edx
+	.ENDW
+
 	mov ecx, pThis ; // Restore the THIS pointer
 	ret
 lane_update ENDP
@@ -144,7 +179,16 @@ assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 		.ENDIF
 
 		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+	
 	.ELSE
+		; // Makes this knight the first enemy if there are no other knights
+		lea ebx, (LaneGameObject PTR [ecx]).enemyKnights
+		mov ebx, (UnorderedVector PTR [ebx]).count
+		.IF ebx == 0
+			mov ebx, pKnight
+			mov (LaneGameObject PTR [ecx]).pFirstEnemy, ebx
+		.ENDIF
+
 		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
 	.ENDIF
 
