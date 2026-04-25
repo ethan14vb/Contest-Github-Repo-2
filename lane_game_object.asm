@@ -78,10 +78,42 @@ new_lane_game_object ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-lane_update PROC stdcall USES eax, deltaTime: REAL4
+lane_update PROC stdcall USES eax edx ebx esi edi, deltaTime: REAL4
 		local pThis : DWORD
 	mov pThis, ecx
 	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
+
+	; // Iterate over ally knights to find the one in front
+	mov edx, 0
+	.WHILE edx < ebx
+		mov ecx, pThis
+		push ecx
+
+		push (LaneGameObject PTR [ecx]).pFirstAlly
+		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+		mov ebx, (UnorderedVector PTR [ecx]).count
+		mov eax, (UnorderedVector PTR [ecx]).pData
+
+		; // esi = allyKnights[i]
+		mov esi, [eax + edx * 4]
+		
+		; // Get the transform of the current first ally
+		pop ecx
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov edi, (TransformComponent PTR [eax]).x
+		
+		mov ecx, esi
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov eax, (TransformComponent PTR [eax]).x
+
+		; // Assign new firstAlly if further ahead in lane
+		pop ecx
+		.IF eax > edi
+			mov (LaneGameObject PTR [ecx]).pFirstAlly, esi
+		.ENDIF
+
+		inc edx
+	.ENDW
 
 	mov ecx, pThis ; // Restore the THIS pointer
 	ret
@@ -97,6 +129,8 @@ lane_update ENDP
 assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 		local pThis
 	mov pThis, ecx
+
+	; // Choose vector depending on knight's assigned team
 	mov eax, (KnightGameObject PTR [pKnight]).team
 	.IF eax == ALLY
 		lea ecx, (LaneGameObject PTR [ecx]).allyKnights

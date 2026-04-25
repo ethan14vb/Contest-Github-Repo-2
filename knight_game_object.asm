@@ -87,9 +87,7 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 	mov pThis, ecx
 	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
 
-	push ecx
 	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
-	pop ecx
 
 	mov ebx, (KnightGameObject PTR [ecx]).MOVSP
 	mov edx, (KnightGameObject PTR [ecx]).team
