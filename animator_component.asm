@@ -117,6 +117,14 @@ animator_update PROC USES eax ebx ecx edx esi edi, deltaTime:REAL4
 	local pThis
 	mov pThis, ecx
 
+	; // Update time accumulator
+	fld (AnimatorComponent PTR [ecx]).timeAccumulator
+	fadd deltaTime
+	fstp (AnimatorComponent PTR [ecx]).timeAccumulator
+
+animator_update_state:
+	; // Evaluate the current animation playback state and whether to draw the current frame or transition to a new frame
+	
 	; // Get current animation
 	mov eax, (AnimatorComponent PTR [ecx]).curAnimIndex
 	imul eax, SIZEOF Animation
@@ -128,11 +136,6 @@ animator_update PROC USES eax ebx ecx edx esi edi, deltaTime:REAL4
 	imul eax, SIZEOF AnimationFrame
 	mov ebx, (Animation PTR [edi]).pFrames
 	lea ebx, [ebx + eax]
-
-	; // Update time accumulator
-	fld (AnimatorComponent PTR [ecx]).timeAccumulator
-	fadd deltaTime
-	fstp (AnimatorComponent PTR [ecx]).timeAccumulator
 
 	ret
 animator_update ENDP

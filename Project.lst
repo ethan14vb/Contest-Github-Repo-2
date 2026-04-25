@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:12:16
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:26:08
 animator_component.asm					     Page 1 - 1
 
 
@@ -507,22 +507,25 @@ animator_component.asm					     Page 1 - 1
  00000109  57		   *	    push   edi
  0000010A  89 4D FC			mov pThis, ecx
 
+					; // Update time accumulator
+ 0000010D  D9 41 1C			fld (AnimatorComponent PTR [ecx]).timeAccumulator
+ 00000110  D8 45 08			fadd deltaTime
+ 00000113  D9 59 1C			fstp (AnimatorComponent PTR [ecx]).timeAccumulator
+
+ 00000116			animator_update_state:
+					; // Evaluate the current animation playback state and whether to draw the current frame or transition to a new frame
+					
 					; // Get current animation
- 0000010D  8B 41 14			mov eax, (AnimatorComponent PTR [ecx]).curAnimIndex
- 00000110  6B C0 10			imul eax, SIZEOF Animation
- 00000113  8B 59 0C			mov ebx, (AnimatorComponent PTR [ecx]).pAnimations
- 00000116  8D 3C 18			lea edi, [ebx + eax]
+ 00000116  8B 41 14			mov eax, (AnimatorComponent PTR [ecx]).curAnimIndex
+ 00000119  6B C0 10			imul eax, SIZEOF Animation
+ 0000011C  8B 59 0C			mov ebx, (AnimatorComponent PTR [ecx]).pAnimations
+ 0000011F  8D 3C 18			lea edi, [ebx + eax]
 
 					; // Get current frame
- 00000119  8B 41 18			mov eax, (AnimatorComponent PTR [ecx]).curFrameIndex
- 0000011C  6B C0 18			imul eax, SIZEOF AnimationFrame
- 0000011F  8B 5F 04			mov ebx, (Animation PTR [edi]).pFrames
- 00000122  8D 1C 18			lea ebx, [ebx + eax]
-
-					; // Update time accumulator
- 00000125  D9 41 1C			fld (AnimatorComponent PTR [ecx]).timeAccumulator
- 00000128  D8 45 08			fadd deltaTime
- 0000012B  D9 59 1C			fstp (AnimatorComponent PTR [ecx]).timeAccumulator
+ 00000122  8B 41 18			mov eax, (AnimatorComponent PTR [ecx]).curFrameIndex
+ 00000125  6B C0 18			imul eax, SIZEOF AnimationFrame
+ 00000128  8B 5F 04			mov ebx, (Animation PTR [edi]).pFrames
+ 0000012B  8D 1C 18			lea ebx, [ebx + eax]
 
 					ret
  0000012E  5F		   *	    pop    edi
@@ -536,7 +539,7 @@ animator_component.asm					     Page 1 - 1
  00000138			animator_update ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:12:16
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:26:08
 animator_component.asm					     Symbols 2 - 1
 
 
@@ -644,6 +647,7 @@ animator_play  . . . . . . . . .	P Near	 00000085 _TEXT	Length= 00000079 Public 
 animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 0000003A Private STDCALL
   deltaTime  . . . . . . . . . .	DWord	 bp + 00000008
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
+  animator_update_state  . . . .	L Near	 00000116 _TEXT	
 event_connect  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_disconnect . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_fire . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
