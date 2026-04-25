@@ -70,7 +70,7 @@ animator_play PROC PUBLIC USES eax ebx ecx edx esi edi, targetAnimID : DWORD
 	; // Search for the targetAnimID in the pAnimations array
 	mov esi, ecx
 	mov ecx, 0 ; // i = 0
-	mov edi, (AnimatorComponent PTR [ecx]).animCount
+	mov edi, (AnimatorComponent PTR [esi]).animCount
 
 animator_play_search_loop:
 	; // Check if we've gone through all animations and not found it
@@ -91,8 +91,8 @@ animator_play_search_loop:
 		fstp (AnimatorComponent PTR [esi]).timeAccumulator
 		
 		; // Update SpriteComponent
-		lea ecx, (AnimatorComponent PTR [esi]).pSprite
-		lea edx, (Animation PTR [ebx + eax]).pFrames
+		mov ecx, (AnimatorComponent PTR [esi]).pSprite
+		mov edx, (Animation PTR [ebx + eax]).pFrames
 
 		mov eax, (AnimationFrame PTR [edx]).cellX
 		mov (SpriteComponent PTR [ecx]).cellX, eax
@@ -124,7 +124,7 @@ animator_update PROC USES eax ebx ecx edx esi edi, deltaTime:REAL4
 
 animator_update_state:
 	; // Evaluate the current animation playback state and whether to draw the current frame or transition to a new frame
-	
+	mov ecx, pThis
 	; // Get current animation
 	mov eax, (AnimatorComponent PTR [ecx]).curAnimIndex
 	imul eax, SIZEOF Animation
@@ -154,7 +154,7 @@ animator_update_state:
 	inc eax
 
 	mov esi, (Animation PTR [edi]).frameCount
-	.IF eax >= ecx
+	.IF eax >= esi
 		mov edx, (Animation PTR [edi]).looping
 		.IF edx == 1
 			; // If the animation is looped, reset it
@@ -174,6 +174,26 @@ animator_update_state:
 			jmp animator_update_state
 		.ENDIF
 	.ENDIF
+
+	mov (AnimatorComponent PTR [ecx]).curFrameIndex, eax
+
+	; // Reload current frame
+	imul eax, SIZEOF AnimationFrame
+	mov edx, (Animation PTR [edi]).pFrames
+	lea ebx, [edx + eax]
+
+	mov eax, (AnimationFrame PTR [ebx]).eventCode
+	.IF eax != 0
+		mov ecx, pThis
+		lea ecx, (AnimatorComponent PTR [ecx]).frameEvent
+		INVOKE event_fire, eax ; // Pass the event code as an argument
+		
+		; // Re-evaluate the state just in case the event changed the currently running animation
+		jmp animator_update_state
+	.ENDIF
+
+	; // Loop in case of a weird situation where the frame duration is smaller than deltaTime
+	jmp animator_update_state
 
 animator_update_apply_frame:
 	mov edx, (AnimatorComponent PTR [ecx]).pSprite
