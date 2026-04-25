@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:34:56
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:36:58
 animator_component.asm					     Page 1 - 1
 
 
@@ -533,7 +533,7 @@ animator_component.asm					     Page 1 - 1
  00000134  DF F1			fcomip st(0), st(1) 
  00000136  DD D8			fstp st(0)          
 				
- 00000138  72 27			jb animator_update_apply_frame; // If no frame updates, display the current frame
+ 00000138  72 37			jb animator_update_apply_frame; // If no frame updates, display the current frame
 
 					; // Advancing to a new frame, adjust time
  0000013A  D9 41 1C			fld (AnimatorComponent PTR [ecx]).timeAccumulator
@@ -543,10 +543,10 @@ animator_component.asm					     Page 1 - 1
  00000143  8B 41 18			mov eax, (AnimatorComponent PTR [ecx]).curFrameIndex
  00000146  40				inc eax
 
- 00000147  8B 4F 08			mov ecx, (Animation PTR [edi]).frameCount
+ 00000147  8B 77 08			mov esi, (Animation PTR [edi]).frameCount
 					.IF eax >= ecx
  0000014A  3B C1	   *	    cmp    eax, ecx
- 0000014C  72 13	   *	    jb	@C0005
+ 0000014C  72 23	   *	    jb	@C0005
  0000014E  8B 57 0C				mov edx, (Animation PTR [edi]).looping
 						.IF edx == 1
  00000151  83 FA 01	   *	    cmp    edx, 001h
@@ -556,39 +556,51 @@ animator_component.asm					     Page 1 - 1
 	   00000000
  0000015D  EB B7					jmp animator_update_state
 						.ELSE
- 0000015F  EB 00	   *	    jmp    @C0009
+ 0000015F  EB 10	   *	    jmp    @C0009
  00000161		   *@C0007:
 							; // If the animation is not looped
+
+ 00000161  4E						dec esi ; // Stay on this frame
+ 00000162  89 71 18					mov (AnimatorComponent PTR [ecx]).curFrameIndex, esi
+				
+							; // Fire animation finished event
+ 00000165  8D 71 2C					lea esi, (AnimatorComponent PTR [ecx]).animFinishedEvent
+							INVOKE event_fire, 0
+ 00000168  6A 00	   *	    push   +000000000h
+ 0000016A  E8 00000000 E   *	    call   event_fire
+							
+							; // Re-evaluate the state just in case the event changed the currently running animation
+ 0000016F  EB A5					jmp animator_update_state
 						.ENDIF
 					.ENDIF
- 00000161		   *@C0009:
- 00000161		   *@C0005:
+ 00000171		   *@C0009:
+ 00000171		   *@C0005:
 
- 00000161			animator_update_apply_frame:
- 00000161  8B 51 08			mov edx, (AnimatorComponent PTR [ecx]).pSprite
+ 00000171			animator_update_apply_frame:
+ 00000171  8B 51 08			mov edx, (AnimatorComponent PTR [ecx]).pSprite
 					
- 00000164  8B 03			mov eax, (AnimationFrame PTR [ebx]).cellX
- 00000166  89 42 1C			mov (SpriteComponent PTR [edx]).cellX, eax
- 00000169  8B 43 04			mov eax, (AnimationFrame PTR [ebx]).cellY
- 0000016C  89 42 20			mov (SpriteComponent PTR [edx]).cellY, eax
- 0000016F  8B 43 08			mov eax, (AnimationFrame PTR [ebx]).cellW
- 00000172  89 42 24			mov (SpriteComponent PTR [edx]).cellW, eax
- 00000175  8B 43 0C			mov eax, (AnimationFrame PTR [ebx]).cellH
- 00000178  89 42 28			mov (SpriteComponent PTR [edx]).cellH, eax
+ 00000174  8B 03			mov eax, (AnimationFrame PTR [ebx]).cellX
+ 00000176  89 42 1C			mov (SpriteComponent PTR [edx]).cellX, eax
+ 00000179  8B 43 04			mov eax, (AnimationFrame PTR [ebx]).cellY
+ 0000017C  89 42 20			mov (SpriteComponent PTR [edx]).cellY, eax
+ 0000017F  8B 43 08			mov eax, (AnimationFrame PTR [ebx]).cellW
+ 00000182  89 42 24			mov (SpriteComponent PTR [edx]).cellW, eax
+ 00000185  8B 43 0C			mov eax, (AnimationFrame PTR [ebx]).cellH
+ 00000188  89 42 28			mov (SpriteComponent PTR [edx]).cellH, eax
 
 					ret
- 0000017B  5F		   *	    pop    edi
- 0000017C  5E		   *	    pop    esi
- 0000017D  5A		   *	    pop    edx
- 0000017E  59		   *	    pop    ecx
- 0000017F  5B		   *	    pop    ebx
- 00000180  58		   *	    pop    eax
- 00000181  C9		   *	    leave  
- 00000182  C2 0004	   *	    ret    00004h
- 00000185			animator_update ENDP
+ 0000018B  5F		   *	    pop    edi
+ 0000018C  5E		   *	    pop    esi
+ 0000018D  5A		   *	    pop    edx
+ 0000018E  59		   *	    pop    ecx
+ 0000018F  5B		   *	    pop    ebx
+ 00000190  58		   *	    pop    eax
+ 00000191  C9		   *	    leave  
+ 00000192  C2 0004	   *	    ret    00004h
+ 00000195			animator_update ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:34:56
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:36:58
 animator_component.asm					     Symbols 2 - 1
 
 
@@ -675,7 +687,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000185 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000195 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -693,11 +705,11 @@ animator_play  . . . . . . . . .	P Near	 00000085 _TEXT	Length= 00000079 Public 
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
   animator_play_search_loop  . .	L Near	 000000B1 _TEXT	
   animator_play_exit . . . . . .	L Near	 000000F4 _TEXT	
-animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 00000087 Private STDCALL
+animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 00000097 Private STDCALL
   deltaTime  . . . . . . . . . .	DWord	 bp + 00000008
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
   animator_update_state  . . . .	L Near	 00000116 _TEXT	
-  animator_update_apply_frame  .	L Near	 00000161 _TEXT	
+  animator_update_apply_frame  .	L Near	 00000171 _TEXT	
 event_connect  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_disconnect . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_fire . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL

@@ -153,7 +153,7 @@ animator_update_state:
 	mov eax, (AnimatorComponent PTR [ecx]).curFrameIndex
 	inc eax
 
-	mov ecx, (Animation PTR [edi]).frameCount
+	mov esi, (Animation PTR [edi]).frameCount
 	.IF eax >= ecx
 		mov edx, (Animation PTR [edi]).looping
 		.IF edx == 1
@@ -162,6 +162,16 @@ animator_update_state:
 			jmp animator_update_state
 		.ELSE
 			; // If the animation is not looped
+
+			dec esi ; // Stay on this frame
+			mov (AnimatorComponent PTR [ecx]).curFrameIndex, esi
+
+			; // Fire animation finished event
+			lea esi, (AnimatorComponent PTR [ecx]).animFinishedEvent
+			INVOKE event_fire, 0
+			
+			; // Re-evaluate the state just in case the event changed the currently running animation
+			jmp animator_update_state
 		.ENDIF
 	.ENDIF
 
