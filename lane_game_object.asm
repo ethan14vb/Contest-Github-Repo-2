@@ -9,6 +9,7 @@ INCLUDE default_header.inc
 INCLUDE game_object.inc
 INCLUDE heap_functions.inc
 INCLUDE lane_game_object.inc
+INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 
 .data
@@ -36,17 +37,21 @@ init_lane_game_object PROC PUBLIC USES esi ebx edx
 	mov (GameObject PTR [ecx]).pVt, OFFSET LANE_GAMEOBJECT_VTABLE
 
 	; // Set up knight uvectors
-	lea ecx, (LaneGameObject PTR [ecx]).pAllyKnights
-	INVOKE init_unordered_vector, MAX_LANE_KNIGHTS
+	mov eax, MAX_LANE_KNIGHTS
+	lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+	INVOKE init_unordered_vector, eax
 
-	lea ecx, (LaneGameObject PTR [ecx]).pEnemyKnights
+	mov ecx, pThis
+	lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
 	INVOKE init_unordered_vector, MAX_LANE_KNIGHTS
 	
+	mov ecx, pThis ; // restores ecx after its changed earlier
 	; // Gives Lane a transform
 	INVOKE new_transform_component, 0, 0, 0
 	INVOKE add_component, ecx, eax
 
-	mov eax, pThis
+	mov ecx, pThis
+	mov eax, ecx
 	ret
 init_lane_game_object ENDP
 
@@ -66,9 +71,20 @@ new_lane_game_object ENDP
 ; // Instance methods
 ; // ********************************************
 
-assign_knight PROC PUBLIC, pKnight:DWORD
-	mov eax, pKnight
+; // ----------------------------------
+; // assign_knight
+; // Adds a knight pointer to the lane's list in either team
+; // ----------------------------------
+assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pLane:DWORD, pKnight:DWORD, team:DWORD
+	mov esi, pLane
+	.IF team == ALLY
+		lea ecx, (LaneGameObject PTR [esi]).allyKnights
+	.ELSE
+		lea ecx, (LaneGameObject PTR [esi]).enemyKnights
+	.ENDIF
 
+	mov eax, pKnight
+	INVOKE push_back, eax
 	ret
 assign_knight ENDP
 

@@ -17,8 +17,8 @@ LaneGameObject STRUCT
 	baseGameObject GameObject<>
 	pFirstAlly DWORD ?	; // Pointers to each team's respective first knight
 	pFirstEnemy DWORD ?
-	pAllyKnights UnorderedVector<>
-	pEnemyKnights UnorderedVector<>
+	allyKnights UnorderedVector<>
+	enemyKnights UnorderedVector<>
 LaneGameObject ENDS
 
 init_lane_game_object PROTO
