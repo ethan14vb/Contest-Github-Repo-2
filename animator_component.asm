@@ -113,4 +113,25 @@ animator_play_exit:
 	ret
 animator_play ENDP
 
+animator_update PROC USES eax ebx ecx edx esi edi, deltaTime:REAL4
+	local pThis
+	mov pThis, ecx
+
+	; // Get current animation
+	mov eax, (AnimatorComponent PTR [ecx]).curAnimIndex
+	imul eax, SIZEOF Animation
+	mov ebx, (AnimatorComponent PTR [ecx]).pAnimations
+	lea edi, [ebx + eax]
+
+	; // Get current frame
+	mov eax, (AnimatorComponent PTR [ecx]).curFrameIndex
+	imul eax, SIZEOF AnimationFrame
+	mov ebx, (Animation PTR [edi]).pFrames
+	lea ebx, [ebx + eax]
+
+	mov eax, deltaTime
+
+	ret
+animator_update ENDP
+
 END
