@@ -11,6 +11,17 @@ INCLUDE sprite_component.inc
 INCLUDE heap_functions.inc
 
 .code
+; // ********************************************
+; // Constructor Methods
+; // ********************************************
+
+; // ----------------------------------
+; // init_animator_component
+; // Initializes memory with the contents of an AnimatorComponent
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 init_animator_component PROC PUBLIC USES ecx esi, pSprite:DWORD, pAnimations:DWORD, animCount:DWORD
 	local pThis
 	mov pThis, ecx
@@ -44,6 +55,11 @@ init_animator_component PROC PUBLIC USES ecx esi, pSprite:DWORD, pAnimations:DWO
 	ret
 init_animator_component ENDP
 
+; // ----------------------------------
+; // new_animator_component
+; // Allocates memory for an AnimatorComponent and then calls
+; // the initializer method on it.
+; // ----------------------------------
 new_animator_component PROC PUBLIC USES ecx esi, pSprite : DWORD, pAnimations : DWORD, animCount : DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF AnimatorComponent
 	mov ecx, eax; // Move the memory address to ecx so it can function as a "this" pointer
