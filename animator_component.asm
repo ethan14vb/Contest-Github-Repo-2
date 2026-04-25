@@ -10,6 +10,9 @@ INCLUDE animator_component.inc
 INCLUDE sprite_component.inc
 INCLUDE heap_functions.inc
 
+.data
+ANIMATORCOMPONENT_VTABLE Component_vtable <OFFSET free_animator_component>
+
 .code
 ; // ********************************************
 ; // Constructor Methods
@@ -28,6 +31,7 @@ init_animator_component PROC PUBLIC USES ecx esi, pSprite:DWORD, pAnimations:DWO
 	; // Parent constructor
 	INVOKE init_component
 	mov (Component PTR [ecx]).componentType, ANIMATOR_COMPONENT_ID
+	mov (Component PTR [ecx]).pVt, OFFSET ANIMATORCOMPONENT_VTABLE
 
 	; // Given data
 	mov esi, pSprite
@@ -67,6 +71,31 @@ new_animator_component PROC PUBLIC USES ecx esi, pSprite : DWORD, pAnimations : 
 
 	ret; // Return with the address of the memory block in HeapAlloc
 new_animator_component ENDP
+
+; // ----------------------------------
+; // free_animator_component
+; // Destructs and frees the AnimatorComponent.
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+free_animator_component PROC PUBLIC USES ecx edx
+	local pThis
+	mov pThis, ecx
+
+	; // Free events
+	lea ecx, (AnimatorComponent PTR [ecx]).frameEvent
+	INVOKE free_event
+
+	mov ecx, pThis
+	lea ecx, (AnimatorComponent PTR [ecx]).animFinishedEvent
+	INVOKE free_event
+
+	; // Free myself
+	INVOKE HeapFree, hHeap, 0, pThis
+
+	ret
+free_animator_component ENDP
 
 ; // ********************************************
 ; // Instance Methods
