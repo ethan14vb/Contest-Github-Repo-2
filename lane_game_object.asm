@@ -84,6 +84,8 @@ lane_update PROC stdcall USES eax edx ebx esi edi, deltaTime: REAL4
 	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
 
 	; // Iterate over ally knights to find the one in front
+	lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+	mov ebx, (UnorderedVector PTR [ecx]).count
 	mov edx, 0
 	.WHILE edx < ebx
 		mov ecx, pThis
@@ -133,6 +135,14 @@ assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 	; // Choose vector depending on knight's assigned team
 	mov eax, (KnightGameObject PTR [pKnight]).team
 	.IF eax == ALLY
+		; // Makes this knight the first ally if there are no other knights
+		lea ebx, (LaneGameObject PTR [ecx]).allyKnights
+		mov ebx, (UnorderedVector PTR [ebx]).count
+		.IF ebx == 0
+			mov ebx, pKnight
+			mov (LaneGameObject PTR [ecx]).pFirstAlly, ebx
+		.ENDIF
+
 		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
 	.ELSE
 		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
