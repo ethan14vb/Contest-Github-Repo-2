@@ -137,6 +137,26 @@ animator_update_state:
 	mov ebx, (Animation PTR [edi]).pFrames
 	lea ebx, [ebx + eax]
 
+	; // Check for frame advance
+	fld (AnimationFrame PTR [ebx]).duration
+	fld (AnimatorComponent PTR [ecx]).timeAccumulator
+	fcomip st(0), st(1) 
+	fstp st(0)          
+
+	jb animator_update_apply_frame; // If no frame updates, display the current frame
+
+animator_update_apply_frame:
+	mov edx, (AnimatorComponent PTR [ecx]).pSprite
+	
+	mov eax, (AnimationFrame PTR [ebx]).cellX
+	mov (SpriteComponent PTR [edx]).cellX, eax
+	mov eax, (AnimationFrame PTR [ebx]).cellY
+	mov (SpriteComponent PTR [edx]).cellY, eax
+	mov eax, (AnimationFrame PTR [ebx]).cellW
+	mov (SpriteComponent PTR [edx]).cellW, eax
+	mov eax, (AnimationFrame PTR [ebx]).cellH
+	mov (SpriteComponent PTR [edx]).cellH, eax
+
 	ret
 animator_update ENDP
 

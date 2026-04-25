@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:26:08
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:29:26
 animator_component.asm					     Page 1 - 1
 
 
@@ -527,19 +527,39 @@ animator_component.asm					     Page 1 - 1
  00000128  8B 5F 04			mov ebx, (Animation PTR [edi]).pFrames
  0000012B  8D 1C 18			lea ebx, [ebx + eax]
 
+					; // Check for frame advance
+ 0000012E  D9 43 10			fld (AnimationFrame PTR [ebx]).duration
+ 00000131  D9 41 1C			fld (AnimatorComponent PTR [ecx]).timeAccumulator
+ 00000134  DF F1			fcomip st(0), st(1) 
+ 00000136  DD D8			fstp st(0)          
+				
+ 00000138  72 00			jb animator_update_apply_frame; // If no frame updates, display the current frame
+
+ 0000013A			animator_update_apply_frame:
+ 0000013A  8B 51 08			mov edx, (AnimatorComponent PTR [ecx]).pSprite
+					
+ 0000013D  8B 03			mov eax, (AnimationFrame PTR [ebx]).cellX
+ 0000013F  89 42 1C			mov (SpriteComponent PTR [edx]).cellX, eax
+ 00000142  8B 43 04			mov eax, (AnimationFrame PTR [ebx]).cellY
+ 00000145  89 42 20			mov (SpriteComponent PTR [edx]).cellY, eax
+ 00000148  8B 43 08			mov eax, (AnimationFrame PTR [ebx]).cellW
+ 0000014B  89 42 24			mov (SpriteComponent PTR [edx]).cellW, eax
+ 0000014E  8B 43 0C			mov eax, (AnimationFrame PTR [ebx]).cellH
+ 00000151  89 42 28			mov (SpriteComponent PTR [edx]).cellH, eax
+
 					ret
- 0000012E  5F		   *	    pop    edi
- 0000012F  5E		   *	    pop    esi
- 00000130  5A		   *	    pop    edx
- 00000131  59		   *	    pop    ecx
- 00000132  5B		   *	    pop    ebx
- 00000133  58		   *	    pop    eax
- 00000134  C9		   *	    leave  
- 00000135  C2 0004	   *	    ret    00004h
- 00000138			animator_update ENDP
+ 00000154  5F		   *	    pop    edi
+ 00000155  5E		   *	    pop    esi
+ 00000156  5A		   *	    pop    edx
+ 00000157  59		   *	    pop    ecx
+ 00000158  5B		   *	    pop    ebx
+ 00000159  58		   *	    pop    eax
+ 0000015A  C9		   *	    leave  
+ 0000015B  C2 0004	   *	    ret    00004h
+ 0000015E			animator_update ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:26:08
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:29:26
 animator_component.asm					     Symbols 2 - 1
 
 
@@ -626,7 +646,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000138 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000015E Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -644,10 +664,11 @@ animator_play  . . . . . . . . .	P Near	 00000085 _TEXT	Length= 00000079 Public 
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
   animator_play_search_loop  . .	L Near	 000000B1 _TEXT	
   animator_play_exit . . . . . .	L Near	 000000F4 _TEXT	
-animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 0000003A Private STDCALL
+animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 00000060 Private STDCALL
   deltaTime  . . . . . . . . . .	DWord	 bp + 00000008
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
   animator_update_state  . . . .	L Near	 00000116 _TEXT	
+  animator_update_apply_frame  .	L Near	 0000013A _TEXT	
 event_connect  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_disconnect . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 event_fire . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
