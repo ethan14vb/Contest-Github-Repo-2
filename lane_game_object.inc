@@ -23,6 +23,6 @@ LaneGameObject ENDS
 
 init_lane_game_object PROTO
 new_lane_game_object PROTO
-assign_knight PROTO, pKnight:DWORD, team:DWORD
+assign_knight PROTO, pKnight:DWORD
 
 ENDIF

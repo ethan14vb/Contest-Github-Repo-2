@@ -78,10 +78,11 @@ new_lane_game_object ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD, team:DWORD
+assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 		local pThis
 	mov pThis, ecx
-	.IF team == ALLY
+	mov eax, (KnightGameObject PTR [pKnight]).team
+	.IF eax == ALLY
 		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
 	.ELSE
 		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights

@@ -85,7 +85,7 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
 	mov ecx, pLane
-	INVOKE assign_knight, esi, ALLY
+	INVOKE assign_knight, esi
 
 	; // Enemy Knight
 	INVOKE new_knight_game_object, ENEMY, pKnightTex
@@ -95,7 +95,7 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE instantiate_game_object, esi
 
 	mov ecx, pLane
-	INVOKE assign_knight, esi, ENEMY
+	INVOKE assign_knight, esi
 
 	ret
 populate_sprite_test_scene ENDP
