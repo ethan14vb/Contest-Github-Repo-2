@@ -34,6 +34,13 @@ init_lane_game_object PROC PUBLIC USES esi ebx edx
 	INVOKE init_game_object, 0
 	mov (GameObject PTR [ecx]).gameObjectType, LANE_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET LANE_GAMEOBJECT_VTABLE
+
+	; // Set up knight uvectors
+	lea ecx, (LaneGameObject PTR [ecx]).pAllyKnights
+	INVOKE init_unordered_vector, MAX_LANE_KNIGHTS
+
+	lea ecx, (LaneGameObject PTR [ecx]).pEnemyKnights
+	INVOKE init_unordered_vector, MAX_LANE_KNIGHTS
 	
 	; // Gives Lane a transform
 	INVOKE new_transform_component, 0, 0, 0
@@ -58,5 +65,11 @@ new_lane_game_object ENDP
 ; // ********************************************
 ; // Instance methods
 ; // ********************************************
+
+assign_knight PROC PUBLIC, pKnight:DWORD
+	mov eax, pKnight
+
+	ret
+assign_knight ENDP
 
 END
