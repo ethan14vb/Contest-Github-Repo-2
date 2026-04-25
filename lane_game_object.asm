@@ -13,7 +13,7 @@ INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 
 .data
-LANE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
+LANE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET lane_update, OFFSET game_object_exit, OFFSET free_game_object>
 
 .code
 ; // ********************************************
@@ -70,6 +70,22 @@ new_lane_game_object ENDP
 ; // ********************************************
 ; // Instance methods
 ; // ********************************************
+
+; // ----------------------------------
+; // lane_update
+; // Assigns new firstKnight depending on position
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+lane_update PROC stdcall USES eax, deltaTime: REAL4
+		local pThis : DWORD
+	mov pThis, ecx
+	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
+
+	mov ecx, pThis ; // Restore the THIS pointer
+	ret
+lane_update ENDP
 
 ; // ----------------------------------
 ; // assign_knight
