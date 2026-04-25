@@ -74,17 +74,23 @@ new_lane_game_object ENDP
 ; // ----------------------------------
 ; // assign_knight
 ; // Adds a knight pointer to the lane's list in either team
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
 ; // ----------------------------------
-assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pLane:DWORD, pKnight:DWORD, team:DWORD
-	mov esi, pLane
+assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD, team:DWORD
+		local pThis
+	mov pThis, ecx
 	.IF team == ALLY
-		lea ecx, (LaneGameObject PTR [esi]).allyKnights
+		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
 	.ELSE
-		lea ecx, (LaneGameObject PTR [esi]).enemyKnights
+		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
 	.ENDIF
 
 	mov eax, pKnight
 	INVOKE push_back, eax
+
+	mov ecx, pThis
 	ret
 assign_knight ENDP
 

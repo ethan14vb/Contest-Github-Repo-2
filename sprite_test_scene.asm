@@ -74,16 +74,18 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, pLane
 
+	; // Get Knight texture
 	INVOKE load_texture, OFFSET knightFile
 	mov pKnightTex, eax
+
 	; // Ally Knight
 	INVOKE new_knight_game_object, ALLY, pKnightTex
 	mov esi, eax
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
-	mov ebx, pLane
-	mov (LaneGameObject PTR [ebx]).pFirstAlly, esi
+	mov ecx, pLane
+	INVOKE assign_knight, esi, ALLY
 
 	; // Enemy Knight
 	INVOKE new_knight_game_object, ENEMY, pKnightTex
@@ -92,8 +94,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
 
-	mov ebx, pLane
-	mov (LaneGameObject PTR [ebx]).pFirstEnemy, esi
+	mov ecx, pLane
+	INVOKE assign_knight, esi, ENEMY
 
 	ret
 populate_sprite_test_scene ENDP
