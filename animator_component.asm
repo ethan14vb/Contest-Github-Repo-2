@@ -68,6 +68,18 @@ new_animator_component PROC PUBLIC USES ecx esi, pSprite : DWORD, pAnimations : 
 	ret; // Return with the address of the memory block in HeapAlloc
 new_animator_component ENDP
 
+; // ********************************************
+; // Instance Methods
+; // ********************************************
+
+; // ----------------------------------
+; // animator_play
+; //	Switches the currently active animation to the targetAnimID
+; // and displays the first frame of the animation in the SpriteComponent.
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 animator_play PROC PUBLIC USES eax ebx ecx edx esi edi, targetAnimID : DWORD
 	local pThis
 	mov pThis, ecx
@@ -129,6 +141,19 @@ animator_play_exit:
 	ret
 animator_play ENDP
 
+; // ----------------------------------
+; // animator_update
+; //	Updates the currently running animation based on deltaTime. This will
+; // update the current frame, alter the SpriteComponent's cell values,
+; // fire the animation ended event, and fire animation frame events.
+; //
+; //	If enough time has passed for multiple frames to pass, this function
+; // will skip frames to account for lag. Events from skipped frames will
+; // still fire.
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
 animator_update PROC USES eax ebx ecx edx esi edi, deltaTime:REAL4
 	local pThis
 	mov pThis, ecx
