@@ -153,6 +153,18 @@ animator_update_state:
 	mov eax, (AnimatorComponent PTR [ecx]).curFrameIndex
 	inc eax
 
+	mov ecx, (Animation PTR [edi]).frameCount
+	.IF eax >= ecx
+		mov edx, (Animation PTR [edi]).looping
+		.IF edx == 1
+			; // If the animation is looped, reset it
+			mov (AnimatorComponent PTR [ecx]).curFrameIndex, 0
+			jmp animator_update_state
+		.ELSE
+			; // If the animation is not looped
+		.ENDIF
+	.ENDIF
+
 animator_update_apply_frame:
 	mov edx, (AnimatorComponent PTR [ecx]).pSprite
 	
