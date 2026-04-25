@@ -129,7 +129,10 @@ animator_update PROC USES eax ebx ecx edx esi edi, deltaTime:REAL4
 	mov ebx, (Animation PTR [edi]).pFrames
 	lea ebx, [ebx + eax]
 
-	mov eax, deltaTime
+	; // Update time accumulator
+	fld (AnimatorComponent PTR [ecx]).timeAccumulator
+	fadd deltaTime
+	fstp (AnimatorComponent PTR [ecx]).timeAccumulator
 
 	ret
 animator_update ENDP

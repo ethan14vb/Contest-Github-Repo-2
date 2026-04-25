@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:11:15
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:12:16
 animator_component.asm					     Page 1 - 1
 
 
@@ -519,21 +519,24 @@ animator_component.asm					     Page 1 - 1
  0000011F  8B 5F 04			mov ebx, (Animation PTR [edi]).pFrames
  00000122  8D 1C 18			lea ebx, [ebx + eax]
 
- 00000125  8B 45 08			mov eax, deltaTime
+					; // Update time accumulator
+ 00000125  D9 41 1C			fld (AnimatorComponent PTR [ecx]).timeAccumulator
+ 00000128  D8 45 08			fadd deltaTime
+ 0000012B  D9 59 1C			fstp (AnimatorComponent PTR [ecx]).timeAccumulator
 
 					ret
- 00000128  5F		   *	    pop    edi
- 00000129  5E		   *	    pop    esi
- 0000012A  5A		   *	    pop    edx
- 0000012B  59		   *	    pop    ecx
- 0000012C  5B		   *	    pop    ebx
- 0000012D  58		   *	    pop    eax
- 0000012E  C9		   *	    leave  
- 0000012F  C2 0004	   *	    ret    00004h
- 00000132			animator_update ENDP
+ 0000012E  5F		   *	    pop    edi
+ 0000012F  5E		   *	    pop    esi
+ 00000130  5A		   *	    pop    edx
+ 00000131  59		   *	    pop    ecx
+ 00000132  5B		   *	    pop    ebx
+ 00000133  58		   *	    pop    eax
+ 00000134  C9		   *	    leave  
+ 00000135  C2 0004	   *	    ret    00004h
+ 00000138			animator_update ENDP
 
 				END
-Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:11:15
+Microsoft (R) Macro Assembler Version 14.00.24210.0	    04/24/26 20:12:16
 animator_component.asm					     Symbols 2 - 1
 
 
@@ -620,7 +623,7 @@ Segments and Groups:
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
 _DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000132 Para	  Public  'CODE'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000138 Para	  Public  'CODE'	
 
 
 Procedures, parameters, and locals:
@@ -638,7 +641,7 @@ animator_play  . . . . . . . . .	P Near	 00000085 _TEXT	Length= 00000079 Public 
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
   animator_play_search_loop  . .	L Near	 000000B1 _TEXT	
   animator_play_exit . . . . . .	L Near	 000000F4 _TEXT	
-animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 00000034 Private STDCALL
+animator_update  . . . . . . . .	P Near	 000000FE _TEXT	Length= 0000003A Private STDCALL
   deltaTime  . . . . . . . . . .	DWord	 bp + 00000008
   pThis  . . . . . . . . . . . .	DWord	 bp - 00000004
 event_connect  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
