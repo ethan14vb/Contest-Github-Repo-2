@@ -24,7 +24,6 @@
     <MASM Include="castle_game_object.asm" />
     <MASM Include="component.asm" />
     <MASM Include="event.asm" />
-    <MASM Include="game_manager.asm" />
     <MASM Include="game_object.asm" />
     <MASM Include="heap_functions.asm" />
     <MASM Include="input_manager.asm" />
@@ -70,6 +69,7 @@
     <MASM Include="shop_game_object.asm">
       <FileType>Document</FileType>
     </MASM>
+    <None Include="shop_card.inc" />
     <None Include="shop_game_object.inc" />
     <None Include="sprite_component.inc">
       <FileType>Document</FileType>

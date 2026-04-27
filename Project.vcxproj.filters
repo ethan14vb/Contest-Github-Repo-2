@@ -100,10 +100,13 @@
     <None Include="castle_game_object.inc">
       <Filter>GameObjects</Filter>
     </None>
-    <None Include="shop_game_object.asm">
-      <Filter>GameObjects</Filter>
+    <None Include="input_manager_objects.inc">
+      <Filter>Engine\CoreObjects</Filter>
     </None>
     <None Include="shop_game_object.inc">
+      <Filter>GameObjects</Filter>
+    </None>
+    <None Include="shop_card.inc">
       <Filter>GameObjects</Filter>
     </None>
   </ItemGroup>
@@ -221,7 +224,7 @@
     <MASM Include="input_manager_objects.asm">
       <Filter>Engine\CoreObjects</Filter>
     </MASM>
-    <MASM Include="game_manager.asm">
+    <MASM Include="shop_game_object.asm">
       <Filter>GameObjects</Filter>
     </MASM>
   </ItemGroup>
