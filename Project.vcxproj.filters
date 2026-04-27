@@ -100,6 +100,9 @@
     <None Include="castle_game_object.inc">
       <Filter>GameObjects</Filter>
     </None>
+    <None Include="input_manager_objects.inc">
+      <Filter>Engine\CoreObjects</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

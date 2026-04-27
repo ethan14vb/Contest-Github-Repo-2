@@ -90,12 +90,6 @@ knight_animations Animation \
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 knight_on_frame_event PROC stdcall USES eax ecx edx, eventCode:DWORD
-	; // If we are a zombie object, return immediately
-	mov edx, (GameObject PTR [ecx]).awaitingFree
-	.IF edx != 0
-		jmp knight_on_frame_event_exit
-	.ENDIF
-
 	mov edx, eventCode
 	.IF edx == ATTACK_EVENT_CODE
 		; // We are attacking, deal damage
