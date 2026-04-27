@@ -12,6 +12,7 @@ INCLUDE castle_game_object.inc
 INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
+INCLUDE sprite_component.inc
 
 .data
 CASTLE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
@@ -28,7 +29,7 @@ CASTLE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET gam
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD
+init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 		local pThis
 	mov pThis, ecx
 
@@ -56,7 +57,6 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD
 	.ENDIF
 
 	mov (SpriteComponent PTR [eax]).isCell, 0FFFFFFFFh
-	push eax
 	INVOKE add_component, ecx, eax
 
 	mov ecx, pThis
@@ -71,7 +71,7 @@ init_castle_game_object ENDP
 new_castle_game_object PROC PUBLIC USES ecx, team:DWORD, pTexture:DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF CastleGameObject
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_castle_game_object, team, pTexture:DWORD
+	INVOKE init_castle_game_object, team, pTexture
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_castle_game_object ENDP
