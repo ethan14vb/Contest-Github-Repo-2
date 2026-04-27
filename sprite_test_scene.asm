@@ -13,6 +13,7 @@ INCLUDE bouncing_image_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE lane_game_object.inc
 INCLUDE castle_game_object.inc
+INCLUDE shop_game_object.inc
 INCLUDE resource_manager.inc
 INCLUDE sprite_component.inc
 INCLUDE text_component.inc
@@ -23,7 +24,7 @@ knightFile BYTE "knight_spritesheet_krita.pam", 0
 castleFile BYTE "castle.pam", 0
 fontFile BYTE "16x32 cartoon font.pam", 0
 pLane DWORD ?
-pCastle DWORD ?
+pShop DWORD ?
 
 text BYTE "This is a MAGNIFICENT! test to see if the text string rendering system works. 0123456789", 0
 
@@ -72,6 +73,13 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
+
+	; // Shop
+;	INVOKE new_shop_game_object
+;	mov pShop, eax
+;
+;	mov ecx, pScene
+;	INVOKE instantiate_game_object, pShop
 
 	; // Lane
 	INVOKE new_lane_game_object

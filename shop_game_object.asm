@@ -8,6 +8,7 @@
 INCLUDE default_header.inc
 INCLUDE game_object.inc
 INCLUDE heap_functions.inc
+INCLUDE shop_game_object.inc
 INCLUDE castle_game_object.inc
 INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
@@ -48,7 +49,7 @@ init_shop_game_object ENDP
 ; // Reserves heap space for the Object with parameters calls the initializer method
 ; // ----------------------------------
 new_shop_game_object PROC PUBLIC USES ecx
-	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF CastleGameObject
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF ShopGameObject
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
 	INVOKE init_shop_game_object
 
