@@ -101,7 +101,7 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 	; // If the opposing knight is in range, attacks it
 	INVOKE is_knight_in_range, pFirstOpposingKnight
 	.IF eax == 1
-		; // ADD ATTACKING LOGIC HERE
+		INVOKE attack, pFirstOpposingKnight
 		jmp SkipMovement
 	.ENDIF
 
@@ -217,4 +217,29 @@ is_knight_in_range PROC stdcall USES ebx ecx edx esi, pOpposingKnight:DWORD
 	mov eax, 1
 	ret
 is_knight_in_range ENDP
+
+; // ----------------------------------
+; // attack
+; // Sends an attack to the opposing knight witht their receive damage method
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+attack PROC stdcall USES ebx ecx edx esi, pOpposingKnight:DWORD
+	mov ecx, pOpposingKnight
+	INVOKE receive_damage, 5
+	ret
+attack ENDP
+
+; // ----------------------------------
+; // receive_damage
+; // The unit takes damage and frees itself if necessary
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+receive_damage PROC stdcall USES ebx ecx edx esi, damage:DWORD
+	mov eax, damage
+	ret
+receive_damage ENDP
 END 
