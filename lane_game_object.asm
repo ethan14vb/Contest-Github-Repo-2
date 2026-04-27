@@ -83,6 +83,112 @@ lane_update PROC stdcall USES eax edx ebx esi edi, deltaTime: REAL4
 	mov pThis, ecx
 	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
 
+	INVOKE scan_firsts
+
+	mov ecx, pThis ; // Restore the THIS pointer
+	ret
+lane_update ENDP
+
+; // ----------------------------------
+; // assign_knight
+; // Adds a knight pointer to the lane's list in either team
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
+		local pThis
+	mov pThis, ecx
+
+	; // Choose vector depending on knight's assigned team
+	mov eax, pKnight
+	mov eax, (KnightGameObject PTR [eax]).team
+	.IF eax == ALLY
+		; // Makes this knight the first ally if there are no other knights
+		lea ebx, (LaneGameObject PTR [ecx]).allyKnights
+		mov ebx, (UnorderedVector PTR [ebx]).count
+		.IF ebx == 0
+			mov ebx, pKnight
+			mov (LaneGameObject PTR [ecx]).pFirstAlly, ebx
+		.ENDIF
+
+		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+	
+	.ELSE
+		; // Makes this knight the first enemy if there are no other knights
+		lea ebx, (LaneGameObject PTR [ecx]).enemyKnights
+		mov ebx, (UnorderedVector PTR [ebx]).count
+		.IF ebx == 0
+			mov ebx, pKnight
+			mov (LaneGameObject PTR [ecx]).pFirstEnemy, ebx
+		.ENDIF
+
+		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
+	.ENDIF
+
+	mov eax, pKnight
+	INVOKE push_back, eax
+
+	mov ecx, pThis
+	mov eax, pKnight
+	mov (KnightGameObject PTR [eax]).pLane, ecx	; // Knight has pointer to this lane
+	ret
+assign_knight ENDP
+
+; // ----------------------------------
+; // remove_knight
+; // Removes this knight from the lane unordered vectors
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+remove_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
+		local pThis
+	mov pThis, ecx
+
+	; // Remove knight from corresponding team vector
+	mov eax, pKnight
+	mov eax, (KnightGameObject PTR [eax]).team
+	.IF eax == ALLY
+		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+	.ELSE
+		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
+	.ENDIF
+	mov eax, pKnight
+	INVOKE remove_element, eax
+
+	; // If this knight was the first in its team, get a new first knight
+	mov ecx, pThis
+	mov eax, pKnight
+	mov eax, (KnightGameObject PTR [eax]).team
+	.IF eax == ALLY
+		mov edx, (LaneGameObject PTR [ecx]).pFirstAlly
+		mov eax, pKnight
+		.IF eax == edx
+			INVOKE scan_firsts
+		.ENDIF
+	.ELSE
+		mov edx, (LaneGameObject PTR [ecx]).pFirstEnemy
+		mov eax, pKnight
+		.IF eax == edx
+			INVOKE scan_firsts
+		.ENDIF
+	.ENDIF
+
+	ret
+remove_knight ENDP
+
+; // ----------------------------------
+; // scan_firsts
+; // Scans unordered vectors for first knight of each team
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+scan_firsts PROC PUBLIC USES eax ebx edx ecx esi edi
+		local pThis : DWORD
+	mov pThis, ecx
+
 	; // Iterate over ally knights to find the one in front
 	lea ecx, (LaneGameObject PTR [ecx]).allyKnights
 	mov ebx, (UnorderedVector PTR [ecx]).count
@@ -152,66 +258,7 @@ lane_update PROC stdcall USES eax edx ebx esi edi, deltaTime: REAL4
 		inc edx
 	.ENDW
 
-	mov ecx, pThis ; // Restore the THIS pointer
 	ret
-lane_update ENDP
-
-; // ----------------------------------
-; // assign_knight
-; // Adds a knight pointer to the lane's list in either team
-; //
-; // Register Parameters: 
-; //	ecx - THIS pointer
-; // ----------------------------------
-assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
-		local pThis
-	mov pThis, ecx
-
-	; // Choose vector depending on knight's assigned team
-	mov eax, pKnight
-	mov eax, (KnightGameObject PTR [eax]).team
-	.IF eax == ALLY
-		; // Makes this knight the first ally if there are no other knights
-		lea ebx, (LaneGameObject PTR [ecx]).allyKnights
-		mov ebx, (UnorderedVector PTR [ebx]).count
-		.IF ebx == 0
-			mov ebx, pKnight
-			mov (LaneGameObject PTR [ecx]).pFirstAlly, ebx
-		.ENDIF
-
-		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
-	
-	.ELSE
-		; // Makes this knight the first enemy if there are no other knights
-		lea ebx, (LaneGameObject PTR [ecx]).enemyKnights
-		mov ebx, (UnorderedVector PTR [ebx]).count
-		.IF ebx == 0
-			mov ebx, pKnight
-			mov (LaneGameObject PTR [ecx]).pFirstEnemy, ebx
-		.ENDIF
-
-		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
-	.ENDIF
-
-	mov eax, pKnight
-	INVOKE push_back, eax
-
-	mov ecx, pThis
-	mov eax, pKnight
-	mov (KnightGameObject PTR [eax]).pLane, ecx	; // Knight has pointer to this lane
-	ret
-assign_knight ENDP
-
-; // ----------------------------------
-; // remove_knight
-; // Removes this knight from the lane unordered vectors
-; //
-; // Register Parameters: 
-; //	ecx - THIS pointer
-; // ----------------------------------
-remove_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
-	mov eax, pKnight
-	ret
-remove_knight ENDP
+scan_firsts ENDP
 
 END

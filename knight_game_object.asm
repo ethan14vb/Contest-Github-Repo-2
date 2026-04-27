@@ -478,9 +478,11 @@ receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
 	; // Substract damage and die if HP <= 0
 	mov eax, (KnightGameObject PTR [ecx]).HP
 	sub eax, damage
-	.IF (eax <= 0)
+	cmp eax, 0
+	jg SkipDeath
 		mov ecx, (KnightGameObject PTR [ecx]).pLane
-		INVOKE remove_knight, pThis
+		mov eax, pThis
+		INVOKE remove_knight, eax
 		; // die
 		mov ecx, pThis
 		mov ecx, (GameObject PTR [ecx]).pParentScene
