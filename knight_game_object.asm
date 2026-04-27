@@ -133,7 +133,7 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 
 	mov eax, team		; // Must be moved here first for it to compile
 	mov (KnightGameObject PTR [ecx]).team, eax
-	mov (KnightGameObject PTR [ecx]).MOVSP, 10
+	mov (KnightGameObject PTR [ecx]).MOVSP, 5
 	mov (KnightGameObject PTR [ecx]).RANGE, 120
 	mov esi, MY_ATKSP
 	mov (KnightGameObject PTR [ecx]).ATKSP, esi
@@ -228,7 +228,32 @@ local pThis : DWORD
 
 		jmp SkipMovement
 	.ELSEIF eax == STATE_WALK
+		INVOKE get_first_opposing_knight, (KnightGameObject PTR [ecx]).team
+		.IF eax != 0
+			push eax
+			INVOKE is_knight_in_range, eax
+			pop edx
+			.IF eax == 1
+				; // Enemy is in range, attack
+				mov ecx, pThis
+				mov (KnightGameObject PTR [ecx]).state, STATE_ATTACK
+				
+				INVOKE get_first_component_which_is_a, ANIMATOR_COMPONENT_ID
+				mov ecx, eax
+				INVOKE animator_play, ATTACK_ANIM
+				jmp SkipMovement
+			.ENDIF
+		.ENDIF
 
+		; // No enemy in range. Keep walking forward.
+		mov ecx, pThis
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov ebx, (KnightGameObject PTR [ecx]).MOVSP
+		mov edx, (KnightGameObject PTR [ecx]).team
+		.IF edx == ENEMY
+			neg ebx
+		.ENDIF
+		add (TransformComponent PTR [eax]).x, ebx
 	.ENDIF
 
 SkipMovement:
