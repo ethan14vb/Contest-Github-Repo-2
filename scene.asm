@@ -290,6 +290,11 @@ time_sensitive_components_game_object_loop_exit:
 	ret
 scene_update_time_sensitive_components ENDP
 
+scene_update_animator_components PROC PRIVATE USES eax ebx ecx edx esi edi, deltaTime: REAL4
+	mov eax, deltaTime
+	ret
+scene_update_animator_components ENDP
+
 ; // ----------------------------------
 ; // scene_update_game_objects
 ; // Calls the update method of all of the GameObjects in gameObjects
@@ -578,7 +583,8 @@ scene_update PROC PUBLIC USES eax ebx ecx edx esi edi, deltaTime: REAL4, hWnd: D
 	; // Update all of the GameObject logic
 	INVOKE scene_update_game_objects, deltaTime
 
-	; // NYI Update animator components 
+	; // Update animator components 
+	INVOKE scene_update_animator_components, deltaTime
 
 	; // Free any GameObjects that were queued to be freed by gameplay logic
 	INVOKE scene_free_game_objects
