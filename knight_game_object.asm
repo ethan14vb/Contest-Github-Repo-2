@@ -170,7 +170,7 @@ get_first_opposing_knight ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-is_knight_in_range PROC stdcall USES eax ebx ecx edx esi, pOpposingKnight:DWORD
+is_knight_in_range PROC stdcall USES ebx ecx edx esi, pOpposingKnight:DWORD
 	local pThis : DWORD
 	mov pThis, ecx
 
@@ -195,7 +195,19 @@ is_knight_in_range PROC stdcall USES eax ebx ecx edx esi, pOpposingKnight:DWORD
 			jmp ReturnFalse
 		.ENDIF
 	.ENDIF
-	
+
+	; // Obtain the absolute value of the difference in unit positions in eax
+	sub eax, esi
+	cmp eax, 0
+	jge SkipNegate
+	neg eax
+	SkipNegate:
+
+	.IF eax < edx
+		jmp ReturnTrue
+	.ENDIF
+
+
 	; // Returns corresponding result, ecx is restored by USES
 	ReturnFalse:
 	mov eax, 0
