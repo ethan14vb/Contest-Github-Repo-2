@@ -233,4 +233,87 @@ remove_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 	ret
 remove_knight ENDP
 
+; // ----------------------------------
+; // scan_firsts
+; // Scans unordered vectors for first knight of each team
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+scan_firsts PROC PUBLIC USES eax ebx edx ecx esi edi
+		local pThis : DWORD
+	mov pThis, ecx
+
+	; // Iterate over ally knights to find the one in front
+	lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	mov edx, 0
+	.WHILE edx < ebx
+		mov ecx, pThis
+		push ecx
+
+		push (LaneGameObject PTR [ecx]).pFirstAlly
+		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+		mov ebx, (UnorderedVector PTR [ecx]).count
+		mov eax, (UnorderedVector PTR [ecx]).pData
+
+		; // esi = allyKnights[i]
+		mov esi, [eax + edx * 4]
+		
+		; // Get the transform of the current first ally
+		pop ecx
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov edi, (TransformComponent PTR [eax]).x
+		
+		mov ecx, esi
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov eax, (TransformComponent PTR [eax]).x
+
+		; // Assign new firstAlly if further ahead in lane
+		pop ecx
+		.IF eax > edi
+			mov (LaneGameObject PTR [ecx]).pFirstAlly, esi
+		.ENDIF
+
+		inc edx
+	.ENDW
+
+	mov ecx, pThis
+	; // Iterate over enemy knights to find the one in front
+	lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	mov edx, 0
+	.WHILE edx < ebx
+		mov ecx, pThis
+		push ecx
+
+		push (LaneGameObject PTR [ecx]).pFirstEnemy
+		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
+		mov ebx, (UnorderedVector PTR [ecx]).count
+		mov eax, (UnorderedVector PTR [ecx]).pData
+
+		; // esi = enemyKnights[i]
+		mov esi, [eax + edx * 4]
+		
+		; // Get the transform of the current first enemy
+		pop ecx
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov edi, (TransformComponent PTR [eax]).x
+		
+		mov ecx, esi
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov eax, (TransformComponent PTR [eax]).x
+
+		; // Assign new firstEnemy if further ahead in lane
+		pop ecx
+		.IF eax < edi	; // Comparison is flipped since enemies move left
+			mov (LaneGameObject PTR [ecx]).pFirstEnemy, esi
+		.ENDIF
+
+		inc edx
+	.ENDW
+
+	ret
+scan_firsts ENDP
+
 END
