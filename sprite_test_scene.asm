@@ -17,6 +17,7 @@ INCLUDE shop_game_object.inc
 INCLUDE resource_manager.inc
 INCLUDE sprite_component.inc
 INCLUDE text_component.inc
+INCLUDE input_manager.inc
 
 .data
 testFile BYTE "Knight.pam", 0
@@ -39,6 +40,10 @@ pCastleTex DWORD ?
 
 PUBLIC pFontTex
 pFontTex DWORD ?
+
+; // Controllers
+p1Controller VirtualController <>
+p2Controller VirtualController <>
 
 .code
 ; // ----------------------------------

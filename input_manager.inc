@@ -57,5 +57,7 @@ DEVICE_KEYBOARD			= 4
 updateInput PROTO
 isKeyPressed PROTO vkCode: VK_CODE
 isKeyJustPressed PROTO vkCode: VK_CODE
+isActionPressed PROTO pController: DWORD, actionID: DWORD
+isActionJustPressed PROTO pController: DWORD, actionID: DWORD
 
 ENDIF
