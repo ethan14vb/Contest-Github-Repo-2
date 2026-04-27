@@ -86,7 +86,7 @@ new_castle_game_object ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-castle_receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
+castle_receive_damage PROC PUBLIC USES eax ebx ecx edx esi, damage:DWORD
 		local pThis : DWORD
 	mov pThis, ecx
 

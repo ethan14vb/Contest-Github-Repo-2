@@ -10,6 +10,7 @@ INCLUDE game_object.inc
 INCLUDE heap_functions.inc
 INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
+INCLUDE castle_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
 INCLUDE animator_component.inc
@@ -502,12 +503,15 @@ receive_damage ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-check_reached_castle PROC stdcall USES eax ebx ecx edx esi
+check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 		local pThis : DWORD
 		local pOpposingCastle : DWORD
 	mov pThis, ecx
 
-	; // Obtain pointer to opposing castle
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov esi, (TransformComponent PTR [eax]).x
+
+	; // Obtain pointer to opposing castle and its position
 	mov eax, (KnightGameObject PTR [ecx]).team
 	mov ecx, (KnightGameObject PTR [ecx]).pLane
 	.IF eax == ALLY
@@ -516,10 +520,21 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi
 		mov ecx, (LaneGameObject PTR [edx]).pAllyCastle
 	.ENDIF
 
-	; // Get the non-negative differnece between atk and def as damage
-	mov eax, (KnightGameObject PTR [ecx]).ATK
+	mov pOpposingCastle, ecx
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov edi, (TransformComponent PTR [eax]).x
 
-	INVOKE receive_damage, eax
+	; // If castle is reached, send damage and clear itself
+	mov ecx, pThis
+	.IF esi == edi
+		mov eax, (KnightGameObject PTR [ecx]).ATK
+		mov ecx, pOpposingCastle
+		INVOKE castle_receive_damage, eax
+		mov ecx, pThis
+		mov ecx, (GameObject PTR [ecx]).pParentScene
+		INVOKE queue_free_game_object, pThis
+	.ENDIF
+
 	ret
 check_reached_castle ENDP
 
