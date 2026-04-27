@@ -74,6 +74,42 @@ knight_animations Animation \
 
 .code
 ; // ********************************************
+; // Callback Methods
+; // ********************************************
+
+; // ----------------------------------
+; // knight_on_frame_event
+; // Callback triggered by the Animator when it hits a frame with an eventCode > 0
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+knight_on_frame_event PROC stdcall USES eax ecx edx, eventCode:DWORD
+	; // If we are a zombie object, return immediately
+	mov edx, (GameObject PTR [ecx]).awaitingFree
+	.IF edx != 0
+		jmp knight_on_frame_event_exit
+	.ENDIF
+
+	mov edx, eventCode
+	.IF edx == ATTACK_EVENT_CODE
+		; // We are attacking, deal damage
+		INVOKE get_first_opposing_knight, (KnightGameObject PTR [ecx]).team
+		.IF eax != 0
+			push eax
+			INVOKE is_knight_in_range, eax
+			pop edx
+			.IF eax == 1
+				; // The enemy is in range, attack
+				INVOKE attack, edx
+			.ENDIF
+		.ENDIF
+	.ENDIF
+knight_on_frame_event_exit:
+	ret
+knight_on_frame_event ENDP
+
+; // ********************************************
 ; // Constructor Methods
 ; // ********************************************
 
