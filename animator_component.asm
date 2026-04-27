@@ -237,8 +237,10 @@ animator_update_state:
 			mov (AnimatorComponent PTR [ecx]).curFrameIndex, esi
 
 			; // Fire animation finished event
-			lea esi, (AnimatorComponent PTR [ecx]).animFinishedEvent
+			push ecx
+			lea ecx, (AnimatorComponent PTR [ecx]).animFinishedEvent
 			INVOKE event_fire, 0
+			pop ecx
 			
 			; // Re-evaluate the state just in case the event changed the currently running animation
 			jmp animator_update_state

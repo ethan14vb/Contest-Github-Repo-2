@@ -38,17 +38,18 @@ WALK_ANIM		EQU 2
 ATTACK_ANIM		EQU 3
 
 ; // Create the animation frames
-idle_anim AnimationFrame	<512, 512, 256, 256, 0.5, 0>,		\
-							<768, 512, 256, 256, 0.5, 0>,		\
-							<1024, 512, 256, 256, 0.5, 0>,		\
-							<1280, 512, 256, 256, 0.5, 0>,		\
-							<0, 768, 256, 256, 0.5, 0>,			\
-							<256, 768, 256, 256, 0.5, 0>,		\
-							<512, 768, 256, 256, 0.5, 0>,		\
-							<768, 768, 256, 256, 0.5, 0>,		\
-							<1024, 768, 256, 256, 0.5, 0>,		\
-							<1280, 768, 256, 256, 0.5, 0>,		\
-							<0, 1024, 256, 256, 0.5, 0>
+IDL_FRM_TM equ 0.1
+idle_anim AnimationFrame	<512, 512, 256, 256, 0.1, 0>,		\
+							<768, 512, 256, 256, 0.1, 0>,		\
+							<1024, 512, 256, 256, 0.1, 0>,		\
+							<1280, 512, 256, 256, 0.1, 0>,		\
+							<0, 768, 256, 256, 0.1, 0>,			\
+							<256, 768, 256, 256, IDL_FRM_TM, 0>,		\
+							<512, 768, 256, 256, IDL_FRM_TM, 0>,		\
+							<768, 768, 256, 256, IDL_FRM_TM, 0>,		\
+							<1024, 768, 256, 256, IDL_FRM_TM, 0>,		\
+							<1280, 768, 256, 256, IDL_FRM_TM, 0>,		\
+							<0, 1024, 256, 256, IDL_FRM_TM, 0>
 WLK_FRM_TM equ 0.1
 walk_anim AnimationFrame	<768, 0, 256, 256, 0.1, 0>,\
 							<1024, 0, 256, 256, WLK_FRM_TM, 0>,\
@@ -63,11 +64,11 @@ walk_anim AnimationFrame	<768, 0, 256, 256, 0.1, 0>,\
 							<256, 512, 256, 256, WLK_FRM_TM, 0>
 	
 ATTACK_EVENT_CODE equ 99
-attack_anim AnimationFrame	<256, 1024, 256, 256, 0.5, 0>,		\
+attack_anim AnimationFrame	<256, 1024, 256, 256, 0.06, 0>,		\
 							<512, 1024, 256, 256, 0.5, 0>,		\
-							<768, 1024, 256, 256, 0.5, ATTACK_EVENT_CODE>,		\
+							<768, 1024, 256, 256, 0.06, ATTACK_EVENT_CODE>,		\
 							<1024, 1024, 256, 256, 0.5, 0>,		\
-							<1280, 1024, 256, 256, 0.5, 0>
+							<1280, 1024, 256, 256, 0.06, 0>
 
 ; // Create the list of animations
 knight_animations Animation \
@@ -111,6 +112,28 @@ knight_on_frame_event PROC stdcall USES eax ecx edx, eventCode:DWORD
 knight_on_frame_event_exit:
 	ret
 knight_on_frame_event ENDP
+
+knight_on_anim_finish_event PROC stdcall USES eax ebx ecx edx esi edi, animId:DWORD
+	; // Disregard the args but use them so MASM doesn't complain
+	mov eax, animId
+
+	; // We only care if we just finished attacking
+	mov eax, (KnightGameObject PTR [ecx]).state
+	.IF eax == STATE_ATTACK
+		; // Transition to the idle state
+		mov (KnightGameObject PTR [ecx]).state, STATE_IDLE
+		
+		; // Load the attack cooldown
+		fild (KnightGameObject PTR [ecx]).ATKSP 
+		fstp (KnightGameObject PTR [ecx]).cooldown
+
+		; // Play the idle animation
+		INVOKE get_first_component_which_is_a, ANIMATOR_COMPONENT_ID
+		mov ecx, eax
+		INVOKE animator_play, IDLE_ANIM
+	.ENDIF
+	ret
+knight_on_anim_finish_event ENDP
 
 ; // ********************************************
 ; // Constructor Methods
@@ -169,6 +192,11 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	push eax
 	lea ecx, (AnimatorComponent PTR [eax]).frameEvent
 	INVOKE event_connect, pThis, OFFSET knight_on_frame_event
+
+	; // Connect the finish event
+	pop eax
+	lea ecx, (AnimatorComponent PTR [eax]).animFinishedEvent
+	INVOKE event_connect, pThis, OFFSET knight_on_anim_finish_event
 		
 	; // Set initial state
 	mov ecx, pThis
