@@ -56,7 +56,6 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 		mov (SpriteComponent PTR [eax]).flipX, 1
 	.ENDIF
 
-	mov (SpriteComponent PTR [eax]).isCell, 0FFFFFFFFh
 	INVOKE add_component, ecx, eax
 
 	mov ecx, pThis

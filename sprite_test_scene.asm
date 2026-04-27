@@ -20,7 +20,7 @@ INCLUDE text_component.inc
 .data
 testFile BYTE "Knight.pam", 0
 knightFile BYTE "knight_spritesheet_krita.pam", 0
-castleFile BYTE "Knight.pam", 0
+castleFile BYTE "castle.pam", 0
 fontFile BYTE "16x32 cartoon font.pam", 0
 pLane DWORD ?
 pCastle DWORD ?
