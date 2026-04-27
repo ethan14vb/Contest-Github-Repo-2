@@ -20,12 +20,11 @@ KnightGameObject STRUCT
 	team DWORD ?
 
 	state DWORD ?
-	idleCooldown REAL4 ?
 
 	HP DWORD ?
 	ATK DWORD ?
 	DEF DWORD ?
-	ATKSP DWORD ?	; // Cooldown time between attacks
+	ATKSP REAL4 ?	; // Cooldown time between attacks
 	MOVSP DWORD ?	; // Speed at which unit moves in lane
 	RANGE DWORD ?	; // Distance to next enemy to be able to attack
 KnightGameObject ENDS

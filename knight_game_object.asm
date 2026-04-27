@@ -17,6 +17,9 @@ INCLUDE animator_component.inc
 .data
 KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET knight_update, OFFSET game_object_exit, OFFSET free_game_object>
 
+; // misc
+MY_ATKSP REAL4 1.5
+
 ; // ********************************************
 ; // State Data
 ; // ********************************************
@@ -132,6 +135,8 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov (KnightGameObject PTR [ecx]).team, eax
 	mov (KnightGameObject PTR [ecx]).MOVSP, 10
 	mov (KnightGameObject PTR [ecx]).RANGE, 120
+	mov esi, MY_ATKSP
+	mov (KnightGameObject PTR [ecx]).ATKSP, esi
 
 	mov eax, 0			; // Default x position for allies
 	cmp team, ENEMY
@@ -152,12 +157,22 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	push eax
 	INVOKE add_component, ecx, eax
 
+	; // Create the animator component
 	pop eax
 	INVOKE new_animator_component, eax, OFFSET knight_animations, 3
 	INVOKE add_component, ecx, eax
 
 	mov ecx, eax
 	INVOKE animator_play, WALK_ANIM
+
+	; // Connect the frame event
+	push eax
+	lea ecx, (AnimatorComponent PTR [eax]).frameEvent
+	INVOKE event_connect, pThis, OFFSET knight_on_frame_event
+		
+	; // Set initial state
+	mov ecx, pThis
+	mov (KnightGameObject PTR [ecx]).state, STATE_WALK
 	
 	mov eax, pThis
 	ret
@@ -188,39 +203,22 @@ new_knight_game_object ENDP
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
-	local pThis : DWORD
-	local pFirstOpposingKnight : DWORD
+local pThis : DWORD
 	mov pThis, ecx
-	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
+	mov eax, deltaTime
 
-	; // Obtain the x position of the first opposing knight in lane
-	mov eax, (KnightGameObject PTR [ecx]).team
-	INVOKE get_first_opposing_knight, eax
-	cmp eax, 0
-	je SkipAttackCheck		; // If there is no opposing knights, does not check for attack
-	mov pFirstOpposingKnight, eax
+	; // --- Check Current State ---
+	mov eax, (KnightGameObject PTR [ecx]).state
 
-	; // If the opposing knight is in range, attacks it
-	INVOKE is_knight_in_range, pFirstOpposingKnight
-	.IF eax == 1
-		INVOKE attack, pFirstOpposingKnight
-		jmp SkipMovement
+	.IF eax == STATE_ATTACK
+
+	.ELSEIF eax == STATE_IDLE
+
+	.ELSEIF eax == STATE_WALK
+
 	.ENDIF
 
-
-	SkipAttackCheck:
-	; // Move the knight forward in its lane based on its movement speed
-	mov ecx, pThis
-	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
-	mov ebx, (KnightGameObject PTR [ecx]).MOVSP
-	mov edx, (KnightGameObject PTR [ecx]).team
-	.IF edx == ENEMY
-		neg ebx			; // Enemy moves opposite direction
-	.ENDIF
-	add (TransformComponent PTR [eax]).x, ebx
-
-	SkipMovement:
-	mov ecx, pThis ; // Restore the THIS pointer
+SkipMovement:
 	ret
 knight_update ENDP
 
