@@ -38,18 +38,18 @@ idle_anim AnimationFrame	<512, 512, 256, 256, 0.5, 0>,		\
 							<1024, 768, 256, 256, 0.5, 0>,		\
 							<1280, 768, 256, 256, 0.5, 0>,		\
 							<0, 1024, 256, 256, 0.5, 0>
-
-walk_anim AnimationFrame	<768, 0, 256, 256, 0.5, 0>,			\
-							<1024, 0, 256, 256, 0.5, 0>,		\
-							<1280, 0, 256, 256, 0.5, 0>,		\
-							<0, 256, 256, 256, 0.5, 0>,			\
-							<256, 256, 256, 256, 0.5, 0>,		\
-							<512, 256, 256, 256, 0.5, 0>,		\
-							<768, 256, 256, 256, 0.5, 0>,		\
-							<1024, 256, 256, 256, 0.5, 0>,		\
-							<1280, 256, 256, 256, 0.5, 0>,		\
-							<0, 512, 256, 256, 0.5, 0>,			\
-							<256, 512, 256, 256, 0.5, 0>
+WLK_FRM_TM equ 0.1
+walk_anim AnimationFrame	<768, 0, 256, 256, 0.1, 0>,\
+							<1024, 0, 256, 256, WLK_FRM_TM, 0>,\
+							<1280, 0, 256, 256, WLK_FRM_TM, 0>,\
+							<0, 256, 256, 256, WLK_FRM_TM, 0>,	\
+							<256, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<512, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<768, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<1024, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<1280, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<0, 512, 256, 256, WLK_FRM_TM, 0>,\
+							<256, 512, 256, 256, WLK_FRM_TM, 0>
 
 attack_anim AnimationFrame	<256, 1024, 256, 256, 0.5, 0>,		\
 							<512, 1024, 256, 256, 0.5, 0>,		\
@@ -60,7 +60,7 @@ attack_anim AnimationFrame	<256, 1024, 256, 256, 0.5, 0>,		\
 ; // Create the list of animations
 knight_animations Animation \
 <IDLE_ANIM, OFFSET idle_anim, 11, 1>, \
-<WALK_ANIM, OFFSET walk_anim, 11, 1>, \
+<WALK_ANIM, OFFSET walk_anim, 8, 1>, \
 <ATTACK_ANIM, OFFSET attack_anim, 5, 0>
 
 .code

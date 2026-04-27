@@ -15,6 +15,7 @@ INCLUDE game_object.inc
 INCLUDE game_object_ids.inc
 INCLUDE renderer.inc
 INCLUDE timer_component.inc
+INCLUDE animator_component.inc
 INCLUDE render_command.inc
 INCLUDE camera.inc
 INCLUDE input_manager.inc
@@ -291,7 +292,75 @@ time_sensitive_components_game_object_loop_exit:
 scene_update_time_sensitive_components ENDP
 
 scene_update_animator_components PROC PRIVATE USES eax ebx ecx edx esi edi, deltaTime: REAL4
-	mov eax, deltaTime
+	local pThis
+	mov pThis, ecx ; // Save the THIS pointer just in case
+
+	mov edx, 0 ; // int i = 0
+
+animator_components_game_object_loop:
+	mov ecx, pThis
+	lea ecx, (Scene PTR [ecx]).gameObjects
+
+	mov ebx, (UnorderedVector PTR [ecx]).count
+
+	cmp ebx, 0
+	je animator_components_game_object_loop_exit
+
+	mov eax, (UnorderedVector PTR [ecx]).pData
+
+	; // esi = gameObjects[i]
+	mov esi, [eax + edx * 4]
+
+	; // Check if the GameObject is dead
+	mov eax, (GameObject PTR [esi]).awaitingFree
+	.IF eax != 0
+		push ebx
+		push edx
+
+		jmp animator_components_components_loop_exit
+	.ENDIF
+
+	push ebx
+	push edx
+
+	mov edx, 0		
+	
+	; // Now loop through the components
+animator_components_components_loop:
+	lea ecx, (GameObject PTR [esi]).components
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	cmp ebx, 0
+	je animator_components_components_loop_exit
+
+	mov eax, (UnorderedVector PTR [ecx]).pData
+	; // esi = components[i]
+	mov edi, [eax + edx * 4]
+	mov ecx, (Component PTR [edi]).componentType
+
+	.IF ecx == ANIMATOR_COMPONENT_ID
+		mov ecx, edi
+		push eax
+		INVOKE animator_update, deltaTime
+		pop eax
+	.ENDIF
+
+	inc edx
+	cmp edx, ebx
+	jb animator_components_components_loop
+animator_components_components_loop_exit:
+
+	; // End of game objects loop
+	pop edx
+	pop ebx
+
+	inc edx
+	cmp edx, ebx
+	jb animator_components_game_object_loop
+
+animator_components_game_object_loop_exit:
+	; // Restore the THIS pointer
+	mov ecx, pThis
+
 	ret
 scene_update_animator_components ENDP
 
