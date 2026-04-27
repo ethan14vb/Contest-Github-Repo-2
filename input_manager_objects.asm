@@ -85,7 +85,7 @@ free_virtual_controller ENDP
 virtual_controller_add_binding PROC PUBLIC USES eax ebx ecx edx esi edi, pBinding:DWORD
 	lea ecx, (VirtualController PTR [ecx]).bindings
 	INVOKE push_back, pBinding
-	0
+	
 	ret
 virtual_controller_add_binding ENDP
 
