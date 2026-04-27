@@ -202,4 +202,16 @@ assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 	ret
 assign_knight ENDP
 
+; // ----------------------------------
+; // remove_knight
+; // Removes this knight from the lane unordered vectors
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+remove_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
+	mov eax, pKnight
+	ret
+remove_knight ENDP
+
 END

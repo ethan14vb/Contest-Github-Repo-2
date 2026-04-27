@@ -25,5 +25,6 @@ init_lane_game_object PROTO
 new_lane_game_object PROTO
 lane_update PROTO, deltaTime:REAL4
 assign_knight PROTO, pKnight:DWORD
+remove_knight PROTO, pKnight:DWORD
 
 ENDIF
