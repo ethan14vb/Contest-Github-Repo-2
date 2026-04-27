@@ -79,4 +79,29 @@ new_castle_game_object ENDP
 ; // Instance methods
 ; // ********************************************
 
+; // ----------------------------------
+; // castle_receive_damage
+; // The Castle takes damage and triggers end of game if necessary
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+castle_receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
+		local pThis : DWORD
+	mov pThis, ecx
+
+	; // Substract damage and end game if HP <= 0
+	mov eax, (CastleGameObject PTR [ecx]).HP
+	sub eax, damage
+	cmp eax, 0
+	jg SkipGameEnd
+		; // game end
+
+	SkipGameEnd:
+	mov ecx, pThis
+	mov (CastleGameObject PTR [ecx]).HP, eax
+
+	ret
+castle_receive_damage ENDP
+
 END
