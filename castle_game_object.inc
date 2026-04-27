@@ -12,9 +12,10 @@ INCLUDE game_object.inc
 
 CastleGameObject STRUCT
 	baseGameObject GameObject<>
+	HP DWORD ?
 CastleGameObject ENDS
 
-init_castle_game_object PROTO
-new_castle_game_object PROTO
+init_castle_game_object PROTO, team:DWORD
+new_castle_game_object PROTO, team:DWORD
 
 ENDIF

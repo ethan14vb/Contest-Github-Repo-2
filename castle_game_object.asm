@@ -8,7 +8,9 @@
 INCLUDE default_header.inc
 INCLUDE game_object.inc
 INCLUDE heap_functions.inc
+INCLUDE castle_game_object.inc
 INCLUDE lane_game_object.inc
+INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 
 .data
@@ -20,13 +22,13 @@ CASTLE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET gam
 ; // ********************************************
 
 ; // ----------------------------------
-; // init_lane_game_object
+; // init_castle_game_object
 ; // Initializes memory with the contents of a LaneGameObject
 ; // 
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-init_castle_game_object PROC PUBLIC USES esi ebx edx
+init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD
 		local pThis
 	mov pThis, ecx
 
@@ -34,6 +36,18 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx
 	INVOKE init_game_object, 0
 	mov (GameObject PTR [ecx]).gameObjectType, CASTLE_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET CASTLE_GAMEOBJECT_VTABLE
+
+	; // For now castle HP is just 0
+	mov (CastleGameObject PTR [ecx]).HP, 1
+
+	; // Gives Castle a transform
+	mov eax, 0			; // Default x position for allies
+	cmp team, ENEMY
+	jne NotEnemy
+	mov eax, 1800		; // Spawns on opposite end if this is an enemy
+	NotEnemy:
+	INVOKE new_transform_component, eax, 500, 0
+	INVOKE add_component, ecx, eax
 
 	mov ecx, pThis
 	mov eax, ecx
@@ -44,10 +58,10 @@ init_castle_game_object ENDP
 ; // new_castle_game_object
 ; // Reserves heap space for the Object with parameters calls the initializer method
 ; // ----------------------------------
-new_castle_game_object PROC PUBLIC USES ecx
-	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF LaneGameObject
+new_castle_game_object PROC PUBLIC USES ecx, team:DWORD
+	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF CastleGameObject
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_lane_game_object
+	INVOKE init_castle_game_object, team
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_castle_game_object ENDP
