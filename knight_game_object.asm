@@ -13,12 +13,13 @@ INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
 INCLUDE animator_component.inc
+INCLUDE scene.inc
 
 .data
-KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET knight_update, OFFSET game_object_exit, OFFSET free_game_object>
+KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET knight_update, OFFSET game_object_exit, OFFSET free_knight>
 
 ; // misc
-MY_ATKSP REAL4 1.5
+MY_ATKSP REAL4 0.5
 
 ; // ********************************************
 ; // State Data
@@ -64,11 +65,11 @@ walk_anim AnimationFrame	<768, 0, 256, 256, 0.1, 0>,\
 							<256, 512, 256, 256, WLK_FRM_TM, 0>
 	
 ATTACK_EVENT_CODE equ 99
-attack_anim AnimationFrame	<256, 1024, 256, 256, 0.06, 0>,		\
+attack_anim AnimationFrame	<256, 1024, 256, 256, 0.02, 0>,		\
 							<512, 1024, 256, 256, 0.5, 0>,		\
 							<768, 1024, 256, 256, 0.06, ATTACK_EVENT_CODE>,		\
 							<1024, 1024, 256, 256, 0.5, 0>,		\
-							<1280, 1024, 256, 256, 0.06, 0>
+							<1280, 1024, 256, 256, 0.02, 0>
 
 ; // Create the list of animations
 knight_animations Animation \
@@ -114,6 +115,12 @@ knight_on_frame_event_exit:
 knight_on_frame_event ENDP
 
 knight_on_anim_finish_event PROC stdcall USES eax ebx ecx edx esi edi, animId:DWORD
+	; // If we are a zombie object, return immediately
+	mov edx, (GameObject PTR[ecx]).awaitingFree
+	.IF edx != 0
+		jmp knight_on_anim_finish_event_exit
+	.ENDIF
+
 	; // Disregard the args but use them so MASM doesn't complain
 	mov eax, animId
 
@@ -132,6 +139,7 @@ knight_on_anim_finish_event PROC stdcall USES eax ebx ecx edx esi edi, animId:DW
 		mov ecx, eax
 		INVOKE animator_play, IDLE_ANIM
 	.ENDIF
+knight_on_anim_finish_event_exit:
 	ret
 knight_on_anim_finish_event ENDP
 
@@ -196,10 +204,16 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	lea ecx, (AnimatorComponent PTR [eax]).frameEvent
 	INVOKE event_connect, pThis, OFFSET knight_on_frame_event
 
+	mov ecx, pThis
+	mov (KnightGameObject PTR [ecx]).pFrameConnect, eax
+
 	; // Connect the finish event
 	pop eax
 	lea ecx, (AnimatorComponent PTR [eax]).animFinishedEvent
 	INVOKE event_connect, pThis, OFFSET knight_on_anim_finish_event
+
+	mov ecx, pThis
+	mov (KnightGameObject PTR [ecx]).pAnimFinishedConnect, eax
 		
 	; // Set initial state
 	mov ecx, pThis
@@ -468,10 +482,40 @@ receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
 		mov ecx, (KnightGameObject PTR [ecx]).pLane
 		INVOKE remove_knight, pThis
 		; // die
+		mov ecx, pThis
+		mov ecx, (GameObject PTR [ecx]).pParentScene
+		INVOKE queue_free_game_object, pThis
 	.ENDIF
 	mov ecx, pThis
 	mov (KnightGameObject PTR [ecx]).HP, eax
 
 	ret
 receive_damage ENDP
+
+; // ----------------------------------
+; // free_knight
+; // Destructs and frees the knight
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+free_knight PROC
+	local pThis
+	mov pThis, ecx
+
+	; // Disconnect the connections
+	mov ebx, (KnightGameObject PTR [ecx]).pFrameConnect
+	INVOKE event_disconnect, ebx
+
+	mov ecx, pThis
+
+	mov ebx, (KnightGameObject PTR [ecx]).pAnimFinishedConnect
+	INVOKE event_disconnect, ebx
+	
+	; // Free myself
+	mov ecx, pThis
+	INVOKE free_game_object
+	ret
+free_knight ENDP
+
 END 

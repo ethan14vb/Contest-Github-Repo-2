@@ -19,9 +19,15 @@ KnightGameObject STRUCT
 	pLane DWORD ?	; // Pointer to the lane it belongs to
 	team DWORD ?
 
+	; // State logic 
 	state DWORD ?
 	cooldown REAL4 ? ; // the amount of time waited after an attack finished
 
+	; // Connections
+	pFrameConnect DWORD ?
+	pAnimFinishedConnect DWORD ?
+
+	; // Stats
 	HP DWORD ?
 	ATK DWORD ?
 	DEF DWORD ?
