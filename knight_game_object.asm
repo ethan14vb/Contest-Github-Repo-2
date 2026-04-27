@@ -196,8 +196,7 @@ new_knight_game_object ENDP
 
 ; // ----------------------------------
 ; // knight_update
-; // Moves the knight forward depending on team
-; // Also checks for possible enemies to attack in front of it
+; // Updates the knight depending on its current state
 ; // 
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
@@ -211,9 +210,23 @@ local pThis : DWORD
 	mov eax, (KnightGameObject PTR [ecx]).state
 
 	.IF eax == STATE_ATTACK
-
+		; // Attack logic is handled by event callbacks, do nothing
+		jmp SkipMovement
 	.ELSEIF eax == STATE_IDLE
+		; // Decrement the cooldown timer
+		fld (KnightGameObject PTR [ecx]).cooldown
+		fsub deltaTime
+		fstp (KnightGameObject PTR [ecx]).cooldown
 
+		fldz
+		fld (KnightGameObject PTR [ecx]).cooldown
+		fcomip st(0), st(1)
+		fstp st(0)
+		ja SkipMovement
+
+		; // Cooldown finished TODO evaluate next state
+
+		jmp SkipMovement
 	.ELSEIF eax == STATE_WALK
 
 	.ENDIF

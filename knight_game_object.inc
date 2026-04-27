@@ -20,6 +20,7 @@ KnightGameObject STRUCT
 	team DWORD ?
 
 	state DWORD ?
+	cooldown REAL4 ? ; // the amount of time waited after an attack finished
 
 	HP DWORD ?
 	ATK DWORD ?
