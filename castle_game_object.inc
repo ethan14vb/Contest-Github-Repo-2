@@ -15,6 +15,8 @@ CastleGameObject STRUCT
 	HP DWORD ?
 CastleGameObject ENDS
 
+ExitProcess PROTO, dwExitCode:DWORD
+
 init_castle_game_object PROTO, team:DWORD, pTexture:DWORD
 new_castle_game_object PROTO, team:DWORD, pTexture:DWORD
 

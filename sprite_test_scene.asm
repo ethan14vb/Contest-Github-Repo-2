@@ -73,6 +73,13 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
 
+	; // Lane
+	INVOKE new_lane_game_object
+	mov pLane, eax
+
+	mov ecx, pScene
+	INVOKE instantiate_game_object, pLane
+
 	; // Get Castle texture
 	INVOKE load_texture, OFFSET castleFile
 	mov pCastleTex, eax
@@ -83,6 +90,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
+	mov ecx, pLane
+	mov (LaneGameObject PTR [ecx]).pAllyCastle, esi
 
 	; // Enemy Castle
 	INVOKE new_castle_game_object, ENEMY, pCastleTex
@@ -90,13 +99,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
-
-	; // Lane
-	INVOKE new_lane_game_object
-	mov pLane, eax
-
-	mov ecx, pScene
-	INVOKE instantiate_game_object, pLane
+	mov ecx, pLane
+	mov (LaneGameObject PTR [ecx]).pEnemyCastle, esi
 
 	; // Get Knight texture
 	INVOKE load_texture, OFFSET knightFile

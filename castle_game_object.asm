@@ -96,6 +96,7 @@ castle_receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
 	cmp eax, 0
 	jg SkipGameEnd
 		; // game end
+		INVOKE ExitProcess, 0
 
 	SkipGameEnd:
 	mov ecx, pThis
