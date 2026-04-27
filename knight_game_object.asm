@@ -8,6 +8,7 @@
 INCLUDE default_header.inc
 INCLUDE game_object.inc
 INCLUDE heap_functions.inc
+INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
@@ -114,8 +115,19 @@ knight_update ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-get_first_opposing_knight PROC stdcall USES eax ebx ecx edx esi edi, callerTeam:DWORD
+get_first_opposing_knight PROC stdcall USES eax ecx edx, callerTeam:DWORD
+	local pThis : DWORD
+	mov pThis, ecx
+	
+	mov edx, (KnightGameObject PTR [ecx]).pLane
 	mov eax, callerTeam
+	.IF eax == ALLY
+		mov eax, (LaneGameObject PTR [edx]).pFirstEnemy
+	.ELSE
+		mov eax, (LaneGameObject PTR [edx]).pFirstAlly
+	.ENDIF
+
+	mov ecx, pThis
 	ret
 get_first_opposing_knight ENDP
 
