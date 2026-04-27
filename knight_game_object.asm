@@ -38,11 +38,12 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov eax, team		; // Must be moved here first for it to compile
 	mov (KnightGameObject PTR [ecx]).team, eax
 	mov (KnightGameObject PTR [ecx]).MOVSP, 5
+	mov (KnightGameObject PTR [ecx]).RANGE, 20
 
 	mov eax, 0			; // Default x position for allies
 	cmp team, ENEMY
 	jne NotEnemy
-	mov eax, 1400		; // Spawns on opposite end if this is an enemy
+	mov eax, 1800		; // Spawns on opposite end if this is an enemy
 	NotEnemy:
 	; // Gives Knight a transform
 	INVOKE new_transform_component, eax, 500, 0
@@ -78,6 +79,7 @@ new_knight_game_object ENDP
 ; // ----------------------------------
 ; // knight_update
 ; // Moves the knight forward depending on team
+; // Also checks for possible enemies to attack in front of it
 ; // 
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
@@ -87,18 +89,34 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 	mov pThis, ecx
 	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
 
-	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov eax, (KnightGameObject PTR [ecx]).team
+	INVOKE get_first_opposing_knight, eax
 
+	; // Move the knight forward in its lane based on its movement speed
+	mov ecx, pThis
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
 	mov ebx, (KnightGameObject PTR [ecx]).MOVSP
 	mov edx, (KnightGameObject PTR [ecx]).team
 	.IF edx == ENEMY
 		neg ebx			; // Enemy moves opposite direction
 	.ENDIF
-
 	add (TransformComponent PTR [eax]).x, ebx
 
+	SkipMovement:
 	mov ecx, pThis ; // Restore the THIS pointer
 	ret
 knight_update ENDP
+
+; // ----------------------------------
+; // get_first_opposing_knight
+; // Returns in eax a pointer to the first opposing knight in this lane
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+get_first_opposing_knight PROC stdcall USES eax ebx ecx edx esi edi, callerTeam:DWORD
+	mov eax, callerTeam
+	ret
+get_first_opposing_knight ENDP
 
 END 

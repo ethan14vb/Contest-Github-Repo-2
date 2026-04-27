@@ -28,5 +28,6 @@ KnightGameObject ENDS
 
 init_knight_game_object PROTO, team:DWORD, pTexture:DWORD
 new_knight_game_object PROTO, team:DWORD, pTexture:DWORD
+get_first_opposing_knight PROTO, callerTeam:DWORD
 
 ENDIF
