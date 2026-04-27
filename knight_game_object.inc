@@ -18,6 +18,10 @@ KnightGameObject STRUCT
 	baseGameObject GameObject<>
 	pLane DWORD ?	; // Pointer to the lane it belongs to
 	team DWORD ?
+
+	state DWORD ?
+	idleCooldown REAL4 ?
+
 	HP DWORD ?
 	ATK DWORD ?
 	DEF DWORD ?

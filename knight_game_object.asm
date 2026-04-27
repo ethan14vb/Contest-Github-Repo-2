@@ -18,6 +18,14 @@ INCLUDE animator_component.inc
 KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET knight_update, OFFSET game_object_exit, OFFSET free_game_object>
 
 ; // ********************************************
+; // State Data
+; // ********************************************
+
+STATE_WALK   EQU 0
+STATE_ATTACK EQU 1
+STATE_IDLE   EQU 2
+
+; // ********************************************
 ; // Animation Data
 ; // ********************************************
 
@@ -50,10 +58,11 @@ walk_anim AnimationFrame	<768, 0, 256, 256, 0.1, 0>,\
 							<1280, 256, 256, 256, WLK_FRM_TM, 0>,\
 							<0, 512, 256, 256, WLK_FRM_TM, 0>,\
 							<256, 512, 256, 256, WLK_FRM_TM, 0>
-
+	
+ATTACK_EVENT_CODE equ 99
 attack_anim AnimationFrame	<256, 1024, 256, 256, 0.5, 0>,		\
 							<512, 1024, 256, 256, 0.5, 0>,		\
-							<768, 1024, 256, 256, 0.5, 0>,		\
+							<768, 1024, 256, 256, 0.5, ATTACK_EVENT_CODE>,		\
 							<1024, 1024, 256, 256, 0.5, 0>,		\
 							<1280, 1024, 256, 256, 0.5, 0>
 
