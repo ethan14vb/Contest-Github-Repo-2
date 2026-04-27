@@ -124,7 +124,7 @@ knight_on_anim_finish_event PROC stdcall USES eax ebx ecx edx esi edi, animId:DW
 		mov (KnightGameObject PTR [ecx]).state, STATE_IDLE
 		
 		; // Load the attack cooldown
-		fild (KnightGameObject PTR [ecx]).ATKSP 
+		fld (KnightGameObject PTR [ecx]).ATKSP 
 		fstp (KnightGameObject PTR [ecx]).cooldown
 
 		; // Play the idle animation
@@ -223,6 +223,45 @@ new_knight_game_object ENDP
 ; // ********************************************
 
 ; // ----------------------------------
+; // evaluate_knight_next_state
+; // Called after a knight's IDLE state cooldown ends. Determines whether to attack or walk
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+evaluate_knight_next_state PROC stdcall USES eax ecx edx
+	local pThis
+	mov pThis, ecx
+
+	INVOKE get_first_opposing_knight, (KnightGameObject PTR [ecx]).team
+	.IF eax != 0
+		push eax
+		INVOKE is_knight_in_range, eax
+		pop edx
+		.IF eax == 1
+			; // There is an enemy ahead, attack it
+			mov ecx, pThis
+			mov (KnightGameObject PTR [ecx]).state, STATE_ATTACK
+			INVOKE get_first_component_which_is_a, ANIMATOR_COMPONENT_ID
+			mov ecx, eax
+			INVOKE animator_play, ATTACK_ANIM
+
+			jmp evaluate_knight_next_state_exit
+		.ENDIF
+	.ENDIF
+
+	; // No enemy in range. Go back to walking!
+	mov ecx, pThis
+	mov (KnightGameObject PTR [ecx]).state, STATE_WALK
+	INVOKE get_first_component_which_is_a, ANIMATOR_COMPONENT_ID
+	mov ecx, eax
+	INVOKE animator_play, WALK_ANIM
+
+evaluate_knight_next_state_exit:
+	ret
+evaluate_knight_next_state ENDP
+
+; // ----------------------------------
 ; // knight_update
 ; // Updates the knight depending on its current state
 ; // 
@@ -234,7 +273,7 @@ local pThis : DWORD
 	mov pThis, ecx
 	mov eax, deltaTime
 
-	; // --- Check Current State ---
+	; // Check current state
 	mov eax, (KnightGameObject PTR [ecx]).state
 
 	.IF eax == STATE_ATTACK
@@ -252,7 +291,8 @@ local pThis : DWORD
 		fstp st(0)
 		ja SkipMovement
 
-		; // Cooldown finished TODO evaluate next state
+		; // Determine whether to keep attacking or walk
+		INVOKE evaluate_knight_next_state
 
 		jmp SkipMovement
 	.ELSEIF eax == STATE_WALK
