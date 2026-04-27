@@ -22,6 +22,7 @@ KnightGameObject STRUCT
 	; // State logic 
 	state DWORD ?
 	cooldown REAL4 ? ; // the amount of time waited after an attack finished
+	oneFrameTillDeath DWORD ? ; // Enables the unit to live for a single extra frame before dying. This is what makes trades possible
 
 	; // Connections
 	pFrameConnect DWORD ?

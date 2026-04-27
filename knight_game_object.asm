@@ -163,7 +163,8 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov (KnightGameObject PTR [ecx]).ATK, 15
 	mov (KnightGameObject PTR [ecx]).DEF, 5
 	mov (KnightGameObject PTR [ecx]).MOVSP, 10
-	mov (KnightGameObject PTR [ecx]).RANGE, 120
+	mov (KnightGameObject PTR [ecx]).RANGE, 150
+	mov (KnightGameObject PTR [ecx]).oneFrameTillDeath, 0
 	mov esi, MY_ATKSP
 	mov (KnightGameObject PTR [ecx]).ATKSP, esi
 
@@ -284,6 +285,35 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 local pThis : DWORD
 	mov pThis, ecx
 	mov eax, deltaTime
+
+	; // Check for death
+	mov eax, (KnightGameObject PTR [ecx]).HP
+	cmp eax, 0
+	jg SkipDeath
+
+	mov eax, (KnightGameObject PTR [ecx]).state
+	.IF eax != STATE_ATTACK
+		jmp Death
+	.ENDIF
+
+	mov eax, (KnightGameObject PTR [ecx]).oneFrameTillDeath
+	.IF eax == 0
+		mov (KnightGameObject PTR [ecx]).oneFrameTillDeath, 0FFFFFFFFh
+		jmp SkipDeath
+	.ENDIF
+
+Death:
+	mov ecx, (KnightGameObject PTR [ecx]).pLane
+	mov eax, pThis
+	INVOKE remove_knight, eax
+	; // die
+	mov ecx, pThis
+	mov ecx, (GameObject PTR [ecx]).pParentScene
+	INVOKE queue_free_game_object, pThis
+
+	jmp SkipMovement
+
+SkipDeath:
 
 	INVOKE check_reached_castle
 
@@ -475,17 +505,6 @@ receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
 	; // Substract damage and die if HP <= 0
 	mov eax, (KnightGameObject PTR [ecx]).HP
 	sub eax, damage
-	cmp eax, 0
-	jg SkipDeath
-	mov ecx, (KnightGameObject PTR [ecx]).pLane
-	mov eax, pThis
-	INVOKE remove_knight, eax
-	; // die
-	mov ecx, pThis
-	mov ecx, (GameObject PTR [ecx]).pParentScene
-	INVOKE queue_free_game_object, pThis
-
-SkipDeath:
 	mov ecx, pThis
 	mov (KnightGameObject PTR [ecx]).HP, eax
 

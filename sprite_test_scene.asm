@@ -75,11 +75,11 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE instantiate_game_object, esi
 
 	; // Shop
-;	INVOKE new_shop_game_object
-;	mov pShop, eax
-;
-;	mov ecx, pScene
-;	INVOKE instantiate_game_object, pShop
+	INVOKE new_shop_game_object
+	mov pShop, eax
+
+	mov ecx, pScene
+	INVOKE instantiate_game_object, pShop
 
 	; // Lane
 	INVOKE new_lane_game_object
