@@ -16,7 +16,7 @@ INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
 
 .data
-SHOP_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
+SHOP_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET shop_update, OFFSET game_object_exit, OFFSET free_game_object>
 
 .code
 ; // ********************************************
@@ -39,6 +39,11 @@ init_shop_game_object PROC PUBLIC USES esi ebx edx
 	mov (GameObject PTR [ecx]).gameObjectType, SHOP_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET SHOP_GAMEOBJECT_VTABLE
 
+	mov (ShopGameObject PTR [ecx]).allyCash, baseCash
+	mov (ShopGameObject PTR [ecx]).enemyCash, baseCash
+	mov (ShopGameObject PTR [ecx]).allyCash, baseIncome
+	mov (ShopGameObject PTR [ecx]).enemyIncome, baseIncome
+
 	mov ecx, pThis
 	mov eax, ecx
 	ret
@@ -59,4 +64,19 @@ new_shop_game_object ENDP
 ; // ********************************************
 ; // Instance methods
 ; // ********************************************
+
+; // ----------------------------------
+; // shop_update
+; // Updates the shop cash values
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+shop_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
+local pThis : DWORD
+	mov pThis, ecx
+	mov eax, deltaTime
+
+	ret
+shop_update ENDP
 END
