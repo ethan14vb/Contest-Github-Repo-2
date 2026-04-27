@@ -109,6 +109,9 @@
     <None Include="shop_card.inc">
       <Filter>GameObjects</Filter>
     </None>
+    <None Include="player_cursor.inc">
+      <Filter>GameObjects</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -228,6 +231,9 @@
       <Filter>GameObjects</Filter>
     </MASM>
     <MASM Include="shop_card.asm">
+      <Filter>GameObjects</Filter>
+    </MASM>
+    <MASM Include="player_cursor.asm">
       <Filter>GameObjects</Filter>
     </MASM>
   </ItemGroup>

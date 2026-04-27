@@ -32,6 +32,7 @@
     <MASM Include="lane_game_object.asm" />
     <MASM Include="main.asm" />
     <MASM Include="music_player.asm" />
+    <MASM Include="player_cursor.asm" />
     <MASM Include="rectangle_test_scene.asm" />
     <MASM Include="rect_component.asm" />
     <MASM Include="renderable_component.asm" />
@@ -64,6 +65,7 @@
     <None Include="knight_game_object.inc" />
     <None Include="lane_game_object.inc" />
     <None Include="music_player.inc" />
+    <None Include="player_cursor.inc" />
     <None Include="rectangle_test_scene.inc" />
     <None Include="renderable_component.inc" />
     <None Include="resource_manager.inc" />
