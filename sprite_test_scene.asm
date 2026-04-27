@@ -47,6 +47,8 @@ pFontTex DWORD ?
 ; // with the sprite test scene contents.
 ; // ----------------------------------
 populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
+	FINIT
+
 	INVOKE load_texture, OFFSET testFile
 	mov pTex, eax
 

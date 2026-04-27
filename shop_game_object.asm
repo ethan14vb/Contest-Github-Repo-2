@@ -17,6 +17,7 @@ INCLUDE sprite_component.inc
 
 .data
 SHOP_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET shop_update, OFFSET game_object_exit, OFFSET free_game_object>
+timeSinceLastSec REAL4 0.0
 
 .code
 ; // ********************************************
@@ -76,7 +77,32 @@ shop_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 local pThis : DWORD
 	mov pThis, ecx
 	mov eax, deltaTime
+	
+	; // Count up to a second
+	FLD timeSinceLastSec
+	FADD deltaTime
+	FSTP timeSinceLastSec
 
+	FLD1
+	FLD timeSinceLastSec
+	FCOMPP
+	FNSTSW ax	; // get floating point comparison into flags
+	SAHF
+	jb SkipIncome
+
+	; // Remove second from the counter and keep decimal
+	FLD timeSinceLastSec
+	FLD1
+	FSUB
+	FST timeSinceLastSec
+	
+	; // Add respective incomes
+	mov eax, (ShopGameObject PTR [ecx]).allyIncome
+	add (ShopGameObject PTR [ecx]).allyCash, eax
+	mov eax, (ShopGameObject PTR [ecx]).enemyIncome
+	add (ShopGameObject PTR [ecx]).enemyCash, eax
+
+	SkipIncome:
 	ret
 shop_update ENDP
 END
