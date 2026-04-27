@@ -5,6 +5,7 @@
 ; // ==================================
 
 INCLUDE default_header.inc
+INCLUDE sprite_test_scene.inc
 INCLUDE game_object.inc
 INCLUDE scene.inc
 INCLUDE transform_component.inc
@@ -44,6 +45,33 @@ pFontTex DWORD ?
 ; // Controllers
 p1Controller VirtualController <>
 p2Controller VirtualController <>
+
+P1_DEVICE EQU DEVICE_KEYBOARD
+P1_LAYOUT EQU 1; // 1 = WASD, 2 = ARROWS
+
+P2_DEVICE EQU DEVICE_GAMEPAD_0
+P2_LAYOUT EQU 2; // 1 = WASD, 2 = ARROWS
+
+; // Keyboard layout 1
+bind_w_up      InputBinding <ACTION_LANE_UP, 'W'>
+bind_s_down    InputBinding <ACTION_LANE_DOWN, 'S'>
+bind_a_left    InputBinding <ACTION_UI_LEFT, 'A'>
+bind_d_right   InputBinding <ACTION_UI_RIGHT, 'D'>
+bind_space_sel InputBinding <ACTION_SELECT, VK_SPACE>
+
+; // Keyboard layout 2
+bind_up_up     InputBinding <ACTION_LANE_UP, VK_UP>
+bind_dn_down   InputBinding <ACTION_LANE_DOWN, VK_DOWN>
+bind_lf_left   InputBinding <ACTION_UI_LEFT, VK_LEFT>
+bind_rt_right  InputBinding <ACTION_UI_RIGHT, VK_RIGHT>
+bind_ent_sel   InputBinding <ACTION_SELECT, VK_RETURN>
+
+; // Gamepad layout
+bind_gp_up     InputBinding <ACTION_LANE_UP, 0001h>
+bind_gp_down   InputBinding <ACTION_LANE_DOWN, 0002h>
+bind_gp_left   InputBinding <ACTION_UI_LEFT, 0004h>
+bind_gp_right  InputBinding <ACTION_UI_RIGHT, 0008h>
+bind_gp_sel    InputBinding <ACTION_SELECT, 1000h>
 
 .code
 ; // ----------------------------------
