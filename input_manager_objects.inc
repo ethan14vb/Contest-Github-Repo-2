@@ -1,3 +1,9 @@
+; // ==================================
+; // input_manager_objects.inc
+; // ----------------------------------
+; // Utility objects used by the input_manager.asm
+; // ==================================
+
 IFNDEF INPUT_BINDING_INC
 INPUT_BINDING_INC EQU 1
 
