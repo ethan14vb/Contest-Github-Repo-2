@@ -496,6 +496,34 @@ SkipDeath:
 receive_damage ENDP
 
 ; // ----------------------------------
+; // check_reached_castle
+; // Checks if this unit has reached the opposing castle and damages it
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+check_reached_castle PROC stdcall USES eax ebx ecx edx esi
+		local pThis : DWORD
+		local pOpposingCastle : DWORD
+	mov pThis, ecx
+
+	; // Obtain pointer to opposing castle
+	mov eax, (KnightGameObject PTR [ecx]).team
+	mov ecx, (KnightGameObject PTR [ecx]).pLane
+	.IF eax == ALLY
+		mov ecx, (LaneGameObject PTR [edx]).pEnemyCastle
+	.ELSE
+		mov ecx, (LaneGameObject PTR [edx]).pAllyCastle
+	.ENDIF
+
+	; // Get the non-negative differnece between atk and def as damage
+	mov eax, (KnightGameObject PTR [ecx]).ATK
+
+	INVOKE receive_damage, eax
+	ret
+check_reached_castle ENDP
+
+; // ----------------------------------
 ; // free_knight
 ; // Destructs and frees the knight
 ; // 
