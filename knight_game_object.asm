@@ -97,14 +97,12 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 	cmp eax, 0
 	je SkipAttackCheck		; // If there is no opposing knights, does not check for attack
 	mov pFirstOpposingKnight, eax
-	mov ecx, pFirstOpposingKnight
-	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
-	mov eax, (TransformComponent PTR [eax]).x
 
-	mov ecx, pThis
-	mov ebx, (KnightGameObject PTR [ecx]).RANGE
-
+	; // If the opposing knight is in range, attacks it
 	INVOKE is_knight_in_range, pFirstOpposingKnight
+	.IF eax == 1
+		jmp SkipMovement
+	.ENDIF
 
 
 	SkipAttackCheck:
@@ -172,10 +170,39 @@ get_first_opposing_knight ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-is_knight_in_range PROC stdcall USES eax ebx ecx edx, pOpposingKnight:DWORD
+is_knight_in_range PROC stdcall USES eax ebx ecx edx esi, pOpposingKnight:DWORD
 	local pThis : DWORD
 	mov pThis, ecx
-	mov eax, pOpposingKnight
+
+	; // Obtain caller's team, range, pos and opponent's pos
+	mov ebx, (KnightGameObject PTR [ecx]).team
+	mov edx, (KnightGameObject PTR [ecx]).RANGE
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov esi, (TransformComponent PTR [eax]).x
+	mov ecx, pOpposingKnight
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov eax, (TransformComponent PTR [eax]).x
+	
+	; // ebx = caller's team, edx = caller's range
+	; // esi = caller's xpos, eax = opposin's xpos
+	; // If the unit's are past each other in the lane, return false
+	.IF ebx == ALLY
+		.IF esi > eax
+			jmp ReturnFalse
+		.ENDIF
+	.ELSE
+		.IF esi < eax
+			jmp ReturnFalse
+		.ENDIF
+	.ENDIF
+	
+	; // Returns corresponding result, ecx is restored by USES
+	ReturnFalse:
+	mov eax, 0
+	ret
+
+	ReturnTrue:
+	mov eax, 1
 	ret
 is_knight_in_range ENDP
 END 
