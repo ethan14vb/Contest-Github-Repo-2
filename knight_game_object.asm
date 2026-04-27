@@ -101,6 +101,11 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
 	mov eax, (TransformComponent PTR [eax]).x
 
+	mov ecx, pThis
+	mov ebx, (KnightGameObject PTR [ecx]).RANGE
+
+	INVOKE is_knight_in_range, pFirstOpposingKnight
+
 
 	SkipAttackCheck:
 	; // Move the knight forward in its lane based on its movement speed
@@ -125,7 +130,7 @@ knight_update ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-get_first_opposing_knight PROC stdcall USES eax ebx ecx edx, callerTeam:DWORD
+get_first_opposing_knight PROC stdcall USES ebx ecx edx, callerTeam:DWORD
 	local pThis : DWORD
 	mov pThis, ecx
 	
@@ -159,4 +164,18 @@ get_first_opposing_knight PROC stdcall USES eax ebx ecx edx, callerTeam:DWORD
 	ret
 get_first_opposing_knight ENDP
 
+; // ----------------------------------
+; // is_knight_in_range
+; // Returns in eax 1 if the given knight is in range for the calling knight
+; // Returns in eax 0 if the given knight is not in range for the calling knight
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+is_knight_in_range PROC stdcall USES eax ebx ecx edx, pOpposingKnight:DWORD
+	local pThis : DWORD
+	mov pThis, ecx
+	mov eax, pOpposingKnight
+	ret
+is_knight_in_range ENDP
 END 
