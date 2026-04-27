@@ -125,10 +125,27 @@ knight_update ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-get_first_opposing_knight PROC stdcall USES eax ecx edx, callerTeam:DWORD
+get_first_opposing_knight PROC stdcall USES eax ebx ecx edx, callerTeam:DWORD
 	local pThis : DWORD
 	mov pThis, ecx
 	
+	; // Get number of opposing knights in eax
+	mov edx, (KnightGameObject PTR [ecx]).pLane
+	mov eax, callerTeam
+	mov ebx, 0
+	.IF eax == ALLY
+		lea ebx, (LaneGameObject PTR [edx]).enemyKnights
+		mov eax, (UnorderedVector PTR [ebx]).count
+	.ELSE
+		lea ebx, (LaneGameObject PTR [edx]).allyKnights
+		mov eax, (UnorderedVector PTR [ebx]).count
+	.ENDIF
+
+	; // If no opposing knights, return 0
+	cmp eax, 0
+	je SkipGetPointer
+
+	; // Otherwise, getting corresponding opposing first knight
 	mov edx, (KnightGameObject PTR [ecx]).pLane
 	mov eax, callerTeam
 	.IF eax == ALLY
@@ -137,6 +154,7 @@ get_first_opposing_knight PROC stdcall USES eax ecx edx, callerTeam:DWORD
 		mov eax, (LaneGameObject PTR [edx]).pFirstAlly
 	.ENDIF
 
+	SkipGetPointer:
 	mov ecx, pThis
 	ret
 get_first_opposing_knight ENDP
