@@ -87,12 +87,22 @@ new_knight_game_object ENDP
 ; // ----------------------------------
 knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 	local pThis : DWORD
+	local pFirstOpposingKnight : DWORD
 	mov pThis, ecx
 	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
 
+	; // Obtain the x position of the first opposing knight in lane
 	mov eax, (KnightGameObject PTR [ecx]).team
 	INVOKE get_first_opposing_knight, eax
+	cmp eax, 0
+	je SkipAttackCheck		; // If there is no opposing knights, does not check for attack
+	mov pFirstOpposingKnight, eax
+	mov ecx, pFirstOpposingKnight
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov eax, (TransformComponent PTR [eax]).x
 
+
+	SkipAttackCheck:
 	; // Move the knight forward in its lane based on its movement speed
 	mov ecx, pThis
 	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
