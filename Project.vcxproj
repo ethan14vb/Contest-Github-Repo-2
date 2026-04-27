@@ -27,6 +27,7 @@
     <MASM Include="game_object.asm" />
     <MASM Include="heap_functions.asm" />
     <MASM Include="input_manager.asm" />
+    <MASM Include="input_manager_objects.asm" />
     <MASM Include="knight_game_object.asm" />
     <MASM Include="lane_game_object.asm" />
     <MASM Include="main.asm" />

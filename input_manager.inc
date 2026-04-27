@@ -12,7 +12,6 @@ IFNDEF INPUT_MANAGER_INC
 INPUT_MANAGER_INC EQU 1
 
 INCLUDELIB XInput.lib
-INCLUDE unordered_vector.inc
 INCLUDE input_manager_objects.inc
 
 ; // From learn.microsoft.com/en-us/windows/win32/api/xinput/nf-xinput-xinputgetstate

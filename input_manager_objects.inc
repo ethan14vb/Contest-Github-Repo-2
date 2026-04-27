@@ -1,6 +1,8 @@
 IFNDEF INPUT_BINDING_INC
 INPUT_BINDING_INC EQU 1
 
+INCLUDE unordered_vector.inc
+
 InputBinding STRUCT
 	actionID DWORD ?
 	buttonCode DWORD ?
