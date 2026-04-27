@@ -21,6 +21,7 @@
     <MASM Include="bouncing_image_game_object.asm" />
     <MASM Include="camera.asm" />
     <MASM Include="camera_mover_game_object.asm" />
+    <MASM Include="castle_game_object.asm" />
     <MASM Include="component.asm" />
     <MASM Include="event.asm" />
     <MASM Include="game_object.asm" />
@@ -43,6 +44,7 @@
     <MASM Include="transform_component.asm" />
     <MASM Include="unordered_vector.asm" />
     <None Include="camera_mover_game_object.inc" />
+    <None Include="castle_game_object.inc" />
     <None Include="component.inc" />
     <None Include="component_ids.inc" />
     <None Include="event.inc" />

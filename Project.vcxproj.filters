@@ -97,6 +97,9 @@
     <None Include="animator_component.inc">
       <Filter>Engine\Components</Filter>
     </None>
+    <None Include="castle_game_object.inc">
+      <Filter>GameObjects</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -205,6 +208,9 @@
     </MASM>
     <MASM Include="animator_component.asm">
       <Filter>Engine\Components</Filter>
+    </MASM>
+    <MASM Include="castle_game_object.asm">
+      <Filter>GameObjects</Filter>
     </MASM>
   </ItemGroup>
 </Project>
