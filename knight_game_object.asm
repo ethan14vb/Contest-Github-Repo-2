@@ -480,14 +480,15 @@ receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
 	sub eax, damage
 	cmp eax, 0
 	jg SkipDeath
-		mov ecx, (KnightGameObject PTR [ecx]).pLane
-		mov eax, pThis
-		INVOKE remove_knight, eax
-		; // die
-		mov ecx, pThis
-		mov ecx, (GameObject PTR [ecx]).pParentScene
-		INVOKE queue_free_game_object, pThis
-	.ENDIF
+	mov ecx, (KnightGameObject PTR [ecx]).pLane
+	mov eax, pThis
+	INVOKE remove_knight, eax
+	; // die
+	mov ecx, pThis
+	mov ecx, (GameObject PTR [ecx]).pParentScene
+	INVOKE queue_free_game_object, pThis
+
+SkipDeath:
 	mov ecx, pThis
 	mov (KnightGameObject PTR [ecx]).HP, eax
 
@@ -505,13 +506,20 @@ free_knight PROC
 	local pThis
 	mov pThis, ecx
 
+	INVOKE get_first_component_which_is_a, ANIMATOR_COMPONENT_ID
+	push eax
+	push esi
 	; // Disconnect the connections
-	mov ebx, (KnightGameObject PTR [ecx]).pFrameConnect
+	mov esi, ecx
+	mov ebx, (KnightGameObject PTR [esi]).pFrameConnect
+	lea ecx, (AnimatorComponent PTR [eax]).frameEvent
 	INVOKE event_disconnect, ebx
 
-	mov ecx, pThis
+	pop esi
+	pop eax
 
-	mov ebx, (KnightGameObject PTR [ecx]).pAnimFinishedConnect
+	mov ebx, (KnightGameObject PTR [esi]).pAnimFinishedConnect
+	lea ecx, (AnimatorComponent PTR [eax]).animFinishedEvent
 	INVOKE event_disconnect, ebx
 	
 	; // Free myself
