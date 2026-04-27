@@ -227,5 +227,8 @@
     <MASM Include="shop_game_object.asm">
       <Filter>GameObjects</Filter>
     </MASM>
+    <MASM Include="shop_card.asm">
+      <Filter>GameObjects</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

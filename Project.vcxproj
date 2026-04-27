@@ -37,6 +37,7 @@
     <MASM Include="renderable_component.asm" />
     <MASM Include="render_command.asm" />
     <MASM Include="resource_manager.asm" />
+    <MASM Include="shop_card.asm" />
     <MASM Include="sprite_component.asm" />
     <MASM Include="sprite_test_scene.asm" />
     <MASM Include="texture.asm" />
