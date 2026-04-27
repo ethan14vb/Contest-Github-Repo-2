@@ -166,7 +166,7 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov eax, team		; // Must be moved here first for it to compile
 	mov (KnightGameObject PTR [ecx]).team, eax
 	mov (KnightGameObject PTR [ecx]).HP, 11
-	mov (KnightGameObject PTR [ecx]).ATK, 10
+	mov (KnightGameObject PTR [ecx]).ATK, 15
 	mov (KnightGameObject PTR [ecx]).DEF, 5
 	mov (KnightGameObject PTR [ecx]).MOVSP, 10
 	mov (KnightGameObject PTR [ecx]).RANGE, 120
@@ -290,6 +290,8 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 local pThis : DWORD
 	mov pThis, ecx
 	mov eax, deltaTime
+
+	INVOKE check_reached_castle
 
 	; // Check current state
 	mov eax, (KnightGameObject PTR [ecx]).state
@@ -515,9 +517,9 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 	mov eax, (KnightGameObject PTR [ecx]).team
 	mov ecx, (KnightGameObject PTR [ecx]).pLane
 	.IF eax == ALLY
-		mov ecx, (LaneGameObject PTR [edx]).pEnemyCastle
+		mov ecx, (LaneGameObject PTR [ecx]).pEnemyCastle
 	.ELSE
-		mov ecx, (LaneGameObject PTR [edx]).pAllyCastle
+		mov ecx, (LaneGameObject PTR [ecx]).pAllyCastle
 	.ENDIF
 
 	mov pOpposingCastle, ecx
