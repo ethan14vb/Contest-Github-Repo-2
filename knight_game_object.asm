@@ -156,7 +156,10 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 
 	mov eax, team		; // Must be moved here first for it to compile
 	mov (KnightGameObject PTR [ecx]).team, eax
-	mov (KnightGameObject PTR [ecx]).MOVSP, 5
+	mov (KnightGameObject PTR [ecx]).HP, 11
+	mov (KnightGameObject PTR [ecx]).ATK, 10
+	mov (KnightGameObject PTR [ecx]).DEF, 5
+	mov (KnightGameObject PTR [ecx]).MOVSP, 10
 	mov (KnightGameObject PTR [ecx]).RANGE, 120
 	mov esi, MY_ATKSP
 	mov (KnightGameObject PTR [ecx]).ATKSP, esi
@@ -431,9 +434,19 @@ is_knight_in_range ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-attack PROC stdcall USES ebx ecx edx esi, pOpposingKnight:DWORD
+attack PROC stdcall USES eax ebx ecx edx esi, pOpposingKnight:DWORD
+		local pThis : DWORD
+	mov pThis, ecx
+
+	; // Get the non-negative differnece between atk and def as damage
+	mov eax, (KnightGameObject PTR [ecx]).ATK
 	mov ecx, pOpposingKnight
-	INVOKE receive_damage, 5
+	sub eax, (KnightGameObject PTR [ecx]).DEF
+	.IF eax < 0
+		mov eax, 0
+	.ENDIF
+
+	INVOKE receive_damage, eax
 	ret
 attack ENDP
 
@@ -444,8 +457,19 @@ attack ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-receive_damage PROC stdcall USES ebx ecx edx esi, damage:DWORD
-	mov eax, damage
+receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
+		local pThis : DWORD
+	mov pThis, ecx
+
+	; // Substract damage and die if HP <= 0
+	mov eax, (KnightGameObject PTR [ecx]).HP
+	sub eax, damage
+	.IF (eax <= 0)
+		; // die
+	.ENDIF
+	mov ecx, pThis
+	mov (KnightGameObject PTR [ecx]).HP, eax
+
 	ret
 receive_damage ENDP
 END 
