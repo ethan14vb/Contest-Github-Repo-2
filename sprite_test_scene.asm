@@ -47,11 +47,20 @@ p2Controller VirtualController <>
 
 .code
 ; // ----------------------------------
+; // Initializes the virtual controllers with the correct bindings
+; // ----------------------------------
+init_virtual_controllers PROC PUBLIC USES eax ecx
+	ret
+init_virtual_controllers ENDP
+
+; // ----------------------------------
 ; // populate_sprite_test_scene
 ; // Call this method on an empty Scene to fill it
 ; // with the sprite test scene contents.
 ; // ----------------------------------
 populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
+	INVOKE init_virtual_controllers
+
 	INVOKE load_texture, OFFSET testFile
 	mov pTex, eax
 
