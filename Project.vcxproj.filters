@@ -100,8 +100,11 @@
     <None Include="castle_game_object.inc">
       <Filter>GameObjects</Filter>
     </None>
-    <None Include="input_manager_objects.inc">
-      <Filter>Engine\CoreObjects</Filter>
+    <None Include="shop_game_object.asm">
+      <Filter>GameObjects</Filter>
+    </None>
+    <None Include="shop_game_object.inc">
+      <Filter>GameObjects</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,8 @@ INCLUDE camera_mover_game_object.inc
 INCLUDE bouncing_image_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE lane_game_object.inc
+INCLUDE castle_game_object.inc
+INCLUDE shop_game_object.inc
 INCLUDE resource_manager.inc
 INCLUDE sprite_component.inc
 INCLUDE text_component.inc
@@ -19,8 +21,10 @@ INCLUDE text_component.inc
 .data
 testFile BYTE "Knight.pam", 0
 knightFile BYTE "knight_spritesheet_krita.pam", 0
+castleFile BYTE "castle.pam", 0
 fontFile BYTE "16x32 cartoon font.pam", 0
 pLane DWORD ?
+pShop DWORD ?
 
 text BYTE "This is a MAGNIFICENT! test to see if the text string rendering system works. 0123456789", 0
 
@@ -29,6 +33,9 @@ pTex DWORD ?
 
 PUBLIC pKnightTex
 pKnightTex DWORD ?
+
+PUBLIC pCastleTex
+pCastleTex DWORD ?
 
 PUBLIC pFontTex
 pFontTex DWORD ?
@@ -67,12 +74,41 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
 
+	; // Shop
+;	INVOKE new_shop_game_object
+;	mov pShop, eax
+;
+;	mov ecx, pScene
+;	INVOKE instantiate_game_object, pShop
+
 	; // Lane
 	INVOKE new_lane_game_object
 	mov pLane, eax
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, pLane
+
+	; // Get Castle texture
+	INVOKE load_texture, OFFSET castleFile
+	mov pCastleTex, eax
+
+	; // Ally Castle
+	INVOKE new_castle_game_object, ALLY, pCastleTex
+	mov esi, eax
+
+	mov ecx, pScene
+	INVOKE instantiate_game_object, esi
+	mov ecx, pLane
+	mov (LaneGameObject PTR [ecx]).pAllyCastle, esi
+
+	; // Enemy Castle
+	INVOKE new_castle_game_object, ENEMY, pCastleTex
+	mov esi, eax
+
+	mov ecx, pScene
+	INVOKE instantiate_game_object, esi
+	mov ecx, pLane
+	mov (LaneGameObject PTR [ecx]).pEnemyCastle, esi
 
 	; // Get Knight texture
 	INVOKE load_texture, OFFSET knightFile

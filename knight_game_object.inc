@@ -42,5 +42,6 @@ get_first_opposing_knight PROTO, callerTeam:DWORD
 is_knight_in_range PROTO, pOpposingKnight:DWORD
 attack PROTO, pOpposingKnight:DWORD
 receive_damage PROTO, damage:DWORD
+check_reached_castle PROTO
 
 ENDIF

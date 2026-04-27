@@ -10,6 +10,7 @@ INCLUDE game_object.inc
 INCLUDE heap_functions.inc
 INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
+INCLUDE castle_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
 INCLUDE animator_component.inc
@@ -159,7 +160,7 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov eax, team		; // Must be moved here first for it to compile
 	mov (KnightGameObject PTR [ecx]).team, eax
 	mov (KnightGameObject PTR [ecx]).HP, 11
-	mov (KnightGameObject PTR [ecx]).ATK, 10
+	mov (KnightGameObject PTR [ecx]).ATK, 15
 	mov (KnightGameObject PTR [ecx]).DEF, 5
 	mov (KnightGameObject PTR [ecx]).MOVSP, 10
 	mov (KnightGameObject PTR [ecx]).RANGE, 120
@@ -283,6 +284,8 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 local pThis : DWORD
 	mov pThis, ecx
 	mov eax, deltaTime
+
+	INVOKE check_reached_castle
 
 	; // Check current state
 	mov eax, (KnightGameObject PTR [ecx]).state
@@ -488,6 +491,48 @@ SkipDeath:
 
 	ret
 receive_damage ENDP
+
+; // ----------------------------------
+; // check_reached_castle
+; // Checks if this unit has reached the opposing castle and damages it
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
+		local pThis : DWORD
+		local pOpposingCastle : DWORD
+	mov pThis, ecx
+
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov esi, (TransformComponent PTR [eax]).x
+
+	; // Obtain pointer to opposing castle and its position
+	mov eax, (KnightGameObject PTR [ecx]).team
+	mov ecx, (KnightGameObject PTR [ecx]).pLane
+	.IF eax == ALLY
+		mov ecx, (LaneGameObject PTR [ecx]).pEnemyCastle
+	.ELSE
+		mov ecx, (LaneGameObject PTR [ecx]).pAllyCastle
+	.ENDIF
+
+	mov pOpposingCastle, ecx
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov edi, (TransformComponent PTR [eax]).x
+
+	; // If castle is reached, send damage and clear itself
+	mov ecx, pThis
+	.IF esi == edi
+		mov eax, (KnightGameObject PTR [ecx]).ATK
+		mov ecx, pOpposingCastle
+		INVOKE castle_receive_damage, eax
+		mov ecx, pThis
+		mov ecx, (GameObject PTR [ecx]).pParentScene
+		INVOKE queue_free_game_object, pThis
+	.ENDIF
+
+	ret
+check_reached_castle ENDP
 
 ; // ----------------------------------
 ; // free_knight

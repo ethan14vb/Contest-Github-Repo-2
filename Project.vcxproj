@@ -67,6 +67,8 @@
     <None Include="rectangle_test_scene.inc" />
     <None Include="renderable_component.inc" />
     <None Include="resource_manager.inc" />
+    <None Include="shop_game_object.asm" />
+    <None Include="shop_game_object.inc" />
     <None Include="sprite_component.inc">
       <FileType>Document</FileType>
     </None>

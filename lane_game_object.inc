@@ -15,6 +15,8 @@ MAX_LANE_KNIGHTS EQU 10
 
 LaneGameObject STRUCT
 	baseGameObject GameObject<>
+	pAllyCastle DWORD ?
+	pEnemyCastle DWORD ?
 	pFirstAlly DWORD 0	; // Pointers to each team's respective first knight
 	pFirstEnemy DWORD 0	; // If the pointer == 0, there is no first knight
 	allyKnights UnorderedVector<>
