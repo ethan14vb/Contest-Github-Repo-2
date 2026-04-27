@@ -78,12 +78,44 @@ bind_gp_sel    InputBinding <ACTION_SELECT, 1000h>
 ; // Initializes the virtual controllers with the correct bindings
 ; // ----------------------------------
 init_virtual_controllers PROC PUBLIC USES eax ecx
+
+	; // Player 1 setup
 	mov p1Controller.deviceID, P1_DEVICE
 	lea ecx, p1Controller.bindings
 	INVOKE init_unordered_vector, 5
 
 	.IF P1_DEVICE EQ DEVICE_KEYBOARD
 		.IF P1_LAYOUT EQ 1
+			; // Push WASD
+			INVOKE push_back, OFFSET bind_w_up
+			INVOKE push_back, OFFSET bind_s_down
+			INVOKE push_back, OFFSET bind_a_left
+			INVOKE push_back, OFFSET bind_d_right
+			INVOKE push_back, OFFSET bind_space_sel
+		.ELSE
+			; // Push ARROWS
+			INVOKE push_back, OFFSET bind_up_up
+			INVOKE push_back, OFFSET bind_dn_down
+			INVOKE push_back, OFFSET bind_lf_left
+			INVOKE push_back, OFFSET bind_rt_right
+			INVOKE push_back, OFFSET bind_ent_sel
+		.ENDIF
+	.ELSE
+		; // Push GAMEPAD
+		INVOKE push_back, OFFSET bind_gp_up
+		INVOKE push_back, OFFSET bind_gp_down
+		INVOKE push_back, OFFSET bind_gp_left
+		INVOKE push_back, OFFSET bind_gp_right
+		INVOKE push_back, OFFSET bind_gp_sel
+	.ENDIF
+
+	; // Player 2 setup
+	mov p2Controller.deviceID, P2_DEVICE
+	lea ecx, p2Controller.bindings
+	INVOKE init_unordered_vector, 5
+
+	.IF P2_DEVICE EQ DEVICE_KEYBOARD
+		.IF P2_LAYOUT EQ 1
 			; // Push WASD
 			INVOKE push_back, OFFSET bind_w_up
 			INVOKE push_back, OFFSET bind_s_down
