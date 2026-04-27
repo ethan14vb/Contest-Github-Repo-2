@@ -168,7 +168,8 @@ assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 	mov pThis, ecx
 
 	; // Choose vector depending on knight's assigned team
-	mov eax, (KnightGameObject PTR [pKnight]).team
+	mov eax, pKnight
+	mov eax, (KnightGameObject PTR [eax]).team
 	.IF eax == ALLY
 		; // Makes this knight the first ally if there are no other knights
 		lea ebx, (LaneGameObject PTR [ecx]).allyKnights

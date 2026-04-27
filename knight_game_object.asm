@@ -38,8 +38,8 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 
 	mov eax, team		; // Must be moved here first for it to compile
 	mov (KnightGameObject PTR [ecx]).team, eax
-	mov (KnightGameObject PTR [ecx]).MOVSP, 5
-	mov (KnightGameObject PTR [ecx]).RANGE, 20
+	mov (KnightGameObject PTR [ecx]).MOVSP, 10
+	mov (KnightGameObject PTR [ecx]).RANGE, 120
 
 	mov eax, 0			; // Default x position for allies
 	cmp team, ENEMY
@@ -101,6 +101,7 @@ knight_update PROC stdcall USES eax ebx ecx edx esi edi, deltaTime: REAL4
 	; // If the opposing knight is in range, attacks it
 	INVOKE is_knight_in_range, pFirstOpposingKnight
 	.IF eax == 1
+		; // ADD ATTACKING LOGIC HERE
 		jmp SkipMovement
 	.ENDIF
 
@@ -206,7 +207,6 @@ is_knight_in_range PROC stdcall USES ebx ecx edx esi, pOpposingKnight:DWORD
 	.IF eax < edx
 		jmp ReturnTrue
 	.ENDIF
-
 
 	; // Returns corresponding result, ecx is restored by USES
 	ReturnFalse:
