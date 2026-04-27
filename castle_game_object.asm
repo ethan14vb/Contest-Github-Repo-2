@@ -49,6 +49,16 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD
 	INVOKE new_transform_component, eax, 500, 0
 	INVOKE add_component, ecx, eax
 
+	; // Gives Castle a sprite
+	INVOKE new_sprite_component, 0, 0, pTexture
+	.IF team == ENEMY	; // Enemies have their sprite flipped
+		mov (SpriteComponent PTR [eax]).flipX, 1
+	.ENDIF
+
+	mov (SpriteComponent PTR [eax]).isCell, 0FFFFFFFFh
+	push eax
+	INVOKE add_component, ecx, eax
+
 	mov ecx, pThis
 	mov eax, ecx
 	ret
@@ -58,10 +68,10 @@ init_castle_game_object ENDP
 ; // new_castle_game_object
 ; // Reserves heap space for the Object with parameters calls the initializer method
 ; // ----------------------------------
-new_castle_game_object PROC PUBLIC USES ecx, team:DWORD
+new_castle_game_object PROC PUBLIC USES ecx, team:DWORD, pTexture:DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF CastleGameObject
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_castle_game_object, team
+	INVOKE init_castle_game_object, team, pTexture:DWORD
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_castle_game_object ENDP
