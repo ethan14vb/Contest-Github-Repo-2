@@ -487,7 +487,8 @@ receive_damage PROC stdcall USES eax ebx ecx edx esi, damage:DWORD
 		mov ecx, pThis
 		mov ecx, (GameObject PTR [ecx]).pParentScene
 		INVOKE queue_free_game_object, pThis
-	.ENDIF
+
+SkipDeath:
 	mov ecx, pThis
 	mov (KnightGameObject PTR [ecx]).HP, eax
 
