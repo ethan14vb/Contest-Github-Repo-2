@@ -15,7 +15,6 @@ InputBinding STRUCT
 InputBinding ENDS
 
 new_input_binding PROTO actionID:DWORD, buttonCode:DWORD
-free_input_binding PROTO
 
 VirtualController STRUCT
 	deviceID DWORD ?
@@ -24,5 +23,6 @@ VirtualController ENDS
 
 new_virtual_controller PROTO deviceID:DWORD
 free_virtual_controller PROTO
+virtual_controller_add_binding PROTO pBinding:DWORD
 
 ENDIF

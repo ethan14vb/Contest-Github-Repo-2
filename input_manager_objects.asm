@@ -28,11 +28,6 @@ new_input_binding PROC PUBLIC USES ecx, actionID : DWORD, buttonCode : DWORD
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_input_binding ENDP
 
-free_input_binding PROC PUBLIC
-	INVOKE HeapFree, hHeap, 0, ecx
-	ret
-free_input_binding ENDP
-
 init_virtual_controller PROC USES ecx esi, deviceID : DWORD
 	local pThis : DWORD
 	mov pThis, ecx
@@ -55,15 +50,43 @@ new_virtual_controller PROC PUBLIC USES ecx, deviceID : DWORD
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_virtual_controller ENDP
 
-free_virtual_controller PROC PUBLIC
+free_virtual_controller PROC PUBLIC USES eax ebx ecx edx esi edi
 	local pThis : DWORD
 	mov pThis, ecx
 
+	; // Free the bindings
+	lea ecx, (VirtualController PTR [ecx]).bindings
+	mov eax, (UnorderedVector PTR [ecx]).pData
+	mov ebx, (UnorderedVector PTR [ecx]).count
+
+	mov ecx, 0 ; // Loop counter (int i = 0)
+	.WHILE ecx < ebx
+		mov edx, [eax + ecx * 4] ; // edx = connections[i]
+
+		; // Free the binding
+		push eax
+		push ecx
+		INVOKE HeapFree, hHeap, 0, edx
+		pop ecx
+		pop eax
+
+		inc ecx ; // i++
+	.ENDW
+
+	mov ecx, pThis
 	lea ecx, (VirtualController PTR [ecx]).bindings
 	INVOKE free_unordered_vector
 	
+	mov ecx, pThis
 	INVOKE HeapFree, hHeap, 0, pThis
 	ret
 free_virtual_controller ENDP
+
+virtual_controller_add_binding PROC PUBLIC USES eax ebx ecx edx esi edi, pBinding:DWORD
+	lea ecx, (VirtualController PTR [ecx]).bindings
+	INVOKE push_back, pBinding
+	0
+	ret
+virtual_controller_add_binding ENDP
 
 END

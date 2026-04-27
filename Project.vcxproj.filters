@@ -218,5 +218,8 @@
     <MASM Include="input_manager_objects.asm">
       <Filter>Engine\CoreObjects</Filter>
     </MASM>
+    <MASM Include="game_manager.asm">
+      <Filter>GameObjects</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
