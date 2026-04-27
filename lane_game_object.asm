@@ -196,6 +196,8 @@ assign_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 	INVOKE push_back, eax
 
 	mov ecx, pThis
+	mov eax, pKnight
+	mov (KnightGameObject PTR [eax]).pLane, ecx	; // Knight has pointer to this lane
 	ret
 assign_knight ENDP
 

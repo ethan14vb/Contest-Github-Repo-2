@@ -16,6 +16,7 @@ ENEMY EQU 1
 
 KnightGameObject STRUCT
 	baseGameObject GameObject<>
+	pLane DWORD ?	; // Pointer to the lane it belongs to
 	team DWORD ?
 	HP DWORD ?
 	ATK DWORD ?
