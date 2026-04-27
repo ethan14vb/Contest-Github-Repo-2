@@ -210,7 +210,26 @@ assign_knight ENDP
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 remove_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
+		local pThis
+	mov pThis, ecx
+
+	; // If this knight was the first in its team, get a new first knight
 	mov eax, pKnight
+	mov eax, (KnightGameObject PTR [eax]).team
+	.IF eax == ALLY
+		mov edx, (LaneGameObject PTR [ecx]).pFirstAlly
+		mov eax, pKnight
+		.IF eax == edx
+			INVOKE lane_update, 0
+		.ENDIF
+	.ELSE
+		mov edx, (LaneGameObject PTR [ecx]).pFirstEnemy
+		mov eax, pKnight
+		.IF eax == edx
+			INVOKE lane_update, 0
+		.ENDIF
+	.ENDIF
+
 	ret
 remove_knight ENDP
 
