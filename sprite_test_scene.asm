@@ -98,6 +98,13 @@ init_virtual_controllers PROC PUBLIC USES eax ecx
 			INVOKE push_back, OFFSET bind_rt_right
 			INVOKE push_back, OFFSET bind_ent_sel
 		.ENDIF
+	.ELSE
+		; // Push GAMEPAD
+		INVOKE push_back, OFFSET bind_gp_up
+		INVOKE push_back, OFFSET bind_gp_down
+		INVOKE push_back, OFFSET bind_gp_left
+		INVOKE push_back, OFFSET bind_gp_right
+		INVOKE push_back, OFFSET bind_gp_sel
 	.ENDIF
 
 	ret
