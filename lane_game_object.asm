@@ -146,7 +146,19 @@ remove_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 		local pThis
 	mov pThis, ecx
 
+	; // Remove knight from corresponding team vector
+	mov eax, pKnight
+	mov eax, (KnightGameObject PTR [eax]).team
+	.IF eax == ALLY
+		lea ecx, (LaneGameObject PTR [ecx]).allyKnights
+	.ELSE
+		lea ecx, (LaneGameObject PTR [ecx]).enemyKnights
+	.ENDIF
+	mov eax, pKnight
+	INVOKE remove_element, eax
+
 	; // If this knight was the first in its team, get a new first knight
+	mov ecx, pThis
 	mov eax, pKnight
 	mov eax, (KnightGameObject PTR [eax]).team
 	.IF eax == ALLY
