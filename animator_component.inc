@@ -49,4 +49,10 @@ AnimatorComponent STRUCT
 	animFinishedEvent	Event <>
 AnimatorComponent ENDS
 
+new_animator_component PROTO pSprite : DWORD, pAnimations : DWORD, animCount : DWORD
+free_animator_component PROTO
+
+animator_play PROTO targetAnimID : DWORD
+animator_update PROTO deltaTime:REAL4
+
 ENDIF

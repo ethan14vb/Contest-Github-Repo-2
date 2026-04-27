@@ -12,9 +12,56 @@ INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
+INCLUDE animator_component.inc
 
 .data
 KNIGHT_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET knight_update, OFFSET game_object_exit, OFFSET free_game_object>
+
+; // ********************************************
+; // Animation Data
+; // ********************************************
+
+; // Define animation ID constants
+IDLE_ANIM		EQU 1
+WALK_ANIM		EQU 2
+ATTACK_ANIM		EQU 3
+
+; // Create the animation frames
+idle_anim AnimationFrame	<512, 512, 256, 256, 0.5, 0>,		\
+							<768, 512, 256, 256, 0.5, 0>,		\
+							<1024, 512, 256, 256, 0.5, 0>,		\
+							<1280, 512, 256, 256, 0.5, 0>,		\
+							<0, 768, 256, 256, 0.5, 0>,			\
+							<256, 768, 256, 256, 0.5, 0>,		\
+							<512, 768, 256, 256, 0.5, 0>,		\
+							<768, 768, 256, 256, 0.5, 0>,		\
+							<1024, 768, 256, 256, 0.5, 0>,		\
+							<1280, 768, 256, 256, 0.5, 0>,		\
+							<0, 1024, 256, 256, 0.5, 0>
+
+walk_anim AnimationFrame	<768, 0, 256, 256, 0.5, 0>,			\
+							<1024, 0, 256, 256, 0.5, 0>,		\
+							<1280, 0, 256, 256, 0.5, 0>,		\
+							<0, 256, 256, 256, 0.5, 0>,			\
+							<256, 256, 256, 256, 0.5, 0>,		\
+							<512, 256, 256, 256, 0.5, 0>,		\
+							<768, 256, 256, 256, 0.5, 0>,		\
+							<1024, 256, 256, 256, 0.5, 0>,		\
+							<1280, 256, 256, 256, 0.5, 0>,		\
+							<0, 512, 256, 256, 0.5, 0>,			\
+							<256, 512, 256, 256, 0.5, 0>
+
+attack_anim AnimationFrame	<256, 1024, 256, 256, 0.5, 0>,		\
+							<512, 1024, 256, 256, 0.5, 0>,		\
+							<768, 1024, 256, 256, 0.5, 0>,		\
+							<1024, 1024, 256, 256, 0.5, 0>,		\
+							<1280, 1024, 256, 256, 0.5, 0>
+
+; // Create the list of animations
+knight_animations Animation \
+<IDLE_ANIM, OFFSET idle_anim, 11, 1>, \
+<WALK_ANIM, OFFSET walk_anim, 11, 1>, \
+<ATTACK_ANIM, OFFSET attack_anim, 5, 0>
 
 .code
 ; // ********************************************
@@ -55,7 +102,17 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	.IF team == ENEMY	; // Enemies have their sprite flipped
 		mov (SpriteComponent PTR [eax]).flipX, 1
 	.ENDIF
+
+	mov (SpriteComponent PTR [eax]).isCell, 0FFFFFFFFh
+	push eax
 	INVOKE add_component, ecx, eax
+
+	pop eax
+	INVOKE new_animator_component, eax, OFFSET knight_animations, 3
+	INVOKE add_component, ecx, eax
+
+	mov ecx, eax
+	INVOKE animator_play, WALK_ANIM
 	
 	mov eax, pThis
 	ret
