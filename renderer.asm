@@ -803,8 +803,10 @@ drawText PROC PRIVATE USES esi edi ebx ecx edx, pTrans:DWORD, pTextComp:DWORD, p
 	mov tempSprite.isCell, 1
 	mov tempSprite.flipX, 0
 	mov tempSprite.flipY, 0
-	mov tempSprite.originX, 0
-	mov tempSprite.originY, 0
+	mov ebx, (TextComponent PTR [esi]).offsetX
+	mov tempSprite.originX, ebx
+	mov ebx, (TextComponent PTR [esi]).offsetY
+	mov tempSprite.originY, ebx
 
 	; // Retrive the pointer to the text string
 	mov esi, (TextComponent PTR [esi]).pText

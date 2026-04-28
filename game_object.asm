@@ -241,6 +241,42 @@ get_first_component_which_is_a PROC PUBLIC USES ecx ebx edx esi, componentType: 
 get_first_component_which_is_a ENDP
 
 ; // ----------------------------------
+; // get_first_component_which_is_a
+; // Returns a pointer to the first component of the GameObject that is
+; // the type specified, or NULL if it doesn't exist.
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+get_first_component_with_id PROC PUBLIC USES ecx ebx edx esi, id: DWORD
+	local pThis
+	mov pThis, ecx
+
+	lea ecx, (GameObject PTR [ecx]).components
+	mov ebx, (UnorderedVector PTR [ecx]).count
+	mov eax, (UnorderedVector PTR [ecx]).pData
+	mov edx, 0 ; // int i = 0
+
+	; // Iterate through the Components
+	.WHILE edx < ebx
+		; // esi = components[i]
+		mov esi, [eax + edx * 4]
+
+		mov ecx, (Component PTR [esi]).userId
+		.IF ecx == id
+			mov eax, esi ; // return the pointer to the component
+			jmp exit_get_first_component_with_id
+		.ENDIF
+
+		inc edx
+	.ENDW
+
+	mov eax, 0 ; // Return NULL if nothing was found
+	exit_get_first_component_with_id:
+	ret
+get_first_component_with_id ENDP
+
+; // ----------------------------------
 ; // game_object_start
 ; // Default blank start method for a GameObject
 ; // Can be left blank, or overriden by the virtual function table

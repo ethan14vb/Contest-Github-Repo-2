@@ -24,6 +24,7 @@ Component_vtable ENDS
 Component STRUCT
 	componentType ENUM_COMPONENT_ID DEFAULT_COMPONENT_ID
 	pVt DWORD ?
+	userId DWORD ?
 Component ENDS
 
 ; // Constructor protos
