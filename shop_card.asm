@@ -11,6 +11,7 @@ INCLUDE shop_card.inc
 INCLUDE heap_functions.inc
 INCLUDE transform_component.inc
 INCLUDE rect_component.inc
+INCLUDE renderable_component.inc
 
 .code
 init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DWORD, yPos : DWORD
@@ -23,6 +24,7 @@ init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DW
 	INVOKE add_component, ecx, eax
 
 	INVOKE new_rect_component, 170, 120, 70, 70, 70, 0FFFFFFFFh
+	mov (RenderableComponent PTR [eax]).layer, 3
 	INVOKE add_component, ecx, eax
 
 	mov eax, ecx

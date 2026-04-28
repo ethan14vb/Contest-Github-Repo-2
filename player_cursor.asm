@@ -13,6 +13,7 @@ INCLUDE rect_component.inc
 INCLUDE input_manager.inc
 INCLUDE shop_card.inc
 INCLUDE sprite_test_scene.inc
+INCLUDE knight_game_object.inc
 
 .data
 PLAYER_CURSOR_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET player_cursor_update, OFFSET game_object_exit, OFFSET free_game_object>
@@ -73,11 +74,20 @@ player_cursor_update PROC USES ebx ecx edx esi edi, deltaTime:REAL4
 	.IF eax == 1
 		mov ecx, pThis
 		mov eax, (PlayerCursor PTR [ecx]).selectedCardIndex
-		mov esi, (PlayerCursor PTR [ecx]).sizeCardList
-		dec esi
-		.IF eax < esi
-			inc eax
-			mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
+		mov edx, (PlayerCursor PTR [ecx]).team
+
+		.IF edx == ALLY
+			mov esi, (PlayerCursor PTR [ecx]).sizeCardList
+			dec esi
+			.IF eax < esi
+				inc eax
+				mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
+			.ENDIF
+		.ELSE
+			.IF eax > 0
+				dec eax
+				mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
+			.ENDIF
 		.ENDIF
 	.ENDIF
 
@@ -87,9 +97,20 @@ player_cursor_update PROC USES ebx ecx edx esi edi, deltaTime:REAL4
 	.IF eax == 1
 		mov ecx, pThis
 		mov eax, (PlayerCursor PTR [ecx]).selectedCardIndex
-		.IF eax > 0
-			dec eax
-			mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
+		mov edx, (PlayerCursor PTR [ecx]).team
+
+		.IF edx == ALLY
+			.IF eax > 0
+				dec eax
+				mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
+			.ENDIF
+		.ELSE
+			mov esi, (PlayerCursor PTR [ecx]).sizeCardList
+			dec esi
+			.IF eax < esi
+				inc eax
+				mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
+			.ENDIF
 		.ENDIF
 	.ENDIF
 
