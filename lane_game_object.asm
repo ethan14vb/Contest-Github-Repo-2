@@ -168,13 +168,13 @@ remove_knight PROC PUBLIC USES eax ebx ecx esi edi, pKnight:DWORD
 		mov edx, (LaneGameObject PTR [ecx]).pFirstAlly
 		mov eax, pKnight
 		.IF eax == edx
-			INVOKE scan_firsts
+			mov (LaneGameObject PTR [ecx]).pFirstAlly, 0
 		.ENDIF
 	.ELSE
 		mov edx, (LaneGameObject PTR [ecx]).pFirstEnemy
 		mov eax, pKnight
 		.IF eax == edx
-			INVOKE scan_firsts
+			mov (LaneGameObject PTR [ecx]).pFirstEnemy, 0
 		.ENDIF
 	.ENDIF
 
@@ -210,16 +210,21 @@ scan_firsts PROC PUBLIC USES eax ebx edx ecx esi edi
 		
 		; // Get the transform of the current first ally
 		pop ecx
-		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
-		mov edi, (TransformComponent PTR [eax]).x
+		.IF ecx != 0
+			INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+			mov edi, (TransformComponent PTR [eax]).x
 		
-		mov ecx, esi
-		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
-		mov eax, (TransformComponent PTR [eax]).x
+			mov ecx, esi
+			INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+			mov eax, (TransformComponent PTR [eax]).x
 
-		; // Assign new firstAlly if further ahead in lane
-		pop ecx
-		.IF eax > edi
+			; // Assign new firstAlly if further ahead in lane
+			pop ecx
+			.IF eax > edi
+				mov (LaneGameObject PTR [ecx]).pFirstAlly, esi
+			.ENDIF
+		.ELSE
+			mov ecx, pThis
 			mov (LaneGameObject PTR [ecx]).pFirstAlly, esi
 		.ENDIF
 
