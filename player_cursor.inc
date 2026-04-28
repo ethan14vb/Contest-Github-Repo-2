@@ -23,9 +23,10 @@ PlayerCursor STRUCT
 
 	; // My data
 	selectedCardIndex DWORD ?
+	team DWORD ?
 
 PlayerCursor ENDS
 
-new_player_cursor PROTO pVirtualController:DWORD, pShop:DWORD, pCardList:DWORD, sizeCardList:DWORD
+new_player_cursor PROTO pVirtualController:DWORD, pShop:DWORD, pCardList:DWORD, sizeCardList:DWORD, team:DWORD
 
 ENDIF

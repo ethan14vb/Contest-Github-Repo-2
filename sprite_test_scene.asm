@@ -216,7 +216,7 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_player_cursor, OFFSET p1Controller, pShop, OFFSET p1CardList, 3
+	INVOKE new_player_cursor, OFFSET p1Controller, pShop, OFFSET p1CardList, 3, ALLY
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
@@ -236,7 +236,7 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_player_cursor, OFFSET p2Controller, pShop, OFFSET p2CardList, 3
+	INVOKE new_player_cursor, OFFSET p2Controller, pShop, OFFSET p2CardList, 3, ENEMY
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 

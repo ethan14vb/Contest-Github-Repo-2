@@ -22,7 +22,7 @@ PLAYER_CURSOR_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET player_
 ; // Constructor Methods
 ; // ********************************************
 
-init_player_cursor PROC PUBLIC USES ecx esi edi, pVirtualController:DWORD, pShop : DWORD, pCardList : DWORD, sizeCardList : DWORD
+init_player_cursor PROC PUBLIC USES ecx esi edi, pVirtualController:DWORD, pShop : DWORD, pCardList : DWORD, sizeCardList : DWORD, team:DWORD
 	; // Parent constructor
 	INVOKE init_game_object, 0
 	mov (GameObject PTR [ecx]).gameObjectType, PLAYER_CURSOR_GAME_OBJECT_ID
@@ -45,15 +45,17 @@ init_player_cursor PROC PUBLIC USES ecx esi edi, pVirtualController:DWORD, pShop
 	mov (PlayerCursor PTR [ecx]).pCardList, esi
 	mov esi, sizeCardList
 	mov (PlayerCursor PTR [ecx]).sizeCardList, esi
+	mov esi, team
+	mov (PlayerCursor PTR [ecx]).team, esi
 
 	mov eax, ecx
 	ret
 init_player_cursor ENDP
 
-new_player_cursor PROC PUBLIC USES ecx ebx edx esi edi, pVirtualController:DWORD, pShop:DWORD, pCardList:DWORD, sizeCardList:DWORD
+new_player_cursor PROC PUBLIC USES ecx ebx edx esi edi, pVirtualController:DWORD, pShop:DWORD, pCardList:DWORD, sizeCardList:DWORD, team:DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF PlayerCursor
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_player_cursor, pVirtualController, pShop, pCardList, sizeCardList
+	INVOKE init_player_cursor, pVirtualController, pShop, pCardList, sizeCardList, team
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_player_cursor ENDP
@@ -72,6 +74,7 @@ player_cursor_update PROC USES ebx ecx edx esi edi, deltaTime:REAL4
 		mov ecx, pThis
 		mov eax, (PlayerCursor PTR [ecx]).selectedCardIndex
 		mov esi, (PlayerCursor PTR [ecx]).sizeCardList
+		dec esi
 		.IF eax < esi
 			inc eax
 			mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
@@ -96,13 +99,14 @@ player_cursor_update PROC USES ebx ecx edx esi edi, deltaTime:REAL4
 	.IF eax == 1
 		mov ecx, pThis
 		
-		; // Get the specific ShopCard data
+		; // Get the pointer to the selected shop card
 		mov esi, (PlayerCursor PTR [ecx]).pCardList
 		mov eax, (PlayerCursor PTR [ecx]).selectedCardIndex
-		imul eax, SIZEOF ShopCard
-		lea ebx, [esi + eax] 
+		mov ebx, [esi + eax * 4]
 
 		; // TODO add purchase logic
+		mov edx, (ShopCard PTR [ebx]).cost
+		mov ecx, (PlayerCursor PTR [pThis]).pShop
 	.ENDIF
 
 	; // Movement
