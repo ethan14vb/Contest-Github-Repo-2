@@ -12,9 +12,12 @@ INCLUDE heap_functions.inc
 INCLUDE transform_component.inc
 INCLUDE rect_component.inc
 INCLUDE renderable_component.inc
+INCLUDE text_component.inc
 
 .code
-init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DWORD, yPos : DWORD
+init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DWORD, yPos : DWORD, pText:DWORD, pFontTex:DWORD
+		local pThis
+	mov pThis, ecx
 	; // Parent constructor
 	INVOKE init_game_object, 0
 	mov (GameObject PTR [ecx]).gameObjectType, SHOP_CARD_GAME_OBJECT_ID
@@ -27,14 +30,20 @@ init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DW
 	mov (RenderableComponent PTR [eax]).layer, 3
 	INVOKE add_component, ecx, eax
 
+	mov ecx, pThis
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 200
+	INVOKE add_component, ecx, eax
+	mov ecx, eax
+	INVOKE set_text_component_text, pText
+
 	mov eax, ecx
 	ret
 init_shop_card ENDP
 
-new_shop_card PROC PUBLIC USES ecx ebx edx esi edi, itemId:DWORD, cost:DWORD, xPos:DWORD, yPos:DWORD
+new_shop_card PROC PUBLIC USES ecx ebx edx esi edi, itemId:DWORD, cost:DWORD, xPos:DWORD, yPos:DWORD, pText:DWORD, pFontTex:DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF ShopCard
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_shop_card, itemId, cost, xPos, yPos
+	INVOKE init_shop_card, itemId, cost, xPos, yPos, pText, pFontTex
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_shop_card ENDP

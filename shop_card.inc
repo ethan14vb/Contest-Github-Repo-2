@@ -17,6 +17,6 @@ ShopCard STRUCT
 	cost DWORD ?
 ShopCard ENDS
 
-new_shop_card PROTO itemId:DWORD, cost:DWORD, xPos:DWORD, yPos:DWORD
+new_shop_card PROTO itemId:DWORD, cost:DWORD, xPos:DWORD, yPos:DWORD, pText:DWORD, pFontTex:DWORD
 
 ENDIF

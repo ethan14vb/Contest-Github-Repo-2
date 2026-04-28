@@ -39,6 +39,7 @@ castleFile BYTE "castle.pam", 0
 fontFile BYTE "16x32 cartoon font.pam", 0
 
 text BYTE "This is a MAGNIFICENT! test to see if the text string rendering system works. 0123456789", 0
+incomeText BYTE "Income", 0
 
 PUBLIC pTex
 pTex DWORD ?
@@ -206,17 +207,17 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE instantiate_game_object, pShop
 
 	; // P1 Card list
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(0, 1), uiYPos
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(0, 1), uiYPos, OFFSET incomeText, pFontTex
 	mov p1CardList[0 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 1), uiYPos
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 1), uiYPos, OFFSET incomeText, pFontTex
 	mov p1CardList[1 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 1), uiYPos
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 1), uiYPos, OFFSET incomeText, pFontTex
 	mov p1CardList[2 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
@@ -226,17 +227,17 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE instantiate_game_object, eax
 
 	; // P2 Card list
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(0, 2), uiYPos
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(0, 2), uiYPos, OFFSET incomeText, pFontTex
 	mov p2CardList[0 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 2), uiYPos
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 2), uiYPos, OFFSET incomeText, pFontTex
 	mov p2CardList[1 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 2), uiYPos
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 2), uiYPos, OFFSET incomeText, pFontTex
 	mov p2CardList[2 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
