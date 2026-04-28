@@ -1,4 +1,5 @@
 # CSE3120 Computer Architecture and Assembly Programming Spring 2026 - Contest 2
+# Sketch Knights
 ## Ethan Van Brunt (904031060) and Joshua Fernandez-Alvarado (904036400)
 
 ## How to Play
