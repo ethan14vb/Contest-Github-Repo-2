@@ -6,27 +6,37 @@
 
 INCLUDE default_header.inc
 INCLUDE sprite_test_scene.inc
+
+; // System
 INCLUDE game_object.inc
 INCLUDE scene.inc
-INCLUDE transform_component.inc
+INCLUDE resource_manager.inc
+INCLUDE input_manager.inc
+
+; // GameObjects
+INCLUDE player_cursor.inc
 INCLUDE camera_mover_game_object.inc
 INCLUDE bouncing_image_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE lane_game_object.inc
 INCLUDE castle_game_object.inc
 INCLUDE shop_game_object.inc
-INCLUDE resource_manager.inc
+INCLUDE shop_card.inc
+
+; // Components
 INCLUDE sprite_component.inc
 INCLUDE text_component.inc
-INCLUDE input_manager.inc
+INCLUDE transform_component.inc
 
 .data
+; // ********************************************
+; // Texture data
+; // ********************************************
+
 testFile BYTE "Knight.pam", 0
 knightFile BYTE "knight_spritesheet_krita.pam", 0
 castleFile BYTE "castle.pam", 0
 fontFile BYTE "16x32 cartoon font.pam", 0
-pLane DWORD ?
-pShop DWORD ?
 
 text BYTE "This is a MAGNIFICENT! test to see if the text string rendering system works. 0123456789", 0
 
@@ -42,6 +52,10 @@ pCastleTex DWORD ?
 PUBLIC pFontTex
 pFontTex DWORD ?
 
+; // ********************************************
+; // Controller Binding Setup
+; // ********************************************
+
 ; // Controllers
 p1Controller VirtualController <>
 p2Controller VirtualController <>
@@ -49,7 +63,7 @@ p2Controller VirtualController <>
 P1_DEVICE EQU DEVICE_KEYBOARD
 P1_LAYOUT EQU 1; // 1 = WASD, 2 = ARROWS
 
-P2_DEVICE EQU DEVICE_GAMEPAD_0
+P2_DEVICE EQU DEVICE_KEYBOARD
 P2_LAYOUT EQU 2; // 1 = WASD, 2 = ARROWS
 
 ; // Keyboard layout 1
@@ -73,6 +87,29 @@ bind_gp_left   InputBinding <ACTION_UI_LEFT, 0004h>
 bind_gp_right  InputBinding <ACTION_UI_RIGHT, 0008h>
 bind_gp_sel    InputBinding <ACTION_SELECT, 1000h>
 
+; // ********************************************
+; // UI Setup
+; // ********************************************
+pLane DWORD ?
+pShop DWORD ?
+
+p1CardList DWORD 3 DUP(?)
+p2CardList DWORD 3 DUP(?)
+
+uiYPos EQU 900
+uiXOffset EQU 100
+uiXSpacing EQU 20
+uiCardWidth EQU 140
+
+uiCardSpacing MACRO index, player
+	IF player EQ 1
+        EXITM <(uiXOffset + (uiXSpacing * index) + (uiCardWidth * index))>
+    ELSEIF player EQ 2
+        EXITM <(1920 - uiXOffset - uiCardWidth - (uiXSpacing * index) - (uiCardWidth * index))>
+	ENDIF
+ENDM
+
+
 .code
 ; // ----------------------------------
 ; // Initializes the virtual controllers with the correct bindings
@@ -84,60 +121,60 @@ init_virtual_controllers PROC PUBLIC USES eax ecx
 	lea ecx, p1Controller.bindings
 	INVOKE init_unordered_vector, 5
 
-	.IF P1_DEVICE EQ DEVICE_KEYBOARD
-		.IF P1_LAYOUT EQ 1
+	IF P1_DEVICE EQ DEVICE_KEYBOARD
+		IF P1_LAYOUT EQ 1
 			; // Push WASD
 			INVOKE push_back, OFFSET bind_w_up
 			INVOKE push_back, OFFSET bind_s_down
 			INVOKE push_back, OFFSET bind_a_left
 			INVOKE push_back, OFFSET bind_d_right
 			INVOKE push_back, OFFSET bind_space_sel
-		.ELSE
+		ELSE
 			; // Push ARROWS
 			INVOKE push_back, OFFSET bind_up_up
 			INVOKE push_back, OFFSET bind_dn_down
 			INVOKE push_back, OFFSET bind_lf_left
 			INVOKE push_back, OFFSET bind_rt_right
 			INVOKE push_back, OFFSET bind_ent_sel
-		.ENDIF
-	.ELSE
+		ENDIF
+	ELSE
 		; // Push GAMEPAD
 		INVOKE push_back, OFFSET bind_gp_up
 		INVOKE push_back, OFFSET bind_gp_down
 		INVOKE push_back, OFFSET bind_gp_left
 		INVOKE push_back, OFFSET bind_gp_right
 		INVOKE push_back, OFFSET bind_gp_sel
-	.ENDIF
+	ENDIF
 
 	; // Player 2 setup
 	mov p2Controller.deviceID, P2_DEVICE
 	lea ecx, p2Controller.bindings
 	INVOKE init_unordered_vector, 5
 
-	.IF P2_DEVICE EQ DEVICE_KEYBOARD
-		.IF P2_LAYOUT EQ 1
+	IF P2_DEVICE EQ DEVICE_KEYBOARD
+		IF P2_LAYOUT EQ 1
 			; // Push WASD
 			INVOKE push_back, OFFSET bind_w_up
 			INVOKE push_back, OFFSET bind_s_down
 			INVOKE push_back, OFFSET bind_a_left
 			INVOKE push_back, OFFSET bind_d_right
 			INVOKE push_back, OFFSET bind_space_sel
-		.ELSE
+		ELSE
 			; // Push ARROWS
 			INVOKE push_back, OFFSET bind_up_up
 			INVOKE push_back, OFFSET bind_dn_down
 			INVOKE push_back, OFFSET bind_lf_left
 			INVOKE push_back, OFFSET bind_rt_right
 			INVOKE push_back, OFFSET bind_ent_sel
-		.ENDIF
-	.ELSE
+		ENDIF
+	ELSE
 		; // Push GAMEPAD
 		INVOKE push_back, OFFSET bind_gp_up
 		INVOKE push_back, OFFSET bind_gp_down
 		INVOKE push_back, OFFSET bind_gp_left
 		INVOKE push_back, OFFSET bind_gp_right
 		INVOKE push_back, OFFSET bind_gp_sel
-	.ENDIF
+	ENDIF
 
 	ret
 init_virtual_controllers ENDP
@@ -156,33 +193,52 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE load_texture, OFFSET fontFile
 	mov pFontTex, eax
 
-	; // Sprite
-	INVOKE new_bouncing_image_game_object, pTex
-	mov ecx, eax
-
-	INVOKE new_text_component, pFontTex, 16, 32, 2, 200
-	INVOKE add_component, ecx, eax
-
-	mov esi, ecx
-	mov ecx, eax
-	INVOKE set_text_component_text, OFFSET text
-
-	mov ecx, pScene
-	INVOKE instantiate_game_object, esi
-
-	; // Camera mover game object
-	INVOKE new_camera_mover_game_object
-	mov esi, eax
-
-	mov ecx, pScene
-	INVOKE instantiate_game_object, esi
-
 	; // Shop
 	INVOKE new_shop_game_object
 	mov pShop, eax
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, pShop
+
+	; // P1 Card list
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(0, 1), uiYPos
+	mov p1CardList[0 * 4], eax
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 1), uiYPos
+	mov p1CardList[1 * 4], eax
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 1), uiYPos
+	mov p1CardList[2 * 4], eax
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	INVOKE new_player_cursor, OFFSET p1Controller, pShop, OFFSET p1CardList, 3
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	; // P2 Card list
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(0, 2), uiYPos
+	mov p2CardList[0 * 4], eax
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 2), uiYPos
+	mov p2CardList[1 * 4], eax
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 2), uiYPos
+	mov p2CardList[2 * 4], eax
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	INVOKE new_player_cursor, OFFSET p2Controller, pShop, OFFSET p2CardList, 3
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
 
 	; // Lane
 	INVOKE new_lane_game_object

@@ -22,7 +22,7 @@ PLAYER_CURSOR_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET player_
 ; // Constructor Methods
 ; // ********************************************
 
-init_player_cursor PROC PUBLIC USES ecx esi edi, pVirtualController:DWORD, pShop : DWORD, pCardList : DWORD
+init_player_cursor PROC PUBLIC USES ecx esi edi, pVirtualController:DWORD, pShop : DWORD, pCardList : DWORD, sizeCardList : DWORD
 	; // Parent constructor
 	INVOKE init_game_object, 0
 	mov (GameObject PTR [ecx]).gameObjectType, PLAYER_CURSOR_GAME_OBJECT_ID
@@ -32,7 +32,8 @@ init_player_cursor PROC PUBLIC USES ecx esi edi, pVirtualController:DWORD, pShop
 	INVOKE new_transform_component, 0, 0, 0FFFFFFFFh
 	INVOKE add_component, ecx, eax
 		
-	INVOKE new_rect_component, 110, 60, 0FFh, 0FFh, 0FFh, 0FFFFFFFFh
+	; // 10 pixels wider and 10 pixels taller than the shop cards
+	INVOKE new_rect_component, 180, 130, 0FFh, 0FFh, 0FFh, 0FFFFFFFFh
 	INVOKE add_component, ecx, eax
 
 	; // Class members
@@ -42,15 +43,17 @@ init_player_cursor PROC PUBLIC USES ecx esi edi, pVirtualController:DWORD, pShop
 	mov (PlayerCursor PTR [ecx]).pShop, esi
 	mov esi, pCardList
 	mov (PlayerCursor PTR [ecx]).pCardList, esi
+	mov esi, sizeCardList
+	mov (PlayerCursor PTR [ecx]).sizeCardList, esi
 
 	mov eax, ecx
 	ret
 init_player_cursor ENDP
 
-new_player_cursor PROC PUBLIC USES ecx ebx edx esi edi, pVirtualController:DWORD, pShop:DWORD, pCardList:DWORD
+new_player_cursor PROC PUBLIC USES ecx ebx edx esi edi, pVirtualController:DWORD, pShop:DWORD, pCardList:DWORD, sizeCardList:DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF PlayerCursor
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_player_cursor, pVirtualController, pShop, pCardList
+	INVOKE init_player_cursor, pVirtualController, pShop, pCardList, sizeCardList
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_player_cursor ENDP
@@ -68,10 +71,11 @@ player_cursor_update PROC USES ebx ecx edx esi edi, deltaTime:REAL4
 	.IF eax == 1
 		mov ecx, pThis
 		mov eax, (PlayerCursor PTR [ecx]).selectedCardIndex
-		inc eax
-		
-		; // TODO add bounds checking
-		mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
+		mov esi, (PlayerCursor PTR [ecx]).sizeCardList
+		.IF eax < esi
+			inc eax
+			mov (PlayerCursor PTR [ecx]).selectedCardIndex, eax
+		.ENDIF
 	.ENDIF
 
 	; // Check Left

@@ -13,14 +13,19 @@ INCLUDE game_object.inc
 PlayerCursor STRUCT
 	baseGameObject GameObject<>
 
-	; // Pointers
+	; // GameObject Pointers
 	pVirtualController DWORD ?
 	pShop DWORD ?
+
+	; // CardList
 	pCardList DWORD ?
+	sizeCardList DWORD ?
 
 	; // My data
 	selectedCardIndex DWORD ?
 
 PlayerCursor ENDS
+
+new_player_cursor PROTO pVirtualController:DWORD, pShop:DWORD, pCardList:DWORD, sizeCardList:DWORD
 
 ENDIF
