@@ -15,6 +15,7 @@ CastleGameObject STRUCT
 	HP DWORD ?
 	team DWORD ?
 	pLane DWORD ?
+	exitNextFrame DWORD ?
 CastleGameObject ENDS
 
 ExitProcess PROTO, dwExitCode:DWORD

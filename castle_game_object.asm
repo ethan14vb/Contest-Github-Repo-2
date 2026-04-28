@@ -42,6 +42,7 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov (CastleGameObject PTR [ecx]).HP, 1
 	mov eax, team
 	mov (CastleGameObject PTR [ecx]).team, eax
+	mov (CastleGameObject PTR [ecx]).exitNextFrame, 0
 
 	; // Gives Castle a transform
 	mov eax, 0			; // Default x position for allies
@@ -81,6 +82,23 @@ new_castle_game_object ENDP
 ; // Instance methods
 ; // ********************************************
 
+castle_update PROC stdcall USES eax edx ebx esi edi, deltaTime: REAL4
+		local pThis : DWORD
+	mov pThis, ecx
+	mov eax, deltaTime ; // Use the deltaTime variable so MASM doesn't get angry and throw a compile time error
+
+	mov eax, (CastleGameObject PTR [ecx]).exitNextFrame
+	cmp eax, 1
+	jne SkipEnd
+		INVOKE Sleep, 5000
+		INVOKE ExitProcess, 0
+
+	SkipEnd:
+
+	mov ecx, pThis ; // Restore the THIS pointer
+	ret
+castle_update ENDP
+
 ; // ----------------------------------
 ; // castle_receive_damage
 ; // The Castle takes damage and triggers end of game if necessary
@@ -104,8 +122,10 @@ castle_receive_damage PROC PUBLIC USES eax ebx ecx edx esi, damage:DWORD
 		.ELSE
 			INVOKE game_end, ALLY
 		.ENDIF
+		mov ecx, pThis
+		mov (CastleGameObject PTR [ecx]).exitNextFrame, 1
 		;INVOKE Sleep, 5000
-		INVOKE ExitProcess, 0
+		;INVOKE ExitProcess, 0
 
 	SkipGameEnd:
 	mov ecx, pThis
