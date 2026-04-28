@@ -15,7 +15,7 @@ INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
 
 .data
-CASTLE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET game_object_update, OFFSET game_object_exit, OFFSET free_game_object>
+CASTLE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET castle_update, OFFSET game_object_exit, OFFSET free_game_object>
 
 .code
 ; // ********************************************
@@ -124,8 +124,6 @@ castle_receive_damage PROC PUBLIC USES eax ebx ecx edx esi, damage:DWORD
 		.ENDIF
 		mov ecx, pThis
 		mov (CastleGameObject PTR [ecx]).exitNextFrame, 1
-		;INVOKE Sleep, 5000
-		;INVOKE ExitProcess, 0
 
 	SkipGameEnd:
 	mov ecx, pThis

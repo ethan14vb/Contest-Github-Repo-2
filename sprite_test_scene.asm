@@ -312,7 +312,7 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov pHeavTex, eax
 
 	; // Ally Knight
-	INVOKE spawn_knight, ARCH, ALLY
+	;INVOKE spawn_knight, ARCH, ALLY
 
 	; // Enemy Knight
 	;INVOKE spawn_knight, HEAV, ENEMY
