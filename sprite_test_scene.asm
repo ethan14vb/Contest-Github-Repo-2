@@ -306,6 +306,7 @@ populate_sprite_test_scene ENDP
 ; // with the sprite test scene contents.
 ; // ----------------------------------
 spawn_knight PROC stdcall PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DWORD
+	; // Puts correct texture in eax
 	.IF knightIndex == SWOR
 		mov eax, pSworTex
 	.ELSEIF knightIndex == ARCH
@@ -314,13 +315,27 @@ spawn_knight PROC stdcall PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD
 		mov eax, pHeavTex
 	.ENDIF
 
+	; // Spawns the knight
 	INVOKE new_knight_game_object, team, eax
 	mov esi, eax
-
 	mov ecx, gpScene
 	INVOKE instantiate_game_object, esi
 	mov ecx, pLane
 	INVOKE assign_knight, esi
+
+	; // Assigns respective stats
+	mov edi, esi
+	lea edi, (KnightGameObject PTR [edi]).HP
+	mov esi, 0
+	.IF knightIndex == SWOR
+		lea esi, sworStats
+	.ELSEIF knightIndex == ARCH
+		lea esi, archStats
+	.ELSE
+		lea esi, heavStats
+	.ENDIF
+	mov ecx, 20
+	rep movsb
 
 	ret
 spawn_knight ENDP
