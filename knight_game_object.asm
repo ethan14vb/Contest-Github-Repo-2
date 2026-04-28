@@ -623,7 +623,8 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 			INVOKE queue_free_game_object, pThis
 		.ENDIF
 	.ELSE
-		.IF esi <= edi
+		cmp esi, edi
+		jg Skip			; // Must use this here because enemies can go into negative x
 			mov ecx, (KnightGameObject PTR [ecx]).pLane
 			mov eax, pThis
 			INVOKE remove_knight, eax
@@ -635,7 +636,7 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 			mov ecx, pThis
 			mov ecx, (GameObject PTR [ecx]).pParentScene
 			INVOKE queue_free_game_object, pThis
-		.ENDIF
+		Skip:
 	.ENDIF
 
 	ret
