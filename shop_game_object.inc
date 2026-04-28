@@ -24,6 +24,6 @@ ShopGameObject ENDS
 
 init_shop_game_object PROTO
 new_shop_game_object PROTO
-buy_knight PROTO
+buy_knight PROTO, knightIndex:DWORD, team:DWORD
 
 ENDIF

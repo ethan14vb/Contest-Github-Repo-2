@@ -14,6 +14,7 @@ INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
+INCLUDE sprite_test_scene.inc
 
 .data
 SHOP_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET shop_update, OFFSET game_object_exit, OFFSET free_game_object>
@@ -113,10 +114,11 @@ shop_update ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-buy_knight PROC stdcall USES eax ebx ecx edx esi edi
+buy_knight PROC stdcall USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DWORD
 		local pThis : DWORD
 	mov pThis, ecx
 
+	INVOKE spawn_knight, knightIndex, team
 	ret
 buy_knight ENDP
 

@@ -14,6 +14,11 @@ INCLUDE game_object.inc
 ALLY EQU 0
 ENEMY EQU 1
 
+; // Constants for the knight indexes
+SWOR EQU 0
+ARCH EQU 1
+HEAV EQU 2
+
 KnightGameObject STRUCT
 	baseGameObject GameObject<>
 	pLane DWORD ?	; // Pointer to the lane it belongs to
