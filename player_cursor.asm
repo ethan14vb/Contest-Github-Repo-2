@@ -14,6 +14,7 @@ INCLUDE input_manager.inc
 INCLUDE shop_card.inc
 INCLUDE sprite_test_scene.inc
 INCLUDE knight_game_object.inc
+INCLUDE shop_game_object.inc
 
 .data
 PLAYER_CURSOR_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET player_cursor_update, OFFSET game_object_exit, OFFSET free_game_object>
@@ -126,9 +127,23 @@ player_cursor_update PROC USES ebx ecx edx esi edi, deltaTime:REAL4
 		mov eax, (PlayerCursor PTR [ecx]).selectedCardIndex
 		mov ebx, [esi + eax * 4]
 
-		; // TODO add purchase logic
+		; // Purchase logic
 		mov edx, (ShopCard PTR [ebx]).cost
-		mov ecx, (PlayerCursor PTR [pThis]).pShop
+		mov ecx, (PlayerCursor PTR [ecx]).pShop
+
+		mov esi, (ShopCard PTR [ebx]).itemId
+		mov edi, pThis
+		mov edi, (PlayerCursor PTR [edi]).team
+
+		.IF esi == SWOR_SHOP_ID
+			INVOKE buy_knight, SWOR, edi
+		.ELSEIF esi == ARCH_SHOP_ID
+			INVOKE buy_knight, ARCH, edi
+		.ELSEIF esi == HEAV_SHOP_ID
+			INVOKE buy_knight, HEAV, edi
+		.ELSEIF esi == INCO_SHOP_ID
+			INVOKE buy_income, edi
+		.ENDIF
 	.ENDIF
 
 	; // Movement
