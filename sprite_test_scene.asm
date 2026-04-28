@@ -63,6 +63,9 @@ pCastleTex DWORD ?
 PUBLIC pFontTex
 pFontTex DWORD ?
 
+PUBLIC pBackgroundTex
+pBackgroundTex DWORD ?
+
 ; // ********************************************
 ; // Controller Binding Setup
 ; // ********************************************
@@ -208,6 +211,9 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 
 	INVOKE load_texture, OFFSET fontFile
 	mov pFontTex, eax
+
+	INVOKE load_texture, OFFSET backgroundFile
+	mov pBackgroundTex, eax
 
 	; // Shop
 	INVOKE new_shop_game_object

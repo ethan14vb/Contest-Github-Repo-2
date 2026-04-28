@@ -26,6 +26,8 @@ EXTERNDEF pSworTex : DWORD
 EXTERNDEF pArchTex : DWORD
 EXTERNDEF pHeavTex : DWORD
 EXTERNDEF pFontTex : DWORD
+EXTERNDEF pCastleTex : DWORD
+EXTERNDEF pBackgroundTex : DWORD
 
 ; // Engine data
 deltaTime REAL4 0.016667
@@ -143,6 +145,8 @@ loop_exit:
 	INVOKE unload_texture, pArchTex
 	INVOKE unload_texture, pHeavTex
 	INVOKE unload_texture, pFontTex
+	INVOKE unload_texture, pCastleTex
+	INVOKE unload_texture, pBackgroundTex
 
 	INVOKE ExitProcess, 0
 	ret
