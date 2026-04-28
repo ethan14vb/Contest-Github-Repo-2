@@ -42,7 +42,7 @@ init_shop_game_object PROC PUBLIC USES esi ebx edx
 
 	mov (ShopGameObject PTR [ecx]).allyCash, baseCash
 	mov (ShopGameObject PTR [ecx]).enemyCash, baseCash
-	mov (ShopGameObject PTR [ecx]).allyCash, baseIncome
+	mov (ShopGameObject PTR [ecx]).allyIncome, baseIncome
 	mov (ShopGameObject PTR [ecx]).enemyIncome, baseIncome
 
 	mov ecx, pThis

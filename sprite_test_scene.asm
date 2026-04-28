@@ -187,6 +187,8 @@ init_virtual_controllers ENDP
 populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE init_virtual_controllers
 
+	FINIT
+
 	INVOKE load_texture, OFFSET testFile
 	mov pTex, eax
 
