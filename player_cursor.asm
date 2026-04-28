@@ -143,6 +143,11 @@ player_cursor_update PROC USES ebx ecx edx esi edi, deltaTime:REAL4
 			INVOKE buy_knight, HEAV, edi
 		.ELSEIF esi == INCO_SHOP_ID
 			INVOKE buy_income, edi
+
+			.IF eax != 0
+				mov ecx, ebx
+				INVOKE update_shop_card_price, eax
+			.ENDIF
 		.ENDIF
 	.ENDIF
 

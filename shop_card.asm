@@ -14,7 +14,49 @@ INCLUDE rect_component.inc
 INCLUDE renderable_component.inc
 INCLUDE text_component.inc
 
+.data
+templateText BYTE "$0", 0
+cashBuffer BYTE 16 DUP(0)
+
+PRICE_LABEL_ID EQU 6767
+
 .code
+int_to_cash_string PROC USES eax ebx ecx edx esi edi, value:DWORD, pBuffer:DWORD, prefixChar:BYTE
+	mov eax, value
+	mov edi, pBuffer
+	mov ebx, 10
+	mov ecx, 0
+
+int_to_cash_string_divide_loop:
+	mov edx, 0
+	div ebx
+	push edx
+	inc ecx
+	cmp eax, 0
+	jne int_to_cash_string_divide_loop
+
+	; // Write a prefix symbol
+	push eax
+	mov al, prefixChar
+	mov BYTE PTR [edi], al
+	inc edi
+	pop eax
+
+int_to_cash_string_pop_loop:
+	pop edx
+	add dl, '0'
+	mov BYTE PTR [edi], dl
+	inc edi
+	dec ecx
+	cmp ecx, 0
+	jne int_to_cash_string_pop_loop
+
+	; // Add null terminator
+	mov BYTE PTR [edi], 0
+	
+	ret
+int_to_cash_string ENDP
+
 init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DWORD, yPos : DWORD, pText:DWORD, pFontTex:DWORD
 		local pThis
 	mov pThis, ecx
@@ -37,6 +79,19 @@ init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DW
 	mov ecx, eax
 	INVOKE set_text_component_text, pText
 
+	; // Add price
+	mov ecx, pThis
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 50
+	mov (Component PTR [eax]).userId, PRICE_LABEL_ID
+	mov (TextComponent PTR [eax]).offsetX, -30
+	mov (TextComponent PTR [eax]).offsetY, -50
+	mov (RenderableComponent PTR [eax]).layer, 4
+	INVOKE add_component, ecx, eax
+	mov ecx, eax
+	mov esi, cost
+	INVOKE int_to_cash_string, esi, OFFSET cashBuffer, '$'
+	INVOKE set_text_component_text, OFFSET cashBuffer
+
 	mov ecx, pThis
 	mov esi, itemId
 	mov (ShopCard PTR [ecx]).itemId, esi
@@ -52,5 +107,15 @@ new_shop_card PROC PUBLIC USES ecx ebx edx esi edi, itemId:DWORD, cost:DWORD, xP
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_shop_card ENDP
+
+update_shop_card_price PROC PUBLIC USES eax ebx ecx edx esi edi, newPrice : DWORD
+	INVOKE get_first_component_with_id, PRICE_LABEL_ID
+	mov ecx, eax
+	mov esi, newPrice
+	INVOKE int_to_cash_string, esi, OFFSET cashBuffer, '$'
+	INVOKE set_text_component_text, OFFSET cashBuffer
+
+	ret
+update_shop_card_price ENDP
 
 END

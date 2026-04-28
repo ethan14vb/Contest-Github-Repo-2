@@ -18,5 +18,6 @@ ShopCard STRUCT
 ShopCard ENDS
 
 new_shop_card PROTO itemId:DWORD, cost:DWORD, xPos:DWORD, yPos:DWORD, pText:DWORD, pFontTex:DWORD
+update_shop_card_price PROTO newPrice:DWORD
 
 ENDIF

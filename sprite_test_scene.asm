@@ -216,22 +216,22 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE instantiate_game_object, pShop
 
 	; // P1 Card list
-	INVOKE new_shop_card, INCO_SHOP_ID, 0, uiCardSpacing(0, 1), uiYPos, OFFSET incomeText, pFontTex
+	INVOKE new_shop_card, INCO_SHOP_ID, baseIncomePrice, uiCardSpacing(0, 1), uiYPos, OFFSET incomeText, pFontTex
 	mov p1CardList[0 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, SWOR_SHOP_ID, 0, uiCardSpacing(1, 1), uiYPos, OFFSET sworText, pFontTex
+	INVOKE new_shop_card, SWOR_SHOP_ID, knightCosts[0 * 4], uiCardSpacing(1, 1), uiYPos, OFFSET sworText, pFontTex
 	mov p1CardList[1 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, ARCH_SHOP_ID, 0, uiCardSpacing(2, 1), uiYPos, OFFSET archText, pFontTex
+	INVOKE new_shop_card, ARCH_SHOP_ID, knightCosts[1 * 4], uiCardSpacing(2, 1), uiYPos, OFFSET archText, pFontTex
 	mov p1CardList[2 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, HEAV_SHOP_ID, 0, uiCardSpacing(3, 1), uiYPos, OFFSET heavText, pFontTex
+	INVOKE new_shop_card, HEAV_SHOP_ID, knightCosts[2 * 4], uiCardSpacing(3, 1), uiYPos, OFFSET heavText, pFontTex
 	mov p1CardList[3 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
@@ -241,22 +241,22 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE instantiate_game_object, eax
 
 	; // P2 Card list
-	INVOKE new_shop_card, INCO_SHOP_ID, 0, uiCardSpacing(0, 2), uiYPos, OFFSET incomeText, pFontTex
+	INVOKE new_shop_card, INCO_SHOP_ID, baseIncomePrice, uiCardSpacing(0, 2), uiYPos, OFFSET incomeText, pFontTex
 	mov p2CardList[0 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, SWOR_SHOP_ID, 0, uiCardSpacing(1, 2), uiYPos, OFFSET sworText, pFontTex
+	INVOKE new_shop_card, SWOR_SHOP_ID, knightCosts[0 * 4], uiCardSpacing(1, 2), uiYPos, OFFSET sworText, pFontTex
 	mov p2CardList[1 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, ARCH_SHOP_ID, 0, uiCardSpacing(2, 2), uiYPos, OFFSET archText, pFontTex
+	INVOKE new_shop_card, ARCH_SHOP_ID, knightCosts[1 * 4], uiCardSpacing(2, 2), uiYPos, OFFSET archText, pFontTex
 	mov p2CardList[2 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, HEAV_SHOP_ID, 0, uiCardSpacing(3, 2), uiYPos, OFFSET heavText, pFontTex
+	INVOKE new_shop_card, HEAV_SHOP_ID, knightCosts[2 * 4], uiCardSpacing(3, 2), uiYPos, OFFSET heavText, pFontTex
 	mov p2CardList[3 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax

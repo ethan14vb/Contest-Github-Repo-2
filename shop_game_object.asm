@@ -135,7 +135,7 @@ new_shop_game_object ENDP
 ; // Instance methods
 ; // ********************************************
 
-int_to_cash_string PROC PUBLIC USES eax ebx ecx edx esi edi, value:DWORD, pBuffer:DWORD, prefixChar:BYTE
+int_to_cash_string PROC USES eax ebx ecx edx esi edi, value:DWORD, pBuffer:DWORD, prefixChar:BYTE
 	mov eax, value
 	mov edi, pBuffer
 	mov ebx, 10
@@ -289,7 +289,7 @@ buy_knight ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-buy_income PROC PUBLIC USES eax ebx ecx edx esi edi, team:DWORD
+buy_income PROC PUBLIC USES ebx ecx edx esi edi, team:DWORD
 	; // Get upgrades's cost and current cash
 	.IF team == ALLY
 		mov eax, (ShopGameObject PTR [ecx]).allyIncomePrice
@@ -299,6 +299,7 @@ buy_income PROC PUBLIC USES eax ebx ecx edx esi edi, team:DWORD
 		mov edx, (ShopGameObject PTR [ecx]).enemyCash
 	.ENDIF
 
+	mov eax, 0
 	; // If can afford it, apply upgrade
 	.IF edx > eax
 		sub edx, eax
@@ -311,6 +312,8 @@ buy_income PROC PUBLIC USES eax ebx ecx edx esi edi, team:DWORD
 			; // Increases income and substracts cash used
 			add (ShopGameObject PTR [ecx]).allyIncome, 3
 			mov (ShopGameObject PTR [ecx]).allyCash, edx
+
+			mov eax, (ShopGameObject PTR[ecx]).allyIncomePrice
 		.ELSE
 			; // Increases price of future upgrades
 			FILD (ShopGameObject PTR [ecx]).enemyIncomePrice
@@ -320,6 +323,8 @@ buy_income PROC PUBLIC USES eax ebx ecx edx esi edi, team:DWORD
 			; // Increases income and substracts cash used
 			add (ShopGameObject PTR [ecx]).enemyIncome, 3
 			mov (ShopGameObject PTR [ecx]).enemyCash, edx
+
+			mov eax, (ShopGameObject PTR[ecx]).enemyIncomePrice
 		.ENDIF
 	.ENDIF
 
