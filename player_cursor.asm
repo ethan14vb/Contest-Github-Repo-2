@@ -38,6 +38,7 @@ init_player_cursor PROC PUBLIC USES ecx esi edi, pVirtualController:DWORD, pShop
 	INVOKE add_component, ecx, eax
 
 	; // Class members
+	mov (PlayerCursor PTR [ecx]).selectedCardIndex, 0
 	mov esi, pVirtualController
 	mov (PlayerCursor PTR [ecx]).pVirtualController, esi
 	mov esi, pShop
