@@ -34,7 +34,9 @@ INCLUDE transform_component.inc
 ; // ********************************************
 
 testFile BYTE "Knight.pam", 0
-knightFile BYTE "knight_spritesheet_krita.pam", 0
+sworFile BYTE "knight_spritesheet_krita.pam", 0
+archFile BYTE "archer_krita_spritesheet.pam", 0
+heavFile BYTE "heavy_spritesheet_krita.pam", 0
 castleFile BYTE "castle.pam", 0
 fontFile BYTE "16x32 cartoon font.pam", 0
 
@@ -44,8 +46,12 @@ incomeText BYTE "Income", 0
 PUBLIC pTex
 pTex DWORD ?
 
-PUBLIC pKnightTex
-pKnightTex DWORD ?
+PUBLIC pSworTex
+pSworTex DWORD ?
+PUBLIC pArchTex
+pArchTex DWORD ?
+PUBLIC pHeavTex
+pHeavTex DWORD ?
 
 PUBLIC pCastleTex
 pCastleTex DWORD ?
@@ -277,9 +283,13 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pLane
 	mov (LaneGameObject PTR [ecx]).pEnemyCastle, esi
 
-	; // Get Knight texture
-	INVOKE load_texture, OFFSET knightFile
-	mov pKnightTex, eax
+	; // Get Knight textures
+	INVOKE load_texture, OFFSET sworFile
+	mov pSworTex, eax
+	INVOKE load_texture, OFFSET archFile
+	mov pArchTex, eax
+	INVOKE load_texture, OFFSET heavFile
+	mov pHeavTex, eax
 
 	; // Ally Knight
 	INVOKE spawn_knight, SWOR, ALLY
@@ -299,7 +309,7 @@ spawn_knight PROC stdcall PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD
 	mov eax, knightIndex
 
 	; // Ally Knight
-	INVOKE new_knight_game_object, team, pKnightTex
+	INVOKE new_knight_game_object, team, pSworTex
 	mov esi, eax
 
 	mov ecx, gpScene

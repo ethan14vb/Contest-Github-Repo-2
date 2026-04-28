@@ -22,7 +22,9 @@ Sleep		PROTO : DWORD ; // This function was added because it is the Win32 method
 
 .data
 EXTERNDEF pTex : DWORD
-EXTERNDEF pKnightTex : DWORD
+EXTERNDEF pSworTex : DWORD
+EXTERNDEF pArchTex : DWORD
+EXTERNDEF pHeavTex : DWORD
 EXTERNDEF pFontTex : DWORD
 
 ; // Engine data
@@ -137,7 +139,9 @@ update_scene:
 loop_exit:
 	INVOKE free_scene
 	INVOKE unload_texture, pTex
-	INVOKE unload_texture, pKnightTex
+	INVOKE unload_texture, pSworTex
+	INVOKE unload_texture, pArchTex
+	INVOKE unload_texture, pHeavTex
 	INVOKE unload_texture, pFontTex
 
 	INVOKE ExitProcess, 0
