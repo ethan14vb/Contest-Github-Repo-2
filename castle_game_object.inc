@@ -13,9 +13,13 @@ INCLUDE game_object.inc
 CastleGameObject STRUCT
 	baseGameObject GameObject<>
 	HP DWORD ?
+	team DWORD ?
+	pLane DWORD ?
 CastleGameObject ENDS
 
 ExitProcess PROTO, dwExitCode:DWORD
+
+Sleep PROTO, dwMilliseconds:DWORD
 
 init_castle_game_object PROTO, team:DWORD, pTexture:DWORD
 new_castle_game_object PROTO, team:DWORD, pTexture:DWORD

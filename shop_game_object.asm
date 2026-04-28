@@ -63,8 +63,8 @@ init_shop_game_object PROC PUBLIC USES esi ebx edx
 	mov (GameObject PTR [ecx]).gameObjectType, SHOP_GAME_OBJECT_ID
 	mov (GameObject PTR [ecx]).pVt, OFFSET SHOP_GAMEOBJECT_VTABLE
 
-	mov (ShopGameObject PTR [ecx]).allyCash, baseCash
-	mov (ShopGameObject PTR [ecx]).enemyCash, baseCash
+	mov (ShopGameObject PTR [ecx]).allyCash, 30
+	mov (ShopGameObject PTR [ecx]).enemyCash, 30
 	mov (ShopGameObject PTR [ecx]).allyIncome, baseIncome
 	mov (ShopGameObject PTR [ecx]).enemyIncome, baseIncome
 	mov (ShopGameObject PTR [ecx]).allyIncomePrice, baseIncomePrice
