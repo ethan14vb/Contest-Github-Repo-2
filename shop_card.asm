@@ -31,12 +31,13 @@ init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DW
 	INVOKE add_component, ecx, eax
 
 	mov ecx, pThis
-	INVOKE new_text_component, pFontTex, 16, 32, 2, 200
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 50
+	mov (RenderableComponent PTR [eax]).layer, 4
 	INVOKE add_component, ecx, eax
 	mov ecx, eax
 	INVOKE set_text_component_text, pText
 
-	mov eax, ecx
+	mov eax, pThis
 	ret
 init_shop_card ENDP
 
