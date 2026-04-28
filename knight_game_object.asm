@@ -609,6 +609,11 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 	mov ecx, pThis
 	.IF team == ALLY
 		.IF esi >= edi
+			mov ecx, (KnightGameObject PTR [ecx]).pLane
+			mov eax, pThis
+			INVOKE remove_knight, eax
+			mov ecx, pThis
+
 			mov eax, (KnightGameObject PTR [ecx]).ATK
 			mov ecx, pOpposingCastle
 			INVOKE castle_receive_damage, eax
@@ -618,6 +623,11 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 		.ENDIF
 	.ELSE
 		.IF esi <= edi
+			mov ecx, (KnightGameObject PTR [ecx]).pLane
+			mov eax, pThis
+			INVOKE remove_knight, eax
+			mov ecx, pThis
+
 			mov eax, (KnightGameObject PTR [ecx]).ATK
 			mov ecx, pOpposingCastle
 			INVOKE castle_receive_damage, eax
