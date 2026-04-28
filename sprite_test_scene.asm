@@ -37,7 +37,7 @@ testFile BYTE "Knight.pam", 0
 sworFile BYTE "knight_spritesheet_krita.pam", 0
 archFile BYTE "archer_krita_spritesheet.pam", 0
 heavFile BYTE "heavy_spritesheet_krita.pam", 0
-castleFile BYTE "castle.pam", 0
+castleFile BYTE "castle krita.pam", 0
 fontFile BYTE "16x32 cartoon font.pam", 0
 
 text BYTE "This is a MAGNIFICENT! test to see if the text string rendering system works. 0123456789", 0
