@@ -585,6 +585,7 @@ receive_damage ENDP
 check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 		local pThis : DWORD
 		local pOpposingCastle : DWORD
+		local team : DWORD
 	mov pThis, ecx
 
 	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
@@ -592,8 +593,9 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 
 	; // Obtain pointer to opposing castle and its position
 	mov eax, (KnightGameObject PTR [ecx]).team
+	mov team, eax
 	mov ecx, (KnightGameObject PTR [ecx]).pLane
-	.IF eax == ALLY
+	.IF team == ALLY
 		mov ecx, (LaneGameObject PTR [ecx]).pEnemyCastle
 	.ELSE
 		mov ecx, (LaneGameObject PTR [ecx]).pAllyCastle
@@ -605,13 +607,34 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 
 	; // If castle is reached, send damage and clear itself
 	mov ecx, pThis
-	.IF esi == edi
-		mov eax, (KnightGameObject PTR [ecx]).ATK
-		mov ecx, pOpposingCastle
-		INVOKE castle_receive_damage, eax
-		mov ecx, pThis
-		mov ecx, (GameObject PTR [ecx]).pParentScene
-		INVOKE queue_free_game_object, pThis
+	.IF team == ALLY
+		.IF esi >= edi
+			mov ecx, (KnightGameObject PTR [ecx]).pLane
+			mov eax, pThis
+			INVOKE remove_knight, eax
+			mov ecx, pThis
+
+			mov eax, (KnightGameObject PTR [ecx]).ATK
+			mov ecx, pOpposingCastle
+			INVOKE castle_receive_damage, eax
+			mov ecx, pThis
+			mov ecx, (GameObject PTR [ecx]).pParentScene
+			INVOKE queue_free_game_object, pThis
+		.ENDIF
+	.ELSE
+		.IF esi <= edi
+			mov ecx, (KnightGameObject PTR [ecx]).pLane
+			mov eax, pThis
+			INVOKE remove_knight, eax
+			mov ecx, pThis
+
+			mov eax, (KnightGameObject PTR [ecx]).ATK
+			mov ecx, pOpposingCastle
+			INVOKE castle_receive_damage, eax
+			mov ecx, pThis
+			mov ecx, (GameObject PTR [ecx]).pParentScene
+			INVOKE queue_free_game_object, pThis
+		.ENDIF
 	.ENDIF
 
 	ret
