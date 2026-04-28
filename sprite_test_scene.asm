@@ -292,10 +292,10 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov pHeavTex, eax
 
 	; // Ally Knight
-	INVOKE spawn_knight, SWOR, ALLY
+	INVOKE spawn_knight, ARCH, ALLY
 
 	; // Enemy Knight
-	INVOKE spawn_knight, SWOR, ENEMY
+	INVOKE spawn_knight, HEAV, ENEMY
 
 	ret
 populate_sprite_test_scene ENDP
@@ -306,10 +306,15 @@ populate_sprite_test_scene ENDP
 ; // with the sprite test scene contents.
 ; // ----------------------------------
 spawn_knight PROC stdcall PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DWORD
-	mov eax, knightIndex
+	.IF knightIndex == SWOR
+		mov eax, pSworTex
+	.ELSEIF knightIndex == ARCH
+		mov eax, pArchTex
+	.ELSE
+		mov eax, pHeavTex
+	.ENDIF
 
-	; // Ally Knight
-	INVOKE new_knight_game_object, team, pSworTex
+	INVOKE new_knight_game_object, team, eax
 	mov esi, eax
 
 	mov ecx, gpScene
