@@ -113,8 +113,28 @@ player_cursor_update PROC USES ebx ecx edx esi edi, deltaTime:REAL4
 	mov ecx, pThis
 	mov eax, (PlayerCursor PTR [ecx]).selectedCardIndex
 	
-	; // Positioning
-	; // TODO add positioning logic
+	; // Positioning logic
+	mov ecx, pThis
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+	mov edi, eax
+
+	; // Get the selected ShopCard's Transform
+	mov ecx, pThis
+	mov esi, (PlayerCursor PTR [ecx]).pCardList
+	mov eax, (PlayerCursor PTR [ecx]).selectedCardIndex
+	mov ecx, [esi + eax * 4]
+	INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+
+	; // Snap to card position
+	mov ebx, (TransformComponent PTR [eax]).x
+
+	; // Offset to fit borders
+	sub ebx, 5 
+	mov (TransformComponent PTR [edi]).x, ebx
+
+	mov ebx, (TransformComponent PTR [eax]).y
+	sub ebx, 5
+	mov (TransformComponent PTR [edi]).y, ebx
 
 	ret
 player_cursor_update ENDP
