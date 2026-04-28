@@ -99,7 +99,7 @@ init_castle_game_object PROC PUBLIC USES esi edi ebx edx, team:DWORD, pTexture:D
 	mov ecx, pThis
 	INVOKE new_text_component, pFontTex, 16, 32, 2, 50
 	mov (TextComponent PTR [eax]).offsetX, -100
-	mov (TextComponent PTR [eax]).offsetY, 100
+	mov (TextComponent PTR [eax]).offsetY, -325
 	mov (RenderableComponent PTR [eax]).layer, 4
 	INVOKE add_component, ecx, eax
 	mov ecx, eax
