@@ -92,6 +92,7 @@ bind_gp_sel    InputBinding <ACTION_SELECT, 1000h>
 ; // ********************************************
 pLane DWORD ?
 pShop DWORD ?
+gpScene DWORD ?
 
 p1CardList DWORD 3 DUP(?)
 p2CardList DWORD 3 DUP(?)
@@ -185,6 +186,8 @@ init_virtual_controllers ENDP
 ; // with the sprite test scene contents.
 ; // ----------------------------------
 populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
+	mov eax, pScene
+	mov gpScene, eax
 	INVOKE init_virtual_controllers
 
 	FINIT
@@ -248,6 +251,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, pLane
+	mov ecx, pShop
+	mov (ShopGameObject PTR [ecx]).pLane, eax
 
 	; // Get Castle texture
 	INVOKE load_texture, OFFSET castleFile
@@ -276,25 +281,30 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov pKnightTex, eax
 
 	; // Ally Knight
-	INVOKE new_knight_game_object, ALLY, pKnightTex
-	mov esi, eax
-
-	mov ecx, pScene
-	INVOKE instantiate_game_object, esi
-	mov ecx, pLane
-	INVOKE assign_knight, esi
+	INVOKE spawn_knight, ALLY
 
 	; // Enemy Knight
-	INVOKE new_knight_game_object, ENEMY, pKnightTex
+	INVOKE spawn_knight, ENEMY
+
+	ret
+populate_sprite_test_scene ENDP
+
+; // ----------------------------------
+; // populate_sprite_test_scene
+; // Call this method on an empty Scene to fill it
+; // with the sprite test scene contents.
+; // ----------------------------------
+spawn_knight PROC stdcall USES eax ebx ecx edx esi edi, team:DWORD
+	; // Ally Knight
+	INVOKE new_knight_game_object, team, pKnightTex
 	mov esi, eax
 
-	mov ecx, pScene
+	mov ecx, gpScene
 	INVOKE instantiate_game_object, esi
-
 	mov ecx, pLane
 	INVOKE assign_knight, esi
 
 	ret
-populate_sprite_test_scene ENDP
+spawn_knight ENDP
 
 END

@@ -19,5 +19,6 @@ ACTION_LANE_DOWN  EQU 4
 ACTION_SELECT     EQU 5
 
 populate_sprite_test_scene PROTO pScene: DWORD
+spawn_knight PROTO, team:DWORD
 
 ENDIF

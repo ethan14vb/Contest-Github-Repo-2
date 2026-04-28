@@ -105,4 +105,19 @@ local pThis : DWORD
 	SkipIncome:
 	ret
 shop_update ENDP
+
+; // ----------------------------------
+; // spawn_knight
+; // Spawns specified knight for given team
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+buy_knight PROC stdcall USES eax ebx ecx edx esi edi
+		local pThis : DWORD
+	mov pThis, ecx
+
+	ret
+buy_knight ENDP
+
 END

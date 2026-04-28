@@ -15,6 +15,7 @@ baseIncome EQU 5
 
 ShopGameObject STRUCT
 	baseGameObject GameObject<>
+	pLane DWORD ?
 	allyCash DWORD ?
 	enemyCash DWORD ?
 	allyIncome DWORD ?
@@ -23,5 +24,6 @@ ShopGameObject ENDS
 
 init_shop_game_object PROTO
 new_shop_game_object PROTO
+buy_knight PROTO
 
 ENDIF
