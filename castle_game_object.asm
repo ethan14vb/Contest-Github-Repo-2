@@ -39,7 +39,7 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov (GameObject PTR [ecx]).pVt, OFFSET CASTLE_GAMEOBJECT_VTABLE
 
 	; // For now castle HP is just 0
-	mov (CastleGameObject PTR [ecx]).HP, 1
+	mov (CastleGameObject PTR [ecx]).HP, 70
 	mov eax, team
 	mov (CastleGameObject PTR [ecx]).team, eax
 	mov (CastleGameObject PTR [ecx]).exitNextFrame, 0

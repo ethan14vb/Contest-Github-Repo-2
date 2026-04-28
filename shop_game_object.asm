@@ -267,7 +267,7 @@ buy_knight PROC PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DWO
 	.ENDIF
 
 	; // If can afford it, spawn the knight
-	.IF edx > eax
+	.IF edx >= eax
 		INVOKE spawn_knight, knightIndex, team
 		sub edx, eax
 
@@ -300,7 +300,7 @@ buy_income PROC PUBLIC USES ebx ecx edx esi edi, team:DWORD
 	.ENDIF
 
 	; // If can afford it, apply upgrade
-	.IF edx > eax
+	.IF edx >= eax
 		sub edx, eax
 		.IF team == ALLY
 			; // Increases price of future upgrades
