@@ -117,7 +117,7 @@ shop_update ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-buy_knight PROC stdcall USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DWORD
+buy_knight PROC PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DWORD
 		local pThis : DWORD
 	mov pThis, ecx
 
@@ -153,7 +153,7 @@ buy_knight ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-buy_income PROC stdcall USES eax ebx ecx edx esi edi, team:DWORD
+buy_income PROC PUBLIC USES eax ebx ecx edx esi edi, team:DWORD
 	; // Get upgrades's cost and current cash
 	.IF team == ALLY
 		mov eax, (ShopGameObject PTR [ecx]).allyIncomePrice

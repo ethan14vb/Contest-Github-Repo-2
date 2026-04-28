@@ -37,6 +37,10 @@ init_shop_card PROC PUBLIC USES ecx esi edi, itemId:DWORD, cost:DWORD, xPos : DW
 	mov ecx, eax
 	INVOKE set_text_component_text, pText
 
+	mov ecx, pThis
+	mov esi, itemId
+	mov (ShopCard PTR [ecx]).itemId, esi
+
 	mov eax, pThis
 	ret
 init_shop_card ENDP
