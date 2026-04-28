@@ -299,7 +299,6 @@ buy_income PROC PUBLIC USES ebx ecx edx esi edi, team:DWORD
 		mov edx, (ShopGameObject PTR [ecx]).enemyCash
 	.ENDIF
 
-	mov eax, 0
 	; // If can afford it, apply upgrade
 	.IF edx > eax
 		sub edx, eax
