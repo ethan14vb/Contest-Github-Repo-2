@@ -312,6 +312,7 @@ buy_income PROC PUBLIC USES ebx ecx edx esi edi, team:DWORD
 			add (ShopGameObject PTR [ecx]).allyIncome, 3
 			mov (ShopGameObject PTR [ecx]).allyCash, edx
 
+			; // Return the new cost
 			mov eax, (ShopGameObject PTR[ecx]).allyIncomePrice
 		.ELSE
 			; // Increases price of future upgrades
@@ -323,8 +324,12 @@ buy_income PROC PUBLIC USES ebx ecx edx esi edi, team:DWORD
 			add (ShopGameObject PTR [ecx]).enemyIncome, 3
 			mov (ShopGameObject PTR [ecx]).enemyCash, edx
 
+			; // Return the new cost
 			mov eax, (ShopGameObject PTR[ecx]).enemyIncomePrice
 		.ENDIF
+	.ELSE
+		; // Return 0 (do not update)
+		mov eax, 0
 	.ENDIF
 
 	ret
