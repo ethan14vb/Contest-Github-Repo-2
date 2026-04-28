@@ -112,6 +112,7 @@
     <None Include="player_cursor.inc">
       <Filter>GameObjects</Filter>
     </None>
+    <None Include="input_manager_objects.inc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -234,6 +235,9 @@
       <Filter>GameObjects</Filter>
     </MASM>
     <MASM Include="player_cursor.asm">
+      <Filter>GameObjects</Filter>
+    </MASM>
+    <MASM Include="shop_game_object.asm">
       <Filter>GameObjects</Filter>
     </MASM>
   </ItemGroup>

@@ -10,8 +10,15 @@ SHOP_GAME_OBJECT_INC EQU 1
 
 INCLUDE game_object.inc
 
+baseCash EQU 30
+baseIncome EQU 5
+
 ShopGameObject STRUCT
 	baseGameObject GameObject<>
+	allyCash DWORD ?
+	enemyCash DWORD ?
+	allyIncome DWORD ?
+	enemyIncome DWORD ?
 ShopGameObject ENDS
 
 init_shop_game_object PROTO
