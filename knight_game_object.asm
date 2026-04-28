@@ -225,7 +225,7 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov eax, 0			; // Default x position for allies
 	cmp team, ENEMY
 	jne NotEnemy
-	mov eax, 1800		; // Spawns on opposite end if this is an enemy
+	mov eax, 1600		; // Spawns on opposite end if this is an enemy
 	NotEnemy:
 	; // Gives Knight a transform
 	INVOKE new_transform_component, eax, 500, 0
@@ -608,6 +608,7 @@ check_reached_castle PROC stdcall USES eax ebx ecx edx esi edi
 	; // If castle is reached, send damage and clear itself
 	mov ecx, pThis
 	.IF team == ALLY
+		sub edi, 75	; // Makes game look good and be fair
 		.IF esi >= edi
 			mov ecx, (KnightGameObject PTR [ecx]).pLane
 			mov eax, pThis

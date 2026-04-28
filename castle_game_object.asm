@@ -48,9 +48,9 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov eax, 0			; // Default x position for allies
 	cmp team, ENEMY
 	jne NotEnemy
-	mov eax, 1800		; // Spawns on opposite end if this is an enemy
+	mov eax, 1675		; // Spawns on opposite end if this is an enemy
 	NotEnemy:
-	INVOKE new_transform_component, eax, 500, 0
+	INVOKE new_transform_component, eax, 425, 0
 	INVOKE add_component, ecx, eax
 
 	; // Gives Castle a sprite
