@@ -15,6 +15,7 @@ MAX_LANE_KNIGHTS EQU 10
 
 LaneGameObject STRUCT
 	baseGameObject GameObject<>
+	pFont DWORD ?
 	pAllyCastle DWORD ?
 	pEnemyCastle DWORD ?
 	pFirstAlly DWORD 0	; // Pointers to each team's respective first knight
@@ -27,7 +28,7 @@ init_lane_game_object PROTO
 new_lane_game_object PROTO
 lane_update PROTO, deltaTime:REAL4
 scan_firsts PROTO
-freeze_lane PROTO, freeze:DWORD
+game_end PROTO, team:DWORD
 assign_knight PROTO, pKnight:DWORD
 remove_knight PROTO, pKnight:DWORD
 

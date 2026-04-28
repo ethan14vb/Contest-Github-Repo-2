@@ -11,9 +11,12 @@ INCLUDE heap_functions.inc
 INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
+INCLUDE text_component.inc
 
 .data
 LANE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET lane_update, OFFSET game_object_exit, OFFSET free_game_object>
+allyWinText BYTE "Player 1 Wins!", 0
+enemyWinText BYTE "Player 2 Wins!", 0
 
 .code
 ; // ********************************************
@@ -47,7 +50,7 @@ init_lane_game_object PROC PUBLIC USES esi ebx edx
 	
 	mov ecx, pThis ; // restores ecx after its changed earlier
 	; // Gives Lane a transform
-	INVOKE new_transform_component, 0, 0, 0
+	INVOKE new_transform_component, 825, 500, 0
 	INVOKE add_component, ecx, eax
 
 	mov ecx, pThis
@@ -262,17 +265,26 @@ scan_firsts PROC PUBLIC USES eax ebx edx ecx esi edi
 scan_firsts ENDP
 
 ; // ----------------------------------
-; // freeze_lane
-; // Stops all lane operations if freeze = 1, continutes if = 0
+; // game_end
+; // Displays winning text for given team
 ; //
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-freeze_lane PROC PUBLIC USES eax ebx edx ecx esi edi, freeze:DWORD
-	.IF freeze == 1
+game_end PROC PUBLIC USES eax ebx edx ecx esi edi, team:DWORD
+	mov eax, (LaneGameObject PTR [ecx]).pFont
+	INVOKE new_text_component, eax, 16, 32, 2, 50
+	mov (RenderableComponent PTR [eax]).layer, 4
+	INVOKE add_component, ecx, eax
+	mov ecx, eax
+
+	.IF team == ALLY
+		INVOKE set_text_component_text, OFFSET allyWinText
 	.ELSE
+		INVOKE set_text_component_text, OFFSET enemyWinText
 	.ENDIF
+
 	ret
-freeze_lane ENDP
+game_end ENDP
 
 END
