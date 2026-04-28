@@ -12,6 +12,8 @@ INCLUDE game_object.inc
 
 baseCash EQU 30
 baseIncome EQU 5
+baseIncomePrice EQU 20
+incomePriceMult EQU 1.6
 
 ShopGameObject STRUCT
 	baseGameObject GameObject<>
@@ -20,10 +22,13 @@ ShopGameObject STRUCT
 	enemyCash DWORD ?
 	allyIncome DWORD ?
 	enemyIncome DWORD ?
+	allyIncomePrice DWORD ?
+	enemyIncomePrice DWORD ?
 ShopGameObject ENDS
 
 init_shop_game_object PROTO
 new_shop_game_object PROTO
 buy_knight PROTO, knightIndex:DWORD, team:DWORD
+buy_income PROTO, team:DWORD
 
 ENDIF

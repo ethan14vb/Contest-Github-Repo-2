@@ -45,6 +45,8 @@ init_shop_game_object PROC PUBLIC USES esi ebx edx
 	mov (ShopGameObject PTR [ecx]).enemyCash, baseCash
 	mov (ShopGameObject PTR [ecx]).allyIncome, baseIncome
 	mov (ShopGameObject PTR [ecx]).enemyIncome, baseIncome
+	mov (ShopGameObject PTR [ecx]).allyIncomePrice, baseIncomePrice
+	mov (ShopGameObject PTR [ecx]).enemyIncomePrice, baseIncomePrice
 
 	mov ecx, pThis
 	mov eax, ecx
@@ -108,8 +110,8 @@ local pThis : DWORD
 shop_update ENDP
 
 ; // ----------------------------------
-; // spawn_knight
-; // Spawns specified knight for given team
+; // buy_knight
+; // Spawns specified knight for given team if enough money is held
 ; // 
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
@@ -142,5 +144,17 @@ buy_knight PROC stdcall USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DW
 		
 	ret
 buy_knight ENDP
+
+; // ----------------------------------
+; // buy_income
+; // Increases income for a team if enough money is held
+; // 
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+buy_income PROC stdcall USES eax ebx ecx edx esi edi, team:DWORD
+	mov eax, team
+	ret
+buy_income ENDP
 
 END
