@@ -271,6 +271,9 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 
 	mov ecx, pScene
 	INVOKE instantiate_game_object, pLane
+	mov ecx, pLane
+	mov edx, pFontTex
+	mov (LaneGameObject PTR [ecx]).pFont, edx
 	mov ecx, pShop
 	mov (ShopGameObject PTR [ecx]).pLane, eax
 
@@ -310,6 +313,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	; // Enemy Knight
 	INVOKE spawn_knight, HEAV, ENEMY
 
+	mov ecx, pLane
+	INVOKE game_end, ALLY
 	ret
 populate_sprite_test_scene ENDP
 
