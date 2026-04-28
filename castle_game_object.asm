@@ -40,6 +40,8 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 
 	; // For now castle HP is just 0
 	mov (CastleGameObject PTR [ecx]).HP, 1
+	mov eax, team
+	mov (CastleGameObject PTR [ecx]).team, eax
 
 	; // Gives Castle a transform
 	mov eax, 0			; // Default x position for allies
@@ -95,7 +97,14 @@ castle_receive_damage PROC PUBLIC USES eax ebx ecx edx esi, damage:DWORD
 	sub eax, damage
 	cmp eax, 0
 	jg SkipGameEnd
-		; // game end
+		mov eax, (CastleGameObject PTR [ecx]).team
+		mov ecx, (CastleGameObject PTR [ecx]).pLane
+		.IF eax == ALLY
+			INVOKE game_end, ENEMY
+		.ELSE
+			INVOKE game_end, ALLY
+		.ENDIF
+		;INVOKE Sleep, 5000
 		INVOKE ExitProcess, 0
 
 	SkipGameEnd:

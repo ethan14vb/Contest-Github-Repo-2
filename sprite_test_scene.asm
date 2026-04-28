@@ -285,6 +285,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE new_castle_game_object, ALLY, pCastleTex
 	mov esi, eax
 
+	mov eax, pLane
+	mov (CastleGameObject PTR [esi]).pLane, eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
 	mov ecx, pLane
@@ -294,6 +296,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE new_castle_game_object, ENEMY, pCastleTex
 	mov esi, eax
 
+	mov eax, pLane
+	mov (CastleGameObject PTR [esi]).pLane, eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, esi
 	mov ecx, pLane
@@ -313,8 +317,6 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	; // Enemy Knight
 	INVOKE spawn_knight, HEAV, ENEMY
 
-	mov ecx, pLane
-	INVOKE game_end, ALLY
 	ret
 populate_sprite_test_scene ENDP
 
