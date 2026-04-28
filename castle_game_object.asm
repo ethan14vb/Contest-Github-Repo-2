@@ -13,11 +13,45 @@ INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
+INCLUDE text_component.inc
+
+EXTERNDEF pFontTex:DWORD
 
 .data
 CASTLE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET castle_update, OFFSET game_object_exit, OFFSET free_game_object>
+hpTextBuffer BYTE 16 DUP(0)
 
 .code
+int_to_string PROC USES eax ebx ecx edx esi edi, value:DWORD, pBuffer:DWORD
+	mov eax, value
+	mov edi, pBuffer
+	mov ebx, 10
+	mov ecx, 0
+
+int_to_string_divide_loop:
+	mov edx, 0
+	div ebx
+	push edx
+	inc ecx
+	cmp eax, 0
+	jne int_to_string_divide_loop
+
+int_to_string_pop_loop:
+	pop edx
+	add dl, '0'
+	mov BYTE PTR [edi], dl
+	inc edi
+	dec ecx
+	cmp ecx, 0
+	jne int_to_string_pop_loop
+
+	; // Add null terminator
+	mov BYTE PTR [edi], 0
+	
+	ret
+int_to_string ENDP
+
+
 ; // ********************************************
 ; // Constructor Methods
 ; // ********************************************
@@ -29,7 +63,7 @@ CASTLE_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET cas
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
+init_castle_game_object PROC PUBLIC USES esi edi ebx edx, team:DWORD, pTexture:DWORD
 		local pThis
 	mov pThis, ecx
 
@@ -60,6 +94,19 @@ init_castle_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	.ENDIF
 
 	INVOKE add_component, ecx, eax
+
+	; // Add the HP text
+	mov ecx, pThis
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 50
+	mov (TextComponent PTR [eax]).offsetX, -100
+	mov (TextComponent PTR [eax]).offsetY, 100
+	mov (RenderableComponent PTR [eax]).layer, 4
+	INVOKE add_component, ecx, eax
+	mov ecx, eax
+	mov edi, pThis
+	mov esi, (CastleGameObject PTR[edi]).HP
+	INVOKE int_to_string, esi, OFFSET hpTextBuffer
+	INVOKE set_text_component_text, OFFSET hpTextBuffer
 
 	mov ecx, pThis
 	mov eax, ecx
@@ -125,9 +172,16 @@ castle_receive_damage PROC PUBLIC USES eax ebx ecx edx esi, damage:DWORD
 		mov ecx, pThis
 		mov (CastleGameObject PTR [ecx]).exitNextFrame, 1
 
-	SkipGameEnd:
+		SkipGameEnd:
 	mov ecx, pThis
 	mov (CastleGameObject PTR [ecx]).HP, eax
+	mov edx, eax
+
+	mov ecx, pThis
+	INVOKE get_first_component_which_is_a, TEXT_COMPONENT_ID
+	mov ecx, eax
+	INVOKE int_to_string, edx, OFFSET hpTextBuffer
+	INVOKE set_text_component_text, OFFSET hpTextBuffer
 
 	ret
 castle_receive_damage ENDP
