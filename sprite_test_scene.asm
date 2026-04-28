@@ -314,7 +314,7 @@ spawn_knight PROC stdcall PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD
 		mov eax, pHeavTex
 	.ENDIF
 
-	INVOKE new_knight_game_object, team, eax
+	INVOKE new_knight_game_object, team, eax, knightIndex
 	mov esi, eax
 
 	mov ecx, gpScene

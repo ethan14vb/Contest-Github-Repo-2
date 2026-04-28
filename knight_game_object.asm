@@ -41,32 +41,29 @@ ATTACK_ANIM		EQU 3
 
 ; // Create the animation frames
 IDL_FRM_TM equ 0.1
-idle_anim AnimationFrame	<512, 512, 256, 256, 0.1, 0>,		\
+knight_idle_anim AnimationFrame	<512, 512, 256, 256, 0.1, 0>,		\
 							<768, 512, 256, 256, 0.1, 0>,		\
 							<1024, 512, 256, 256, 0.1, 0>,		\
 							<1280, 512, 256, 256, 0.1, 0>,		\
 							<0, 768, 256, 256, 0.1, 0>,			\
-							<256, 768, 256, 256, IDL_FRM_TM, 0>,		\
-							<512, 768, 256, 256, IDL_FRM_TM, 0>,		\
-							<768, 768, 256, 256, IDL_FRM_TM, 0>,		\
-							<1024, 768, 256, 256, IDL_FRM_TM, 0>,		\
-							<1280, 768, 256, 256, IDL_FRM_TM, 0>,		\
-							<0, 1024, 256, 256, IDL_FRM_TM, 0>
+							<256, 768, 256, 256, 0.1, 0>,		\
+							<512, 768, 256, 256, 0.1, 0>,		\
+							<768, 768, 256, 256, 0.1, 0>,		\
+							<1024, 768, 256, 256, 0.1, 0>,		\
+							<1280, 768, 256, 256, 0.1, 0>,		\
+							<0, 1024, 256, 256, 0.1, 0>
 WLK_FRM_TM equ 0.1
-walk_anim AnimationFrame	<768, 0, 256, 256, 0.1, 0>,\
-							<1024, 0, 256, 256, WLK_FRM_TM, 0>,\
-							<1280, 0, 256, 256, WLK_FRM_TM, 0>,\
-							<0, 256, 256, 256, WLK_FRM_TM, 0>,	\
-							<256, 256, 256, 256, WLK_FRM_TM, 0>,\
-							<512, 256, 256, 256, WLK_FRM_TM, 0>,\
-							<768, 256, 256, 256, WLK_FRM_TM, 0>,\
-							<1024, 256, 256, 256, WLK_FRM_TM, 0>,\
-							<1280, 256, 256, 256, WLK_FRM_TM, 0>,\
-							<0, 512, 256, 256, WLK_FRM_TM, 0>,\
-							<256, 512, 256, 256, WLK_FRM_TM, 0>
+knight_walk_anim AnimationFrame	<768, 0, 256, 256, 0.1, 0>,\
+							<1024, 0, 256, 256, 0.1, 0>,\
+							<1280, 0, 256, 256, 0.1, 0>,\
+							<0, 256, 256, 256, 0.1, 0>,	\
+							<256, 256, 256, 256, 0.1, 0>,\
+							<512, 256, 256, 256, 0.1, 0>,\
+							<768, 256, 256, 256, 0.1, 0>,\
+							<1024, 256, 256, 256, 0.1, 0>
 	
 ATTACK_EVENT_CODE equ 99
-attack_anim AnimationFrame	<256, 1024, 256, 256, 0.02, 0>,		\
+knight_attack_anim AnimationFrame	<256, 1024, 256, 256, 0.02, 0>,		\
 							<512, 1024, 256, 256, 0.5, 0>,		\
 							<768, 1024, 256, 256, 0.06, ATTACK_EVENT_CODE>,		\
 							<1024, 1024, 256, 256, 0.5, 0>,		\
@@ -74,9 +71,64 @@ attack_anim AnimationFrame	<256, 1024, 256, 256, 0.02, 0>,		\
 
 ; // Create the list of animations
 knight_animations Animation \
-<IDLE_ANIM, OFFSET idle_anim, 11, 1>, \
-<WALK_ANIM, OFFSET walk_anim, 8, 1>, \
-<ATTACK_ANIM, OFFSET attack_anim, 5, 0>
+<IDLE_ANIM, OFFSET knight_idle_anim, 11, 1>, \
+<WALK_ANIM, OFFSET knight_walk_anim, 8, 1>, \
+<ATTACK_ANIM, OFFSET knight_attack_anim, 5, 0>
+
+; // Create the animation frames
+archer_idle_anim AnimationFrame	<0, 768, 256, 256, 1.0, 0>
+
+archer_walk_anim AnimationFrame	<768, 0, 256, 256, 0.1, 0>,\
+							<1024, 0, 256, 256, WLK_FRM_TM, 0>,\
+							<1280, 0, 256, 256, WLK_FRM_TM, 0>,\
+							<0, 256, 256, 256, WLK_FRM_TM, 0>,	\
+							<256, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<512, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<768, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<1024, 256, 256, 256, WLK_FRM_TM, 0>
+	
+archer_attack_anim AnimationFrame	<256, 1024, 256, 256, 0.075, 0>,		\
+							<512, 1024, 256, 256, 0.05, 0>,		\
+							<768, 1024, 256, 256, 0.5, 0>,		\
+							<1024, 1024, 256, 256, 0.03, ATTACK_EVENT_CODE>,		\
+							<1280, 1024, 256, 256, 0.5, 0>
+
+; // Create the list of animations
+archer_animations Animation \
+<IDLE_ANIM, OFFSET archer_idle_anim, 1, 1>, \
+<WALK_ANIM, OFFSET archer_walk_anim, 8, 1>, \
+<ATTACK_ANIM, OFFSET archer_attack_anim, 5, 0>
+
+; // Create the animation frames
+heavy_idle_anim AnimationFrame	<768, 256, 256, 256, 0.1, 0>,		\
+							<1024, 256, 256, 256, 0.1, 0>,		\
+							<0, 512, 256, 256, 0.1, 0>,		\
+							<256, 512, 256, 256, 0.1, 0>,		\
+							<512, 512, 256, 256, 0.1, 0>,			\
+							<768, 512, 256, 256, IDL_FRM_TM, 0>
+
+heavy_walk_anim AnimationFrame	<0, 0, 256, 256, 0.1, 0>,\
+							<256, 0, 256, 256, WLK_FRM_TM, 0>,\
+							<512, 0, 256, 256, WLK_FRM_TM, 0>,\
+							<768, 0, 256, 256, WLK_FRM_TM, 0>,	\
+							<1024, 0, 256, 256, WLK_FRM_TM, 0>,\
+							<0, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<256, 256, 256, 256, WLK_FRM_TM, 0>,\
+							<512, 256, 256, 256, WLK_FRM_TM, 0>
+	
+heavy_attack_anim AnimationFrame	<0, 768, 256, 256, 0.05, 0>,		\
+							<256, 768, 256, 256, 0.75, 0>,		\
+							<512, 768, 256, 256, 0.05, 0>,		\
+							<768, 768, 256, 256, 0.05, ATTACK_EVENT_CODE>,		\
+							<1024, 768, 256, 256, 0.75, 0>, \
+							<0, 1024, 256, 256, 0.05, 0>, \
+							<256, 1024, 256, 256, 0.02, 0>
+
+; // Create the list of animations
+heavy_animations Animation \
+<IDLE_ANIM, OFFSET heavy_idle_anim, 6, 1>, \
+<WALK_ANIM, OFFSET heavy_walk_anim, 8, 1>, \
+<ATTACK_ANIM, OFFSET heavy_attack_anim, 7, 0>
 
 .code
 ; // ********************************************
@@ -149,7 +201,7 @@ knight_on_anim_finish_event ENDP
 ; // Register Parameters: 
 ; //	ecx - THIS pointer
 ; // ----------------------------------
-init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
+init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD, knightIndex:DWORD
 		local pThis
 	mov pThis, ecx
 	; // Parent constructor
@@ -167,6 +219,8 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 	mov (KnightGameObject PTR [ecx]).oneFrameTillDeath, 0
 	mov esi, MY_ATKSP
 	mov (KnightGameObject PTR [ecx]).ATKSP, esi
+	mov esi, knightIndex
+	mov (KnightGameObject PTR [ecx]).knightIndex, esi
 
 	mov eax, 0			; // Default x position for allies
 	cmp team, ENEMY
@@ -189,7 +243,17 @@ init_knight_game_object PROC PUBLIC USES esi ebx edx, team:DWORD, pTexture:DWORD
 
 	; // Create the animator component
 	pop eax
-	INVOKE new_animator_component, eax, OFFSET knight_animations, 3
+	mov esi, (KnightGameObject PTR [ecx]).knightIndex
+
+	.IF esi == SWOR
+		mov esi, OFFSET knight_animations
+	.ELSEIF esi == ARCH
+		mov esi, OFFSET archer_animations
+	.ELSE
+		mov esi, OFFSET heavy_animations
+	.ENDIF
+
+	INVOKE new_animator_component, eax, esi, 3
 	INVOKE add_component, ecx, eax
 
 	mov ecx, eax
@@ -223,10 +287,10 @@ init_knight_game_object ENDP
 ; // new_knight_game_object
 ; // Reserves heap space for the Object with parameters calls the initializer method
 ; // ----------------------------------
-new_knight_game_object PROC PUBLIC USES ecx, team:DWORD, pTexture:DWORD
+new_knight_game_object PROC PUBLIC USES ecx, team:DWORD, pTexture:DWORD, knightIndex:DWORD
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, SIZEOF KnightGameObject
 	mov ecx, eax ; // Move the memory address to ecx so it can function as a "this" pointer
-	INVOKE init_knight_game_object, team, pTexture
+	INVOKE init_knight_game_object, team, pTexture, knightIndex
 
 	ret ; // Return with the address of the memory block in HeapAlloc
 new_knight_game_object ENDP

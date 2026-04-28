@@ -23,6 +23,7 @@ KnightGameObject STRUCT
 	baseGameObject GameObject<>
 	pLane DWORD ?	; // Pointer to the lane it belongs to
 	team DWORD ?
+	knightIndex DWORD ?
 
 	; // State logic 
 	state DWORD ?
@@ -42,8 +43,8 @@ KnightGameObject STRUCT
 	RANGE DWORD ?	; // Distance to next enemy to be able to attack
 KnightGameObject ENDS
 
-init_knight_game_object PROTO, team:DWORD, pTexture:DWORD
-new_knight_game_object PROTO, team:DWORD, pTexture:DWORD
+init_knight_game_object PROTO, team:DWORD, pTexture:DWORD, knightIndex:DWORD
+new_knight_game_object PROTO, team:DWORD, pTexture:DWORD, knightIndex:DWORD
 get_first_opposing_knight PROTO, callerTeam:DWORD
 is_knight_in_range PROTO, pOpposingKnight:DWORD
 attack PROTO, pOpposingKnight:DWORD
