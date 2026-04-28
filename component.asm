@@ -23,6 +23,7 @@ COMPONENT_VTABLE Component_vtable <OFFSET free_component>
 init_component PROC PUBLIC USES esi
 	mov (Component PTR [ecx]).componentType, DEFAULT_COMPONENT_ID
 	mov (Component PTR [ecx]).pVt, OFFSET COMPONENT_VTABLE
+	mov (Component PTR [ecx]).userId, 0
 
 	ret
 init_component ENDP

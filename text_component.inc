@@ -12,6 +12,9 @@ INCLUDE renderable_component.inc
 TextComponent STRUCT
 	baseRenderableComponent RenderableComponent <>
 
+	offsetX DWORD ?
+	offsetY DWORD ?
+
 	pFontTexture	DWORD ?
 	pText			DWORD ?
 	textMaxLen		DWORD ?

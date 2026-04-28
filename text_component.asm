@@ -42,6 +42,9 @@ init_text_component PROC PUBLIC USES ebx ecx edx esi, pFontTexture : DWORD, char
 	mov esi, maxChars
 	mov (TextComponent PTR [ecx]).textMaxLen, esi
 
+	mov (TextComponent PTR [ecx]).offsetX, 0
+	mov (TextComponent PTR [ecx]).offsetY, 0
+		
 	mov eax, maxChars
 	inc eax
 	INVOKE HeapAlloc, hHeap, HEAP_GENERATE_EXCEPTIONS, eax

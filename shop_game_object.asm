@@ -15,11 +15,32 @@ INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
 INCLUDE sprite_test_scene.inc
+INCLUDE text_component.inc
 
 .data
 SHOP_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET shop_update, OFFSET game_object_exit, OFFSET free_game_object>
 timeSinceLastSec REAL4 0.0
 iPriceMult REAL4 incomePriceMult
+
+; // ********************************************
+; // Text data
+; // ********************************************
+EXTERNDEF pFontTex : DWORD
+
+P1_MONEY_TEXT_ID EQU 12345
+P2_MONEY_TEXT_ID EQU 54321
+
+P1_INCOME_TEXT_ID EQU 11111
+P2_INCOME_TEXT_ID EQU 22222
+
+p1CashBuffer BYTE 16 DUP(0)
+p2CashBuffer BYTE 16 DUP(0)
+
+p1IncomeBuffer BYTE 16 DUP(0)
+p2IncomeBuffer BYTE 16 DUP(0)
+
+
+testText BYTE "test", 0
 
 .code
 ; // ********************************************
@@ -49,6 +70,50 @@ init_shop_game_object PROC PUBLIC USES esi ebx edx
 	mov (ShopGameObject PTR [ecx]).allyIncomePrice, baseIncomePrice
 	mov (ShopGameObject PTR [ecx]).enemyIncomePrice, baseIncomePrice
 
+	INVOKE new_transform_component, 0, 0, 0FFFFFFFFh
+	mov ecx, pThis
+	INVOKE add_component, ecx, eax
+
+	; // Create the P1 money text
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 50
+	mov (TextComponent PTR [eax]).offsetX, -10
+	mov (TextComponent PTR [eax]).offsetY, -900
+	mov (Component PTR [eax]).userId, P1_MONEY_TEXT_ID
+	mov ecx, pThis
+	INVOKE add_component, ecx, eax
+	mov ecx, eax
+	INVOKE set_text_component_text, OFFSET testText
+
+	; // Create the P2 money text
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 50
+	mov (TextComponent PTR [eax]).offsetX, -1830
+	mov (TextComponent PTR [eax]).offsetY, -900
+	mov (Component PTR [eax]).userId, P2_MONEY_TEXT_ID
+	mov ecx, pThis
+	INVOKE add_component, ecx, eax
+	mov ecx, eax
+	INVOKE set_text_component_text, OFFSET testText
+
+	; // Create the P1 income text
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 50
+	mov (TextComponent PTR [eax]).offsetX, -10
+	mov (TextComponent PTR [eax]).offsetY, -950
+	mov (Component PTR [eax]).userId, P1_INCOME_TEXT_ID
+	mov ecx, pThis
+	INVOKE add_component, ecx, eax
+	mov ecx, eax
+	INVOKE set_text_component_text, OFFSET testText
+
+	; // Create the P2 income text
+	INVOKE new_text_component, pFontTex, 16, 32, 2, 50
+	mov (TextComponent PTR [eax]).offsetX, -1830
+	mov (TextComponent PTR [eax]).offsetY, -950
+	mov (Component PTR [eax]).userId, P2_INCOME_TEXT_ID
+	mov ecx, pThis
+	INVOKE add_component, ecx, eax
+	mov ecx, eax
+	INVOKE set_text_component_text, OFFSET testText
+
 	mov ecx, pThis
 	mov eax, ecx
 	ret
@@ -69,6 +134,42 @@ new_shop_game_object ENDP
 ; // ********************************************
 ; // Instance methods
 ; // ********************************************
+
+int_to_cash_string PROC PUBLIC USES eax ebx ecx edx esi edi, value:DWORD, pBuffer:DWORD, prefixChar:BYTE
+	mov eax, value
+	mov edi, pBuffer
+	mov ebx, 10
+	mov ecx, 0
+
+int_to_cash_string_divide_loop:
+	mov edx, 0
+	div ebx
+	push edx
+	inc ecx
+	cmp eax, 0
+	jne int_to_cash_string_divide_loop
+
+	; // Write a prefix symbol
+	push eax
+	mov al, prefixChar
+	mov BYTE PTR [edi], al
+	inc edi
+	pop eax
+
+int_to_cash_string_pop_loop:
+	pop edx
+	add dl, '0'
+	mov BYTE PTR [edi], dl
+	inc edi
+	dec ecx
+	cmp ecx, 0
+	jne int_to_cash_string_pop_loop
+
+	; // Add null terminator
+	mov BYTE PTR [edi], 0
+	
+	ret
+int_to_cash_string ENDP
 
 ; // ----------------------------------
 ; // shop_update
@@ -106,7 +207,42 @@ local pThis : DWORD
 	mov eax, (ShopGameObject PTR [ecx]).enemyIncome
 	add (ShopGameObject PTR [ecx]).enemyCash, eax
 
-	SkipIncome:
+SkipIncome:
+
+	; // Update the money displays
+	mov ecx, pThis
+	INVOKE get_first_component_with_id, P1_MONEY_TEXT_ID
+	mov ecx, eax
+	mov esi, pThis
+	mov eax, (ShopGameObject PTR [esi]).allyCash
+	INVOKE int_to_cash_string, eax, OFFSET p1CashBuffer, '$'
+	INVOKE set_text_component_text, OFFSET p1CashBuffer
+
+	mov ecx, pThis
+	INVOKE get_first_component_with_id, P2_MONEY_TEXT_ID
+	mov ecx, eax
+	mov esi, pThis
+	mov eax, (ShopGameObject PTR [esi]).enemyCash
+	INVOKE int_to_cash_string, eax, OFFSET p2CashBuffer, '$'
+	INVOKE set_text_component_text, OFFSET p2CashBuffer
+
+	; // Update the income displays
+	mov ecx, pThis
+	INVOKE get_first_component_with_id, P1_INCOME_TEXT_ID
+	mov ecx, eax
+	mov esi, pThis
+	mov eax, (ShopGameObject PTR [esi]).allyIncome
+	INVOKE int_to_cash_string, eax, OFFSET p1IncomeBuffer, '+'
+	INVOKE set_text_component_text, OFFSET p1IncomeBuffer
+
+	mov ecx, pThis
+	INVOKE get_first_component_with_id, P2_INCOME_TEXT_ID
+	mov ecx, eax
+	mov esi, pThis
+	mov eax, (ShopGameObject PTR [esi]).enemyIncome
+	INVOKE int_to_cash_string, eax, OFFSET p2IncomeBuffer, '+'
+	INVOKE set_text_component_text, OFFSET p2IncomeBuffer
+
 	ret
 shop_update ENDP
 

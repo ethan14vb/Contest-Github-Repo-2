@@ -51,6 +51,7 @@ free_game_object PROTO
 
 ; // Instance methods
 get_first_component_which_is_a	PROTO componentType : ENUM_COMPONENT_ID
+get_first_component_with_id		PROTO id: DWORD
 game_object_start_virtual		PROTO
 game_object_free_virtual		PROTO
 game_object_update_virtual		PROTO deltaTime : REAL4
