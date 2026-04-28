@@ -539,79 +539,53 @@ scene_render_frame PROC PRIVATE USES eax ebx edx esi edi, hWnd:DWORD
 		.IF ecx != 0
 			jmp scene_render_frame_loop_exit
 		.ENDIF
-
-		; // If it has a SpriteComponent or a RectComponent, add the render command
-		; // ----------------------------------------------------------------------
-		; // First check if there's a RectComponent
-		mov ecx, esi
-		INVOKE get_first_component_which_is_a, RECT_COMPONENT_ID
 		
-		.IF eax != 0
-			; // Create the new RenderCommand
-			push ebx
-			mov ebx, eax
-
-			mov ecx, esi
-			INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID ; // Get the transform pointer from the GameObject
-			INVOKE new_render_command, eax, ebx
-
-			pop ebx
-
-			; // Add the render command to the RenderCommands list
-			mov ecx, pThis
-			lea ecx, (Scene PTR [ecx]).renderCommands
-			INVOKE push_back, eax 
-
-			jmp scene_render_frame_loop_exit
-		.ENDIF
-
-		; // Now check if there's a SpriteComponent
+		; // Get the transform (only supports 1 transform)
 		mov ecx, esi
-		INVOKE get_first_component_which_is_a, SPRITE_COMPONENT_ID
-		
-		.IF eax != 0
-			; // Create the new RenderCommand
+		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+		mov edi, eax ; // edi = TransformComponent pointer
+
+		; // Get the components uvector
+		lea ecx, (GameObject PTR [esi]).components 
+		mov ebx, (UnorderedVector PTR [ecx]).count
+		mov eax, (UnorderedVector PTR [ecx]).pData
+
+		push edx 
+		mov edx, 0 ; // j = 0
+
+		.WHILE edx < ebx
+			push eax
 			push ebx
-			mov ecx, esi
+			push edx
 
-			mov ebx, eax
-			INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID ; // Get the transform pointer from the GameObject
-			INVOKE new_render_command, eax, ebx
+			; // ebx = components[i]
+			mov ebx, [eax + edx * 4]
 
-			pop ebx
+			; // Check its type
+			mov eax, (Component PTR [ebx]).componentType
 
-			; // Add the render command to the RenderCommands list
-			mov ecx, pThis
-			lea ecx, (Scene PTR [ecx]).renderCommands
-			INVOKE push_back, eax 
-
-			jmp scene_render_frame_loop_exit
-		.ENDIF
-
-		; // Now check if there's a TextComponent
-		mov ecx, esi
-		INVOKE get_first_component_which_is_a, TEXT_COMPONENT_ID
-		
-		.IF eax != 0
-			; // Create the new RenderCommand
-			push ebx
-			mov ecx, esi
-
-			mov ebx, eax
-			INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID ; // Get the transform pointer from the GameObject
-			INVOKE new_render_command, eax, ebx
-
-			pop ebx
-
-			; // Add the render command to the RenderCommands list
-			mov ecx, pThis
-			lea ecx, (Scene PTR [ecx]).renderCommands
-			INVOKE push_back, eax 
+			; // Is it a renderable type?
+			.IF eax == RECT_COMPONENT_ID || eax == SPRITE_COMPONENT_ID || eax == TEXT_COMPONENT_ID
 				
-			jmp scene_render_frame_loop_exit
-		.ENDIF
+				; // Create the new RenderCommand
+				INVOKE new_render_command, edi, ebx
 
-		scene_render_frame_loop_exit:
+				; // Add it to the Scene's render list
+				mov ecx, pThis
+				lea ecx, (Scene PTR [ecx]).renderCommands
+				INVOKE push_back, eax 
+			.ENDIF
+
+			; // Restore inner loop variables
+			pop edx
+			pop ebx
+			pop eax
+			
+			inc edx ; // j++
+		.ENDW
+
+		pop edx
+scene_render_frame_loop_exit:
 		; // Restore the pointer to pData and continue
 		pop edx
 		pop ebx
