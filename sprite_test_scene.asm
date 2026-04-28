@@ -33,6 +33,7 @@ INCLUDE transform_component.inc
 ; // Texture data
 ; // ********************************************
 
+backgroundFile BYTE "background.pam", 0
 testFile BYTE "Knight.pam", 0
 sworFile BYTE "knight_spritesheet_krita.pam", 0
 archFile BYTE "archer_krita_spritesheet.pam", 0

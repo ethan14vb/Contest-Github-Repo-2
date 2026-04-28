@@ -224,6 +224,7 @@ scan_firsts PROC PUBLIC USES eax ebx edx ecx esi edi
 				mov (LaneGameObject PTR [ecx]).pFirstAlly, esi
 			.ENDIF
 		.ELSE
+			pop ecx
 			mov ecx, pThis
 			mov (LaneGameObject PTR [ecx]).pFirstAlly, esi
 		.ENDIF
@@ -250,19 +251,25 @@ scan_firsts PROC PUBLIC USES eax ebx edx ecx esi edi
 		
 		; // Get the transform of the current first enemy
 		pop ecx
-		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
-		mov edi, (TransformComponent PTR [eax]).x
+		.IF ecx != 0
+			INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+			mov edi, (TransformComponent PTR [eax]).x
 		
-		mov ecx, esi
-		INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
-		mov eax, (TransformComponent PTR [eax]).x
+			mov ecx, esi
+			INVOKE get_first_component_which_is_a, TRANSFORM_COMPONENT_ID
+			mov eax, (TransformComponent PTR [eax]).x
 
-		; // Assign new firstEnemy if further ahead in lane
-		pop ecx
-		.IF eax < edi	; // Comparison is flipped since enemies move left
+			; // Assign new firstEnemy if further ahead in lane
+			pop ecx
+			.IF eax < edi	; // Comparison is flipped since enemies move left
+				mov (LaneGameObject PTR [ecx]).pFirstEnemy, esi
+			.ENDIF
+		.ELSE
+			pop ecx 
+			mov ecx, pThis
 			mov (LaneGameObject PTR [ecx]).pFirstEnemy, esi
 		.ENDIF
-
+	
 		inc edx
 	.ENDW
 
