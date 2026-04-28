@@ -118,7 +118,28 @@ buy_knight PROC stdcall USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DW
 		local pThis : DWORD
 	mov pThis, ecx
 
-	INVOKE spawn_knight, knightIndex, team
+	; // Get knight's cost and current cash
+	mov eax, knightIndex
+	mov eax, knightCosts[4 * eax]
+	.IF team == ALLY
+		mov edx, (ShopGameObject PTR [ecx]).allyCash
+	.ELSE
+		mov edx, (ShopGameObject PTR [ecx]).enemyCash
+	.ENDIF
+
+	; // If can afford it, spawn the knight
+	.IF edx > eax
+		INVOKE spawn_knight, knightIndex, team
+		sub edx, eax
+
+		; // Take away cash used
+		.IF team == ALLY
+			mov (ShopGameObject PTR [ecx]).allyCash, edx
+		.ELSE
+			mov (ShopGameObject PTR [ecx]).enemyCash, edx
+		.ENDIF
+	.ENDIF
+		
 	ret
 buy_knight ENDP
 

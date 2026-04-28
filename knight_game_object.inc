@@ -50,4 +50,7 @@ attack PROTO, pOpposingKnight:DWORD
 receive_damage PROTO, damage:DWORD
 check_reached_castle PROTO
 
+.data
+knightCosts DWORD 50, 75, 140
+
 ENDIF
