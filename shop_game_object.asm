@@ -19,6 +19,7 @@ INCLUDE sprite_test_scene.inc
 .data
 SHOP_GAMEOBJECT_VTABLE GameObject_vtable <OFFSET game_object_start, OFFSET shop_update, OFFSET game_object_exit, OFFSET free_game_object>
 timeSinceLastSec REAL4 0.0
+iPriceMult REAL4 incomePriceMult
 
 .code
 ; // ********************************************
@@ -153,7 +154,39 @@ buy_knight ENDP
 ; //	ecx - THIS pointer
 ; // ----------------------------------
 buy_income PROC stdcall USES eax ebx ecx edx esi edi, team:DWORD
-	mov eax, team
+	; // Get upgrades's cost and current cash
+	.IF team == ALLY
+		mov eax, (ShopGameObject PTR [ecx]).allyIncomePrice
+		mov edx, (ShopGameObject PTR [ecx]).allyCash
+	.ELSE
+		mov eax, (ShopGameObject PTR [ecx]).enemyIncomePrice
+		mov edx, (ShopGameObject PTR [ecx]).enemyCash
+	.ENDIF
+
+	; // If can afford it, apply upgrade
+	.IF edx > eax
+		sub edx, eax
+		.IF team == ALLY
+			; // Increases price of future upgrades
+			FILD (ShopGameObject PTR [ecx]).allyIncomePrice
+			FMUL iPriceMult
+			FISTP (ShopGameObject PTR [ecx]).allyIncomePrice
+
+			; // Increases income and substracts cash used
+			add (ShopGameObject PTR [ecx]).allyIncome, 3
+			mov (ShopGameObject PTR [ecx]).allyCash, edx
+		.ELSE
+			; // Increases price of future upgrades
+			FILD (ShopGameObject PTR [ecx]).enemyIncomePrice
+			FMUL iPriceMult
+			FISTP (ShopGameObject PTR [ecx]).enemyIncomePrice
+
+			; // Increases income and substracts cash used
+			add (ShopGameObject PTR [ecx]).enemyIncome, 3
+			mov (ShopGameObject PTR [ecx]).enemyCash, edx
+		.ENDIF
+	.ENDIF
+
 	ret
 buy_income ENDP
 
