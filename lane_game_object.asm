@@ -261,4 +261,18 @@ scan_firsts PROC PUBLIC USES eax ebx edx ecx esi edi
 	ret
 scan_firsts ENDP
 
+; // ----------------------------------
+; // freeze_lane
+; // Stops all lane operations if freeze = 1, continutes if = 0
+; //
+; // Register Parameters: 
+; //	ecx - THIS pointer
+; // ----------------------------------
+freeze_lane PROC PUBLIC USES eax ebx edx ecx esi edi, freeze:DWORD
+	.IF freeze == 1
+	.ELSE
+	.ENDIF
+	ret
+freeze_lane ENDP
+
 END

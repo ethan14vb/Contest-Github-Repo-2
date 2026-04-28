@@ -42,6 +42,9 @@ fontFile BYTE "16x32 cartoon font.pam", 0
 
 text BYTE "This is a MAGNIFICENT! test to see if the text string rendering system works. 0123456789", 0
 incomeText BYTE "Income", 0
+sworText BYTE "Sword", 0
+archText BYTE "Archer", 0
+heavText BYTE "Heavy", 0
 
 PUBLIC pTex
 pTex DWORD ?
@@ -218,17 +221,22 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 1), uiYPos, OFFSET incomeText, pFontTex
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 1), uiYPos, OFFSET sworText, pFontTex
 	mov p1CardList[1 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 1), uiYPos, OFFSET incomeText, pFontTex
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 1), uiYPos, OFFSET archText, pFontTex
 	mov p1CardList[2 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_player_cursor, OFFSET p1Controller, pShop, OFFSET p1CardList, 3, ALLY
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(3, 1), uiYPos, OFFSET heavText, pFontTex
+	mov p1CardList[3 * 4], eax
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	INVOKE new_player_cursor, OFFSET p1Controller, pShop, OFFSET p1CardList, 4, ALLY
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
@@ -238,17 +246,22 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 2), uiYPos, OFFSET incomeText, pFontTex
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(1, 2), uiYPos, OFFSET sworText, pFontTex
 	mov p2CardList[1 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 2), uiYPos, OFFSET incomeText, pFontTex
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(2, 2), uiYPos, OFFSET archText, pFontTex
 	mov p2CardList[2 * 4], eax
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
-	INVOKE new_player_cursor, OFFSET p2Controller, pShop, OFFSET p2CardList, 3, ENEMY
+	INVOKE new_shop_card, 0, 0, uiCardSpacing(3, 2), uiYPos, OFFSET heavText, pFontTex
+	mov p2CardList[3 * 4], eax
+	mov ecx, pScene
+	INVOKE instantiate_game_object, eax
+
+	INVOKE new_player_cursor, OFFSET p2Controller, pShop, OFFSET p2CardList, 4, ENEMY
 	mov ecx, pScene
 	INVOKE instantiate_game_object, eax
 
@@ -306,6 +319,7 @@ populate_sprite_test_scene ENDP
 ; // with the sprite test scene contents.
 ; // ----------------------------------
 spawn_knight PROC stdcall PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DWORD
+	; // Puts correct texture in eax
 	.IF knightIndex == SWOR
 		mov eax, pSworTex
 	.ELSEIF knightIndex == ARCH
@@ -316,11 +330,24 @@ spawn_knight PROC stdcall PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD
 
 	INVOKE new_knight_game_object, team, eax, knightIndex
 	mov esi, eax
-
 	mov ecx, gpScene
 	INVOKE instantiate_game_object, esi
 	mov ecx, pLane
 	INVOKE assign_knight, esi
+
+	; // Assigns respective stats
+	mov edi, esi
+	lea edi, (KnightGameObject PTR [edi]).HP
+	mov esi, 0
+	.IF knightIndex == SWOR
+		lea esi, sworStats
+	.ELSEIF knightIndex == ARCH
+		lea esi, archStats
+	.ELSE
+		lea esi, heavStats
+	.ENDIF
+	mov ecx, 20
+	rep movsb
 
 	ret
 spawn_knight ENDP

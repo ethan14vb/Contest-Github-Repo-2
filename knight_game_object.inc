@@ -38,9 +38,9 @@ KnightGameObject STRUCT
 	HP DWORD ?
 	ATK DWORD ?
 	DEF DWORD ?
-	ATKSP REAL4 ?	; // Cooldown time between attacks
 	MOVSP DWORD ?	; // Speed at which unit moves in lane
 	RANGE DWORD ?	; // Distance to next enemy to be able to attack
+	ATKSP REAL4 ?	; // Cooldown time between attacks
 KnightGameObject ENDS
 
 init_knight_game_object PROTO, team:DWORD, pTexture:DWORD, knightIndex:DWORD
@@ -53,5 +53,8 @@ check_reached_castle PROTO
 
 .data
 knightCosts DWORD 50, 75, 140
+sworStats DWORD 20, 14, 6, 5, 120
+archStats DWORD 12, 18, 2, 7, 900
+heavStats DWORD 60, 26, 9, 3, 100
 
 ENDIF
