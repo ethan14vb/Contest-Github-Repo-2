@@ -227,9 +227,8 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	INVOKE add_component, esi, eax
 
 	INVOKE new_sprite_component, 0, 0, pBackgroundTex
+	mov (RenderableComponent PTR [eax]).layer, 0
 	INVOKE add_component, esi, eax
-
-	mov (RenderableComponent PTR [esi]).layer, 0
 
 	; // Shop
 	INVOKE new_shop_game_object

@@ -26,7 +26,7 @@ TEXT_COMPONENT_VTABLE Component_vtable <OFFSET free_text_component>
 init_text_component PROC PUBLIC USES ebx ecx edx esi, pFontTexture : DWORD, charW : DWORD, charH : DWORD, spacing : DWORD, maxChars : DWORD
 	local pThis
 	; // Parent constructor
-	INVOKE init_renderable_component, 0FFFFFFFFh, 1
+	INVOKE init_renderable_component, 0FFFFFFFFh, 4
 	mov (Component PTR [ecx]).componentType, TEXT_COMPONENT_ID
 	mov (Component PTR [ecx]).pVt, OFFSET TEXT_COMPONENT_VTABLE
 
