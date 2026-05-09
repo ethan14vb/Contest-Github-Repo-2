@@ -53,5 +53,5 @@ For more technical information on the engine, view [ENGINE_DOCS.md](ENGINE_DOCS.
 ## Credits
 Though all team members worked on all aspects of the projects to some degree, the primary roles were:
 
-**Ethan Van Brunt**: Engine Developer and Artist
-**Joshua Fernandez-Alvarado**: Game-Designer and Gameplay Programmer
+- **Ethan Van Brunt**: Engine Developer and Artist
+- **Joshua Fernandez-Alvarado**: Game-Designer and Gameplay Programmer
