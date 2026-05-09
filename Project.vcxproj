@@ -40,7 +40,7 @@
     <MASM Include="resource_manager.asm" />
     <MASM Include="shop_card.asm" />
     <MASM Include="sprite_component.asm" />
-    <MASM Include="sprite_test_scene.asm" />
+    <MASM Include="gameplay_scene.asm" />
     <MASM Include="texture.asm" />
     <MASM Include="text_component.asm" />
     <MASM Include="timer_component.asm" />
@@ -77,7 +77,7 @@
     <None Include="sprite_component.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="sprite_test_scene.inc" />
+    <None Include="gameplay_scene.inc" />
     <None Include="texture.inc" />
     <None Include="text_component.inc" />
     <None Include="timer_component.inc" />

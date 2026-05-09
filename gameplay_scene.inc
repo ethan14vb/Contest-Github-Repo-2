@@ -1,7 +1,9 @@
 ; // ==================================
-; // sprite_test_scene.inc
+; // gameplay_scene.asm
 ; // ----------------------------------
-; // Initializes a scene to have a single sprite to test sprite rendering.
+; // The main scene used for the SketchKnights game. This allocates the 
+; // necessary resources, sets up input bindings, and has a helper 
+; // method for adding a knight into the scene.
 ; // ==================================
 
 IFNDEF SPRITE_TEST_SCENE_INC
@@ -24,7 +26,7 @@ SWOR_SHOP_ID	EQU 1
 ARCH_SHOP_ID	EQU 2
 HEAV_SHOP_ID	EQU 3
 
-populate_sprite_test_scene PROTO pScene: DWORD
+populate_gameplay_scene PROTO pScene: DWORD
 spawn_knight PROTO, knightIndex:DWORD, team:DWORD
 
 ENDIF

@@ -12,7 +12,7 @@ INCLUDE transform_component.inc
 INCLUDE rect_component.inc
 INCLUDE input_manager.inc
 INCLUDE shop_card.inc
-INCLUDE sprite_test_scene.inc
+INCLUDE gameplay_scene.inc
 INCLUDE knight_game_object.inc
 INCLUDE shop_game_object.inc
 

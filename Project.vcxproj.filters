@@ -70,9 +70,6 @@
     <None Include="rectangle_test_scene.inc">
       <Filter>Scenes</Filter>
     </None>
-    <None Include="sprite_test_scene.inc">
-      <Filter>Scenes</Filter>
-    </None>
     <None Include="unordered_vector.inc">
       <Filter>Engine\CoreObjects</Filter>
     </None>
@@ -113,6 +110,9 @@
       <Filter>GameObjects</Filter>
     </None>
     <None Include="input_manager_objects.inc" />
+    <None Include="gameplay_scene.inc">
+      <Filter>Scenes</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -192,9 +192,6 @@
     <MASM Include="rectangle_test_scene.asm">
       <Filter>Scenes</Filter>
     </MASM>
-    <MASM Include="sprite_test_scene.asm">
-      <Filter>Scenes</Filter>
-    </MASM>
     <MASM Include="unordered_vector.asm">
       <Filter>Engine\CoreObjects</Filter>
     </MASM>
@@ -239,6 +236,9 @@
     </MASM>
     <MASM Include="shop_game_object.asm">
       <Filter>GameObjects</Filter>
+    </MASM>
+    <MASM Include="gameplay_scene.asm">
+      <Filter>Scenes</Filter>
     </MASM>
   </ItemGroup>
 </Project>

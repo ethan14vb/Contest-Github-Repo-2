@@ -7,7 +7,7 @@
 ; // ==================================
 
 INCLUDE default_header.inc
-INCLUDE sprite_test_scene.inc
+INCLUDE gameplay_scene.inc
 INCLUDE resource_manager.inc
 INCLUDE engine_types.inc
 INCLUDE scene.inc
@@ -115,7 +115,7 @@ WinMain PROC PUBLIC
 	INVOKE new_scene, 100
 	mov pScene, eax
 	
-	INVOKE populate_sprite_test_scene, pScene
+	INVOKE populate_gameplay_scene, pScene
 
 loop_start:
 	; // First, read the message queue and dispatch messages
@@ -139,6 +139,9 @@ update_scene:
 	jmp loop_start
 
 loop_exit:
+	; // Free the scene and its allocated resources. Optimally, this should be handled by the scene
+	; // itself, but unfortunately we were unable to add this functionality before the project
+	; // deadline. 
 	INVOKE free_scene
 	INVOKE unload_texture, pTex
 	INVOKE unload_texture, pSworTex

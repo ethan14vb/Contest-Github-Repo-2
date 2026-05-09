@@ -54,7 +54,7 @@ check_reached_castle PROTO
 .data
 knightCosts DWORD 50, 75, 140
 sworStats DWORD 20, 14, 6, 5, 120
-archStats DWORD 12, 18, 2, 7, 900
-heavStats DWORD 60, 26, 9, 3, 100
+archStats DWORD 12, 18, 2, 7, 800
+heavStats DWORD 50, 20, 9, 3, 100
 
 ENDIF

@@ -1,11 +1,13 @@
 ; // ==================================
-; // sprite_test_scene.asm
+; // gameplay_scene.asm
 ; // ----------------------------------
-; // Initializes a scene to have a single sprite to test sprite rendering.
+; // The main scene used for the SketchKnights game. This allocates the 
+; // necessary resources, sets up input bindings, and has a helper 
+; // method for adding a knight into the scene.
 ; // ==================================
 
 INCLUDE default_header.inc
-INCLUDE sprite_test_scene.inc
+INCLUDE gameplay_scene.inc
 
 ; // System
 INCLUDE game_object.inc
@@ -195,11 +197,11 @@ init_virtual_controllers PROC PUBLIC USES eax ecx
 init_virtual_controllers ENDP
 
 ; // ----------------------------------
-; // populate_sprite_test_scene
+; // populate_gameplay_scene
 ; // Call this method on an empty Scene to fill it
 ; // with the sprite test scene contents.
 ; // ----------------------------------
-populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
+populate_gameplay_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	mov eax, pScene
 	mov gpScene, eax
 	INVOKE init_virtual_controllers
@@ -340,12 +342,11 @@ populate_sprite_test_scene PROC PUBLIC USES eax ebx edx esi edi, pScene: DWORD
 	;INVOKE spawn_knight, HEAV, ENEMY
 
 	ret
-populate_sprite_test_scene ENDP
+populate_gameplay_scene ENDP
 
 ; // ----------------------------------
-; // populate_sprite_test_scene
-; // Call this method on an empty Scene to fill it
-; // with the sprite test scene contents.
+; // spawn_knight
+; // Adds a knight to the correct index and team to the scene. 
 ; // ----------------------------------
 spawn_knight PROC stdcall PUBLIC USES eax ebx ecx edx esi edi, knightIndex:DWORD, team:DWORD
 	; // Puts correct texture in eax

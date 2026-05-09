@@ -14,7 +14,7 @@ INCLUDE lane_game_object.inc
 INCLUDE knight_game_object.inc
 INCLUDE transform_component.inc
 INCLUDE sprite_component.inc
-INCLUDE sprite_test_scene.inc
+INCLUDE gameplay_scene.inc
 INCLUDE text_component.inc
 
 .data
@@ -26,6 +26,8 @@ iPriceMult REAL4 incomePriceMult
 ; // Text data
 ; // ********************************************
 EXTERNDEF pFontTex : DWORD
+
+MONEY_TICK REAL4 1.0
 
 P1_MONEY_TEXT_ID EQU 12345
 P2_MONEY_TEXT_ID EQU 54321
@@ -188,7 +190,7 @@ local pThis : DWORD
 	FADD deltaTime
 	FSTP timeSinceLastSec
 
-	FLD1
+	FLD MONEY_TICK
 	FLD timeSinceLastSec
 	FCOMPP
 	FNSTSW ax	; // get floating point comparison into flags
