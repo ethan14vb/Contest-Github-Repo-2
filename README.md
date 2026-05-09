@@ -2,6 +2,19 @@
 # Sketch Knights
 ## Ethan Van Brunt (904031060) and Joshua Fernandez-Alvarado (904036400)
 
+## Overview & Key Features
+This is a project created for CSE-3120: Computer Architecture and Assembly in which we created a game engine + demo game.
+
+The game engine features: 
+- **Modular core systems** that allow for different components of the engine (such as rendering or resource management) to be quickly updated or swapped.
+- **Resource management** for 2D images and sprite atlasses. 
+- An **Event callback** system where functions can be connected and disconnected from events
+- **2D Rendering** System with **CPU Rasterization** in 60 FPS
+- An **Object Oriented** system for GameObjects that allows for subclassing by embeddeding superclasses into class STRUCTs and virtual tables.
+- An **Entity Component System (ECS)** in which components can be attached to GameObjects
+
+For more technical information on the engine, view [ENGINE_DOCS.md](ENGINE_DOCS.md)
+
 ## How to Play
 **Objective**
 - This is a local multiplayer game, so it is meant to be player by two people competing agaisnt each other on the same device.
@@ -36,3 +49,9 @@
 ## How to Compile and Run
 - Checkout a commit and open the Project.sln file in Visual Studio.
 - You should be able to compile and run inside Visual Studio.
+
+## Credits
+Though all team members worked on all aspects of the projects to some degree, the primary roles were:
+
+**Ethan Van Brunt**: Engine Developer and Artist
+**Joshua Fernandez-Alvarado**: Game-Designer and Gameplay Programmer
