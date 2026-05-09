@@ -7,7 +7,8 @@ This is a project created for CSE-3120: Computer Architecture and Assembly in wh
 
 The game engine features: 
 - **Modular core systems** that allow for different components of the engine (such as rendering or resource management) to be quickly updated or swapped.
-- **Resource management** for 2D images and sprite atlasses. 
+- **Resource management** for 2D images and sprite atlasses.
+- **Action-Input Abstraction** that separates the input binding from the controller, allowing for more controllers and bindings to be added without changing the underlying gameplay logic. 
 - An **Event callback** system where functions can be connected and disconnected from events
 - **2D Rendering** System with **CPU Rasterization** in 60 FPS that utilizes SIMD techniques for alpha blending
 - An **Object Oriented** system for GameObjects that allows for subclassing by embeddeding superclasses into class STRUCTs and virtual tables.
