@@ -9,7 +9,7 @@ The game engine features:
 - **Modular core systems** that allow for different components of the engine (such as rendering or resource management) to be quickly updated or swapped.
 - **Resource management** for 2D images and sprite atlasses. 
 - An **Event callback** system where functions can be connected and disconnected from events
-- **2D Rendering** System with **CPU Rasterization** in 60 FPS
+- **2D Rendering** System with **CPU Rasterization** in 60 FPS that utilizes SIMD techniques for alpha blending
 - An **Object Oriented** system for GameObjects that allows for subclassing by embeddeding superclasses into class STRUCTs and virtual tables.
 - An **Entity Component System (ECS)** in which components can be attached to GameObjects
 
